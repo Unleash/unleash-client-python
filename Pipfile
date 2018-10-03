@@ -8,6 +8,7 @@ requests = "*"
 
 [dev-packages]
 mypy = "*"
+pylint = "*"
 pytest = "*"
 pytest-cov  = "*"
 pytest-flake8 = "*"
