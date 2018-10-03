@@ -42,23 +42,23 @@ class UnleashClient():
 
         self.logger = LOGGER
 
-    def initialize_client(self) -> None:
-        """
-        Initializes client communication with central unleash server(s).
-
-        This kicks off:
-        * Provisioning poll
-        * Stats poll
-
-        :return:
-        """
-        # Register app
-
-        # Start refresh polling
-
-        # Start metrics polling
-
-    def is_enabled(self) -> bool:
-        """
-        """
-        return False
+    # def initialize_client(self) -> None:
+    #     """
+    #     Initializes client communication with central unleash server(s).
+    #
+    #     This kicks off:
+    #     * Provisioning poll
+    #     * Stats poll
+    #
+    #     :return:
+    #     """
+    #     # Register app
+    #
+    #     # Start refresh polling
+    #
+    #     # Start metrics polling
+    #
+    # def is_enabled(self) -> bool:
+    #     """
+    #     """
+    #     return False
