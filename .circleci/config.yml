@@ -16,7 +16,7 @@ jobs:
           command: pipenv run py.test -n 4 --cov=UnleashClient
       - run:
           name: Lint code.
-          command: pipenv run pylint app -f parseable >> pylint.log
+          command: pipenv run pylint UnleashClient -f parseable >> pylint.log
       - run:
           name: Run mypy
           command: pipenv run mypy UnleashClient >> mypy.log
