@@ -21,7 +21,7 @@ jobs:
           name: Run mypy
           command: pipenv run mypy UnleashClient >> mypy.log
       - store_test_results:
-          path: results.xml
+          path: .
       - store_artifacts:
           path: pylint.log
       - store_artifacts:
