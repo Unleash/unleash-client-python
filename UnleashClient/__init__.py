@@ -3,6 +3,7 @@ This is the core of the Python unleash client.
 """
 from .utils import LOGGER
 
+
 # pylint: disable=dangerous-default-value
 class UnleashClient():
     """

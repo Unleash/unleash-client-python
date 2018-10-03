@@ -7,6 +7,7 @@ def readme():
     with open('README.md') as file:
         return file.read()
 
+
 setup(
     name='UnleashClient',
     version='0.0.1',
@@ -16,11 +17,8 @@ setup(
     author='Ivan Lee',
     author_email='ivanklee86@gmail.com',
     packages=find_packages(),
-    install_requires=[
-        "requests"
-        ],
+    install_requires=["requests"],
     tests_require=['pytest'],
     zip_safe=False,
     include_package_data=True
 )
-
