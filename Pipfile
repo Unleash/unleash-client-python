@@ -7,13 +7,16 @@ name = "pypi"
 requests = "*"
 
 [dev-packages]
+mypy = "*"
 pytest = "*"
 pytest-cov  = "*"
+pytest-flake8 = "*"
 pytest-html  = "*"
 pytest-runner  = "*"
 pytest-rerunfailures  = "*"
 pytest-xdist = "*"
-pylint = "*"
+responses = "*"
+sphinx = "*"
 
 [requires]
 python_version = "3.7"

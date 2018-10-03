@@ -1,4 +1,4 @@
-"""Setup file for unleash-client"""
+"""Setup file for UnleashClient"""
 from setuptools import setup, find_packages
 
 
@@ -8,11 +8,11 @@ def readme():
         return file.read()
 
 setup(
-    name='unleash-client',
+    name='UnleashClient',
     version='0.0.1',
     description='Python client for the wonderful unleash feature flag framework!',
     long_description=readme(),
-    url='https://github.com/ivanklee86/unleash-client',
+    url='https://github.com/ivanklee86/UnleashClient',
     author='Ivan Lee',
     author_email='ivanklee86@gmail.com',
     packages=find_packages(),
