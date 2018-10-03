@@ -47,6 +47,7 @@ coverage.xml
 *,cover
 .hypothesis/
 .pytest_cache/
+.mypy_cache/
 
 # Translations
 *.mo
@@ -97,5 +98,6 @@ ENV/
 
 #Custom
 .idea
+.vscode
 assets
 results*
