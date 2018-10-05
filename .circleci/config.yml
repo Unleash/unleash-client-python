@@ -13,7 +13,7 @@ jobs:
           command: pipenv install --dev
       - run:
           name: Run tests.
-          command: pipenv run py.test -n 4 --junitxml=pytest/results.xml --cov=UnleashClient tests/unit
+          command: pipenv run py.test -n 4 --junitxml=pytest/results.xml --cov=UnleashClient tests/unit_tests
       - run:
           name: Lint code.
           command: pipenv run pylint UnleashClient -f parseable >> pylint.log

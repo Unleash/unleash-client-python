@@ -1,7 +1,7 @@
 import json
 import datetime
 import requests
-from UnleashClient.constants import DEFAULT_STRATEGIES, SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS
+from UnleashClient.constants import DEFAULT_STRATEGIES, SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
 from UnleashClient.utils import LOGGER
 
 
@@ -38,7 +38,7 @@ def register_client(url: str,
         LOGGER.info("Registering unleash client with unleash @ %s", url)
         LOGGER.info("Registration request information: %s", registation_request)
 
-        resp = requests.post(url + "/api/client/register",
+        resp = requests.post(url + REGISTER_URL,
                              data=json.dumps(registation_request),
                              headers={**custom_headers, **APPLICATION_HEADERS},
                              timeout=REQUEST_TIMEOUT)

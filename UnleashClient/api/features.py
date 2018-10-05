@@ -1,6 +1,6 @@
 import json
 import requests
-from UnleashClient.constants import REQUEST_TIMEOUT
+from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
 from UnleashClient.utils import LOGGER
 
 
@@ -30,7 +30,7 @@ def get_feature_toggles(url: str,
             "UNLEASH-INSTANCEID": instance_id
         }
 
-        resp = requests.get(url + "/api/client/features",
+        resp = requests.get(url + FEATURES_URL,
                             headers={**custom_headers, **headers},
                             timeout=REQUEST_TIMEOUT)
 

@@ -1,3 +1,9 @@
+# Library
+SDK_NAME = "unleash-client-python"
+SDK_VERSION = "0.0.1"
+REQUEST_TIMEOUT = 30
+
+# =Unleash=
 DEFAULT_STRATEGIES = ["default",
                       "userWithId",
                       "gradualRolloutuserId",
@@ -6,7 +12,8 @@ DEFAULT_STRATEGIES = ["default",
                       "remoteAddress",
                       "applicationHostname"]
 
-SDK_NAME = "unleash-client-python"
-SDK_VERSION = "0.0.1"
-REQUEST_TIMEOUT = 30
 APPLICATION_HEADERS = {"Content-Type": "application/json"}
+
+# Paths
+REGISTER_URL = "/api/client/register"
+FEATURES_URL = "/api/client/features"

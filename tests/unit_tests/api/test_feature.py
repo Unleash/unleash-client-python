@@ -1,12 +1,16 @@
 import responses
-from tests.unit.unleash_mocks import MOCK_FEATURE_RESPONSE
-from tests.unit.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS
+from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS
+from UnleashClient.constants import FEATURES_URL
 from UnleashClient.api.features import get_feature_toggles
+
+
+FULL_FEATURE_URL = URL + FEATURES_URL
 
 
 @responses.activate
 def test_register_client_success():
-    responses.add(responses.GET, URL + "/api/client/features", json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.GET, FULL_FEATURE_URL, json=MOCK_FEATURE_RESPONSE, status=200)
 
     result = get_feature_toggles(URL,
                                  APP_NAME,
@@ -19,7 +23,7 @@ def test_register_client_success():
 
 @responses.activate
 def test_register_client_failure():
-    responses.add(responses.POST, URL, json={}, status=500)
+    responses.add(responses.POST, FULL_FEATURE_URL, json={}, status=500)
 
     result = get_feature_toggles(URL,
                                  APP_NAME,

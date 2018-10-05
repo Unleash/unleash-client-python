@@ -1,5 +1,5 @@
 from UnleashClient import UnleashClient
-from tests.unit.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
 
 
 def test_UC_initialize_default():
