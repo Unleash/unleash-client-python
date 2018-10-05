@@ -29,7 +29,7 @@ class UnleashClient():
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
         """
         # Configuration
-        self.unleash_url = url
+        self.unleash_url = url.rstrip('\\')
         self.unleash_app_name = app_name
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval

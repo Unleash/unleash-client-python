@@ -1,12 +1,5 @@
 from UnleashClient import UnleashClient
-
-URL = "http://0.0.0.0"
-APP_NAME = "pytest"
-INSTANCE_ID = "123"
-REFRESH_INTERVAL = 30000
-METRICS_INTERVAL = 40000
-DISABLE_METRICS = True
-CUSTOM_HEADERS = {"name": "My random header."}
+from tests.unit.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
 
 
 def test_UC_initialize_default():

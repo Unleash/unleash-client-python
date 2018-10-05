@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 requests = "*"
+fcache = "*"
 
 [dev-packages]
 mypy = "*"
