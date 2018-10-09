@@ -48,6 +48,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 .mypy_cache/
+.benchmarks
 
 # Translations
 *.mo

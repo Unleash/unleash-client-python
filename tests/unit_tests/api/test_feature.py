@@ -2,7 +2,7 @@ import responses
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS
 from UnleashClient.constants import FEATURES_URL
-from UnleashClient.api.features import get_feature_toggles
+from UnleashClient.api import get_feature_toggles
 
 
 FULL_FEATURE_URL = URL + FEATURES_URL

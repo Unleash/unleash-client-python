@@ -2,7 +2,7 @@ import responses
 from requests import ConnectionError
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, METRICS_INTERVAL, CUSTOM_HEADERS
 from UnleashClient.constants import REGISTER_URL
-from UnleashClient.api.register import register_client
+from UnleashClient.api import register_client
 
 
 FULL_REGISTER_URL = URL + REGISTER_URL
