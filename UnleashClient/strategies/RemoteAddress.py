@@ -22,16 +22,13 @@ class RemoteAddress(Strategy):
 
         return parsed_ips
 
-
-    def __call__(self,
-                 context: dict = None,
-                 default_value: bool = False) -> bool:
+    def __call__(self, context: dict = None) -> bool:
         """
         Returns true if IP is in list of IPs
 
         :return:
         """
-        return_value = default_value
+        return_value = False
 
         try:
             context_ip = ipaddress.ip_address(context["remoteAddress"])
@@ -49,7 +46,5 @@ class RemoteAddress(Strategy):
                     if context_ip in addr_or_range:
                         return_value = True
                         break
-
-        self.increment_stats(return_value)
 
         return return_value

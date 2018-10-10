@@ -1,6 +1,5 @@
 import mimesis
-from random import getrandbits
-from ipaddress import IPv4Address, IPv6Address
+
 
 def generate_context():
     return {"userId": mimesis.Person('en').email()}

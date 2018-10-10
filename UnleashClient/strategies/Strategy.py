@@ -4,8 +4,6 @@ class Strategy():
     Basic Strategy object
     """
     def __init__(self,
-                 name: str,
-                 enabled: bool,
                  parameters: dict = {}) -> None:
         """
         Base strategy object
@@ -15,13 +13,7 @@ class Strategy():
         :param parameters: Parameters
         """
         # Experiment information
-        self.name = name
-        self.enabled = enabled
         self.parameters = parameters
-
-        # Stats tracking
-        self.yes_count = 0
-        self.no_count = 0
 
         self.parsed_provisioning = self.load_provisioning()
 
@@ -32,24 +24,10 @@ class Strategy():
         """
         return []
 
-    def reset_stats(self) -> None:
-        """
-        Resets stats after metrics reporting
+    def __eq__(self, other):
+        return self.parameters == other.parameters
 
-        :return:
-        """
-        self.yes_count = 0
-        self.no_count = 0
-
-    def increment_stats(self, result: bool) -> None:
-        if result:
-            self.yes_count += 1
-        else:
-            self.no_count += 1
-
-    def __call__(self,
-                 context: dict = None,
-                 default_value: bool = False) -> bool:
+    def __call__(self, context: dict = None) -> bool:
         """
         Strategy implementation goes here.
 

@@ -7,23 +7,8 @@ from UnleashClient.strategies import UserWithId
 
 @pytest.fixture()
 def strategy():
-    yield UserWithId(name="Generic", enabled=True, parameters={"userIds": EMAIL_LIST})
+    yield UserWithId(parameters={"userIds": EMAIL_LIST})
 
 
 def test_userwithid(strategy):
     assert strategy(context=CONTEXT)
-    assert strategy.yes_count == 1
-    strategy.reset_stats()
-    assert strategy.yes_count == 0
-
-
-def test_userwithid_distribution(strategy):
-    for _ in range(100):
-        strategy(context=CONTEXT)
-
-    assert strategy.yes_count == 100
-
-
-@pytest.mark.skip("Performance test")
-def test_userwithid_timing(strategy, benchmark):
-    benchmark(strategy, CONTEXT)
