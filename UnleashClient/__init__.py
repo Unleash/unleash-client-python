@@ -1,8 +1,10 @@
 """
 This is the core of the Python unleash client.
 """
+from fcache.cache import FileCache
+from apscheduler.schedulers.background import BackgroundScheduler
+from UnleashClient.api import register_client
 from .utils import LOGGER
-
 
 # pylint: disable=dangerous-default-value
 class UnleashClient():
@@ -37,26 +39,33 @@ class UnleashClient():
         self.unleash_disable_metrics = disable_metrics
         self.unleash_custom_headers = custom_headers
 
+        # Class objects
+        self.cache = FileCache("Unleash")
+        self.strategies: dict = {}
+        self.scheduler = BackgroundScheduler()
+
         # Client status
         self.is_initialized = False
 
-        self.logger = LOGGER
+    def initialize_client(self) -> None:
+        """
+        Initializes client communication with central unleash server(s).
 
-    # def initialize_client(self) -> None:
-    #     """
-    #     Initializes client communication with central unleash server(s).
-    #
-    #     This kicks off:
-    #     * Provisioning poll
-    #     * Stats poll
-    #
-    #     :return:
-    #     """
-    #     # Register app
-    #
-    #     # Start refresh polling
-    #
-    #     # Start metrics polling
+        This kicks off:
+        * Provisioning poll
+        * Stats poll
+
+        :return:
+        """
+        # Register app
+        register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
+                        self.unleash_metrics_interval, self.unleash_custom_headers)
+
+        # Start refresh polling
+
+        # Start metrics polling
+
+        self.is_initialized = True
     #
     # def is_enabled(self) -> bool:
     #     """

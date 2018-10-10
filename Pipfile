@@ -7,6 +7,7 @@ name = "pypi"
 requests = "*"
 fcache = "*"
 mmh3 = "*"
+apscheduler = "*"
 
 [dev-packages]
 mimesis = "*"

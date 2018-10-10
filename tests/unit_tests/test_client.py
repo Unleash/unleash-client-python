@@ -1,5 +1,8 @@
+import responses
 from UnleashClient import UnleashClient
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
+    METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
+from UnleashClient.constants import REGISTER_URL
 
 
 def test_UC_initialize_default():
@@ -29,3 +32,12 @@ def test_UC_type_violation():
     assert client.unleash_url == URL
     assert client.unleash_app_name == APP_NAME
     assert client.unleash_refresh_interval == "60"
+
+
+@responses.activate
+def test_UC_initialization():
+    responses.add(responses.POST, URL + URL + REGISTER_URL, json={}, status=202)
+
+    client = UnleashClient(URL, APP_NAME)
+    client.initialize_client()
+    assert client.is_initialized
