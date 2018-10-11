@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-requests = "*"
-fcache = "*"
-mmh3 = "*"
-apscheduler = "*"
+requests = "==2.19.1"
+fcache = "==0.4.7"
+mmh3 = "==2.5.1"
+apscheduler = "==3.5.3"
 
 [dev-packages]
 mimesis = "*"
@@ -23,6 +23,7 @@ pytest-rerunfailures  = "*"
 pytest-xdist = "*"
 responses = "*"
 sphinx = "*"
+coveralls = "*"
 
 [requires]
 python_version = "3.7"

@@ -26,6 +26,9 @@ jobs:
           path: pylint.log
       - store_artifacts:
           path: mypy.log
+      - run:
+          name: Send code coverage to Coveralls
+          command: pipenv run coveralls
 
 workflows:
   version: 2
