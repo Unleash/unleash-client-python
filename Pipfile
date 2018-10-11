@@ -24,6 +24,7 @@ pytest-xdist = "*"
 responses = "*"
 sphinx = "*"
 coveralls = "*"
+bumpversion = "*"
 
 [requires]
 python_version = "3.7"
