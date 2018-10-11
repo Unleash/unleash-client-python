@@ -32,6 +32,11 @@ def _create_feature(provisioning: dict) -> Feature:
 def load_features(cache: FileCache,
                   feature_provisioning: dict,
                   strategies: dict) -> None:
+    # Delete old features/cache
+    for feature in cache.keys():
+        if feature not in [d["name"] for d in feature_provisioning["features"]]:
+            del strategies[feature]
+            del cache[feature]
 
     # Parse feature_provisioning and load into cache / update to cache
     for feature in feature_provisioning["features"]:
@@ -52,10 +57,6 @@ def load_features(cache: FileCache,
 
     # Handle creation or deletions
     new_features = list(set(cache.keys()) - set(strategies.keys()))
-    removed_features = list(set(strategies.keys()) - set(cache.keys()))
 
     for feature in new_features:
         strategies[feature] = _create_feature(cache[feature])
-
-    for feature in removed_features:
-        strategies.pop(feature)

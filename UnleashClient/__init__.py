@@ -1,9 +1,13 @@
 """
 This is the core of the Python unleash client.
 """
+from typing import Optional
 from fcache.cache import FileCache
+from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
+from UnleashClient.periodic_tasks import fetch_and_load_features
 from .utils import LOGGER
 
 # pylint: disable=dangerous-default-value
@@ -43,6 +47,8 @@ class UnleashClient():
         self.cache = FileCache("Unleash")
         self.strategies: dict = {}
         self.scheduler = BackgroundScheduler()
+        self.fl_job: Job = None
+        self.metric_job: Job = None
 
         # Client status
         self.is_initialized = False
@@ -57,17 +63,35 @@ class UnleashClient():
 
         :return:
         """
+        # Setup
+        fl_args = [self.unleash_url,
+                   self.unleash_app_name,
+                   self.unleash_instance_id,
+                   self.unleash_custom_headers,
+                   self.cache,
+                   self.strategies]
+
         # Register app
         register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
                         self.unleash_metrics_interval, self.unleash_custom_headers)
 
-        # Start refresh polling
+        fetch_and_load_features(*fl_args)
 
-        # Start metrics polling
+        # Start periodic jobs
+        self.scheduler.start()
+        self.fl_job = self.scheduler.add_job(fetch_and_load_features,
+                                             trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval/1000)),
+                                             args=fl_args)
 
         self.is_initialized = True
-    #
-    # def is_enabled(self) -> bool:
-    #     """
-    #     """
-    #     return False
+
+    def deinitialize_client(self):
+        self.cache.delete()
+
+    def is_enabled(self,
+                   feature_name: str,
+                   context: dict = {},
+                   default_value: bool = False) -> bool:
+        """
+        """
+        return self.strategies[feature_name].is_enabled(context, default_value)

@@ -1,8 +1,19 @@
+import time
 import responses
+import pytest
 from UnleashClient import UnleashClient
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
     METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
-from UnleashClient.constants import REGISTER_URL
+from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
+from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
+from UnleashClient.constants import REGISTER_URL, FEATURES_URL
+
+
+@pytest.fixture()
+def unleash_client():
+    unleash_client = UnleashClient(URL, APP_NAME)
+    yield unleash_client
+    unleash_client.deinitialize_client()
 
 
 def test_UC_initialize_default():
@@ -35,9 +46,30 @@ def test_UC_type_violation():
 
 
 @responses.activate
-def test_UC_initialization():
-    responses.add(responses.POST, URL + URL + REGISTER_URL, json={}, status=202)
+def test_uc_lifecycle(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
 
-    client = UnleashClient(URL, APP_NAME)
-    client.initialize_client()
-    assert client.is_initialized
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_initialized
+    assert len(unleash_client.strategies) == 2
+
+    # Simulate server provisioning change
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200)
+    time.sleep(30)
+    assert len(unleash_client.strategies) == 7
+
+
+@responses.activate
+def test_uc_is_enabled(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_enabled("testFlag")
