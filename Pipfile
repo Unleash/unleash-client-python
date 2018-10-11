@@ -28,4 +28,4 @@ sphinx = "*"
 python_version = "3.7"
 
 [scripts]
-test = "pytest -n 4 tests/unit_tests"
+test = "pytest tests/unit_tests"

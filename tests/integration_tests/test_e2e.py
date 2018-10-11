@@ -1,15 +1,23 @@
-from UnleashClient.api import register_client
-from UnleashClient.api import get_feature_toggles
-from tests.utilities.testing_constants import INTEGRATION_URL, APP_NAME, INSTANCE_ID, METRICS_INTERVAL, CUSTOM_HEADERS
+import time
+import random
+import pytest
+from UnleashClient import UnleashClient
+from tests.utilities.testing_constants import INTEGRATION_URL, APP_NAME
 
 
-def test_e2e_temp():
-    register_client(INTEGRATION_URL,
-                    APP_NAME,
-                    INSTANCE_ID,
-                    METRICS_INTERVAL,
-                    CUSTOM_HEADERS)
+@pytest.fixture()
+def unleash_client():
+    my_unleash_client = UnleashClient(INTEGRATION_URL, APP_NAME)
+    yield my_unleash_client
+    my_unleash_client.destroy()
 
-    features = get_feature_toggles(INTEGRATION_URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS)
 
-    assert features
+def test_e2e(unleash_client):
+    my_unleash_client = unleash_client
+    my_unleash_client.initialize_client()
+
+    time.sleep(10)
+    for _ in range(60):
+        email = random.choice(["meep@meep.com", "miss@miss.com"])
+        time.sleep(5)
+        my_unleash_client.is_enabled("UserWithId", context={"userId": email})

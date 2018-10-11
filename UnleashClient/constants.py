@@ -6,7 +6,7 @@ REQUEST_TIMEOUT = 30
 # =Unleash=
 DEFAULT_STRATEGIES = ["default",
                       "userWithId",
-                      "gradualRolloutuserId",
+                      "gradualRolloutUserId",
                       "gradualRolloutSessionId",
                       "gradualRolloutRandom",
                       "remoteAddress",
@@ -17,3 +17,4 @@ APPLICATION_HEADERS = {"Content-Type": "application/json"}
 # Paths
 REGISTER_URL = "/api/client/register"
 FEATURES_URL = "/api/client/features"
+METRICS_URL = "/api/client/metrics"

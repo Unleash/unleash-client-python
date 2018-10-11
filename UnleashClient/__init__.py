@@ -1,13 +1,13 @@
 """
 This is the core of the Python unleash client.
 """
-from typing import Optional
+from datetime import datetime
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
-from UnleashClient.periodic_tasks import fetch_and_load_features
+from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from .utils import LOGGER
 
 # pylint: disable=dangerous-default-value
@@ -19,8 +19,8 @@ class UnleashClient():
                  url: str,
                  app_name: str,
                  instance_id: str = "unleash-client-python",
-                 refresh_interval: int = 15000,
-                 metrics_interval: int = 60000,
+                 refresh_interval: int = 15,
+                 metrics_interval: int = 60,
                  disable_metrics: bool = False,
                  custom_headers: dict = {}) -> None:
         """
@@ -45,10 +45,11 @@ class UnleashClient():
 
         # Class objects
         self.cache = FileCache("Unleash")
-        self.strategies: dict = {}
+        self.features: dict = {}
         self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
         self.metric_job: Job = None
+        self.metrics_last_sent_time = datetime.now()
 
         # Client status
         self.is_initialized = False
@@ -69,7 +70,14 @@ class UnleashClient():
                    self.unleash_instance_id,
                    self.unleash_custom_headers,
                    self.cache,
-                   self.strategies]
+                   self.features]
+
+        metrics_args = [self.unleash_url,
+                        self.unleash_app_name,
+                        self.unleash_instance_id,
+                        self.unleash_custom_headers,
+                        self.features,
+                        self.metrics_last_sent_time]
 
         # Register app
         register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
@@ -80,18 +88,34 @@ class UnleashClient():
         # Start periodic jobs
         self.scheduler.start()
         self.fl_job = self.scheduler.add_job(fetch_and_load_features,
-                                             trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval/1000)),
+                                             trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval)),
                                              args=fl_args)
+
+        self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
+                                                 trigger=IntervalTrigger(seconds=int(self.unleash_metrics_interval)),
+                                                 args=metrics_args)
 
         self.is_initialized = True
 
-    def deinitialize_client(self):
+    def destroy(self):
+        self.fl_job.remove()
+        self.metric_job.remove()
+        self.scheduler.shutdown()
         self.cache.delete()
 
+    # pylint: disable=broad-except
     def is_enabled(self,
                    feature_name: str,
                    context: dict = {},
                    default_value: bool = False) -> bool:
         """
         """
-        return self.strategies[feature_name].is_enabled(context, default_value)
+        if self.is_initialized:
+            try:
+                return self.features[feature_name].is_enabled(context, default_value)
+            except Exception as excep:
+                LOGGER.warning("Error checking feature flag: %s", excep)
+                return default_value
+        else:
+            LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
+            return default_value
