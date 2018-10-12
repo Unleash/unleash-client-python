@@ -1,0 +1,13 @@
+-i https://pypi.org/simple
+appdirs==1.4.3
+apscheduler==3.5.3
+certifi==2018.8.24
+chardet==3.0.4
+fcache==0.4.7
+idna==2.7
+mmh3==2.5.1
+pytz==2018.5
+requests==2.19.1
+six==1.11.0
+tzlocal==1.5.1
+urllib3==1.23; python_version != '3.3.*'
