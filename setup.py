@@ -7,21 +7,27 @@ def readme():
     with open('README.md') as file:
         return file.read()
 
-
 setup(
     name='UnleashClient',
     version='0.0.1',
-    description='Python client for the wonderful unleash feature flag framework!',
-    long_description=readme(),
-    url='https://github.com/ivanklee86/UnleashClient',
     author='Ivan Lee',
     author_email='ivanklee86@gmail.com',
+    description='Python client for the Unleash feature toggle system!',
+    long_description=readme(),
+    long_description_content_type="text/markdown",
+    url='https://github.com/ivanklee86/UnleashClient',
     packages=find_packages(),
     install_requires=["requests==2.19.1",
                       "fcache==0.4.7",
                       "mmh3==2.5.1",
-                      "apscheduler=3.5.3"],
-    tests_require=['pytest'],
+                      "apscheduler==3.5.3"],
+    tests_require=['pytest', "mimesis", "responses"],
     zip_safe=False,
-    include_package_data=True
+    include_package_data=True,
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+    ]
 )
+

@@ -1,6 +1,6 @@
 # unleash-client-python
 
-[![CircleCI](https://circleci.com/gh/ivanklee86/unleash-client-python.svg?style=svg)](https://circleci.com/gh/ivanklee86/unleash-client-python) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Coverage Status](https://coveralls.io/repos/github/ivanklee86/unleash-client-python/badge.svg?branch=il%2FI-8_releaseprep)](https://coveralls.io/github/ivanklee86/unleash-client-python?branch=il%2FI-8_releaseprep)
+[![CircleCI](https://circleci.com/gh/ivanklee86/unleash-client-python.svg?style=svg)](https://circleci.com/gh/ivanklee86/unleash-client-python) [![Coverage Status](https://coveralls.io/repos/github/ivanklee86/unleash-client-python/badge.svg?branch=il%2FI-8_releaseprep)](https://coveralls.io/github/ivanklee86/unleash-client-python?branch=il%2FI-8_releaseprep) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 
 This is a Python client for Unleash.  It strives to [Client Specifications 1.0](https://github.com/Unleash/unleash/blob/master/docs/client-specification.md) (though as this project is still very much a work in progress!).
