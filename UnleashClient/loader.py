@@ -2,6 +2,7 @@ from fcache.cache import FileCache
 from UnleashClient.features import Feature
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
+from UnleashClient.constants import FEATURES_URL
 
 STRATEGY_TO_OBJECT = {
     "applicationHostname": ApplicationHostname,
@@ -30,41 +31,38 @@ def _create_feature(provisioning: dict) -> Feature:
 
 
 def load_features(cache: FileCache,
-                  feature_provisioning: dict,
                   strategies: dict) -> None:
     """
     Caching
 
     :param cache: Should be the cache class variable from UnleashClient
-    :param feature_provisioning: JSON from /api/client/features
     :param strategies: Should be the features class variable from UnleashClient
     :return:
     """
+    # Pull raw provisioning from cache.
+    feature_provisioning = cache[FEATURES_URL]
+
+    # Parse provisioning
+    parsed_features = {}
+    feature_names = [d["name"] for d in feature_provisioning["features"]]
+
+    for provisioning in feature_provisioning["features"]:
+        parsed_features[provisioning["name"]] = provisioning
+
     # Delete old features/cache
-    for feature in cache.keys():
-        if feature not in [d["name"] for d in feature_provisioning["features"]]:
+    for feature in list(strategies.keys()):
+        if feature not in feature_names:
             del strategies[feature]
-            del cache[feature]
-
-    # Parse feature_provisioning and load into cache / update to cache
-    for feature in feature_provisioning["features"]:
-        if feature["name"] not in cache.keys():
-            cache[feature["name"]] = feature
-        else:
-            if cache[feature["name"]] != feature:
-                cache[feature["name"]] = feature
-
-        cache.sync()
 
     # Update existing objects
-    for feature in strategies.keys():
+    for feature in list(strategies.keys()):
         feature_for_update = strategies[feature]
 
-        feature_for_update.enabled = cache[feature]["enabled"]
-        feature_for_update.strategies = _create_strategies(cache[feature]["strategies"])
+        feature_for_update.enabled = parsed_features[feature]["enabled"]
+        feature_for_update.strategies = _create_strategies(parsed_features[feature]["strategies"])
 
     # Handle creation or deletions
-    new_features = list(set(cache.keys()) - set(strategies.keys()))
+    new_features = list(set(feature_names) - set(strategies.keys()))
 
     for feature in new_features:
-        strategies[feature] = _create_feature(cache[feature])
+        strategies[feature] = _create_feature(parsed_features[feature])

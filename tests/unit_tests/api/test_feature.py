@@ -9,7 +9,7 @@ FULL_FEATURE_URL = URL + FEATURES_URL
 
 
 @responses.activate
-def test_register_client_success():
+def test_get_feature_toggle_success():
     responses.add(responses.GET, FULL_FEATURE_URL, json=MOCK_FEATURE_RESPONSE, status=200)
 
     result = get_feature_toggles(URL,
@@ -22,8 +22,8 @@ def test_register_client_success():
 
 
 @responses.activate
-def test_register_client_failure():
-    responses.add(responses.POST, FULL_FEATURE_URL, json={}, status=500)
+def test_get_feature_toggle_failure():
+    responses.add(responses.GET, FULL_FEATURE_URL, json={}, status=500)
 
     result = get_feature_toggles(URL,
                                  APP_NAME,
