@@ -1,0 +1,10 @@
+site_name: unleash-client-python
+
+nav:
+  - Home: index.md
+  - UnleashClient: unleashclient.md
+  - Changelog: changelog.md
+  - Development: development.md
+  - Resources: resources.md
+
+theme: readthedocs

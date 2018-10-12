@@ -3,19 +3,16 @@ from UnleashClient.utils import LOGGER
 
 # pylint: disable=dangerous-default-value, broad-except
 class Feature:
-    """
-    Basic Strategy object
-    """
     def __init__(self,
                  name: str,
                  enabled: bool,
                  strategies: list) -> None:
         """
-        Base Strategy
+        An representation of a fewature object
 
-        :param name:
-        :param is_enabled:
-        :param parameters: Parameters
+        :param name: Name of the feature.
+        :param enabled: Whether feature is enabled.
+        :param strategies: List of sub-classed Strategy objects representing feature strategies.
         """
         # Experiment information
         self.name = name
@@ -36,6 +33,12 @@ class Feature:
         self.no_count = 0
 
     def increment_stats(self, result: bool) -> None:
+        """
+        Increments stats.
+
+        :param result:
+        :return:
+        """
         if result:
             self.yes_count += 1
         else:
@@ -45,7 +48,7 @@ class Feature:
                    context: dict = None,
                    default_value: bool = False) -> bool:
         """
-        Strategy implementation goes here.
+        Checks if feature is enabled.
 
         :param context: Context information
         :param default_value: Optional, but allows for override.
@@ -53,12 +56,13 @@ class Feature:
         """
         flag_value = False
 
-        try:
-            for strategy in self.strategies:
-                flag_value = flag_value or strategy(context)
-        except Exception as strategy_except:
-            LOGGER.warning("Error checking feature flag: %s", strategy_except)
-            flag_value = default_value
+        if self.enabled:
+            try:
+                for strategy in self.strategies:
+                    flag_value = flag_value or strategy(context)
+            except Exception as strategy_except:
+                LOGGER.warning("Error checking feature flag: %s", strategy_except)
+                flag_value = default_value
 
         self.increment_stats(flag_value)
 

@@ -1,6 +1,6 @@
 # unleash-client-python
 
-[![CircleCI](https://circleci.com/gh/ivanklee86/unleash-client-python.svg?style=svg)](https://circleci.com/gh/ivanklee86/unleash-client-python) [![Coverage Status](https://coveralls.io/repos/github/ivanklee86/unleash-client-python/badge.svg?branch=il%2FI-8_releaseprep)](https://coveralls.io/github/ivanklee86/unleash-client-python?branch=il%2FI-8_releaseprep) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+[![CircleCI](https://circleci.com/gh/ivanklee86/unleash-client-python.svg?style=svg)](https://circleci.com/gh/ivanklee86/unleash-client-python) [![Coverage Status](https://coveralls.io/repos/github/ivanklee86/unleash-client-python/badge.svg?branch=il%2FI-8_releaseprep)](https://coveralls.io/github/ivanklee86/unleash-client-python?branch=il%2FI-8_releaseprep) [![Maintainability](https://api.codeclimate.com/v1/badges/68f61648a29051aa6c36/maintainability)](https://codeclimate.com/github/ivanklee86/unleash-client-python/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/UnleashClient.svg)](https://badge.fury.io/py/UnleashClient)
 
 
 This is a Python client for Unleash.  It strives to [Client Specifications 1.0](https://github.com/Unleash/unleash/blob/master/docs/client-specification.md) (though as this project is still very much a work in progress!).
@@ -17,8 +17,11 @@ What it doesn't:
 
 Read more about the Unleash project [here](https://github.com/unleash/unleash).
 
+Check out the project documentation [here](https://ivanklee86.github.io/unleash-client-python/).
+
 ## Installation
-TODO: Put on Pypi. :)
+
+Check out the package on [Pypi](https://pypi.org/project/UnleashClient/)!
 
 ```
 pip install UnleashClient

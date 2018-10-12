@@ -22,10 +22,10 @@ pytest-runner  = "*"
 pytest-rerunfailures  = "*"
 pytest-xdist = "*"
 responses = "*"
-sphinx = "*"
 coveralls = "*"
 bumpversion = "*"
 twine = "*"
+mkdocs = "*"
 
 [requires]
 python_version = "3.7"

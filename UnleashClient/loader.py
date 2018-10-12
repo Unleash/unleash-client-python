@@ -32,6 +32,14 @@ def _create_feature(provisioning: dict) -> Feature:
 def load_features(cache: FileCache,
                   feature_provisioning: dict,
                   strategies: dict) -> None:
+    """
+    Caching
+
+    :param cache: Should be the cache class variable from UnleashClient
+    :param feature_provisioning: JSON from /api/client/features
+    :param strategies: Should be the features class variable from UnleashClient
+    :return:
+    """
     # Delete old features/cache
     for feature in cache.keys():
         if feature not in [d["name"] for d in feature_provisioning["features"]]:

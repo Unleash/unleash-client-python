@@ -1,6 +1,3 @@
-"""
-This is the core of the Python unleash client.
-"""
 from datetime import datetime
 from fcache.cache import FileCache
 from apscheduler.job import Job
@@ -9,6 +6,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from .utils import LOGGER
+
 
 # pylint: disable=dangerous-default-value
 class UnleashClient():
@@ -24,13 +22,13 @@ class UnleashClient():
                  disable_metrics: bool = False,
                  custom_headers: dict = {}) -> None:
         """
-        Constructor for the unleash client class.
+        A client for the Unleash feature toggle system.
 
         :param url: URL of the unleash server, required.
         :param app_name: Name of the application using the unleash client, required.
         :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
-        :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 60000 ms (60 seconds)
-        :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60000 ms (60 seconds)
+        :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
+        :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
         :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
         """
@@ -56,9 +54,10 @@ class UnleashClient():
 
     def initialize_client(self) -> None:
         """
-        Initializes client communication with central unleash server(s).
+        Initializes client and starts communication with central unleash server(s).
 
         This kicks off:
+        * Client registration
         * Provisioning poll
         * Stats poll
 
@@ -98,6 +97,13 @@ class UnleashClient():
         self.is_initialized = True
 
     def destroy(self):
+        """
+        Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.
+
+        You shouldn't need this too much!
+
+        :return:
+        """
         self.fl_job.remove()
         self.metric_job.remove()
         self.scheduler.shutdown()
@@ -109,6 +115,15 @@ class UnleashClient():
                    context: dict = {},
                    default_value: bool = False) -> bool:
         """
+        Checks if a feature toggle is enabled.
+
+        Notes:
+        * If client hasn't been initialized yet or an error occurs, flat will default to false.
+
+        :param feature_name: Name of the feature
+        :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
+        :param default_value: Allows override of default value.
+        :return: True/False
         """
         if self.is_initialized:
             try:

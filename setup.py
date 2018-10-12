@@ -15,7 +15,7 @@ setup(
     description='Python client for the Unleash feature toggle system!',
     long_description=readme(),
     long_description_content_type="text/markdown",
-    url='https://github.com/ivanklee86/UnleashClient',
+    url='https://github.com/ivanklee86/unleash-client-python',
     packages=find_packages(),
     install_requires=["requests==2.19.1",
                       "fcache==0.4.7",
