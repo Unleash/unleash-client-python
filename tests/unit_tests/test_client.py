@@ -79,6 +79,27 @@ def test_uc_is_enabled(unleash_client):
 
 
 @responses.activate
+def test_uc_is_enabled_error_states(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
+    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", default_value=True)
+
+
+@responses.activate
+def test_uc_not_initialized():
+    unleash_client = UnleashClient(URL, APP_NAME)
+    assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
+    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", default_value=True)
+
+
+@responses.activate
 def test_uc_metrics(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
