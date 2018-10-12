@@ -1,6 +1,6 @@
 # Library
 SDK_NAME = "unleash-client-python"
-SDK_VERSION = "0.0.1"
+SDK_VERSION = "0.1.0"
 REQUEST_TIMEOUT = 30
 
 # =Unleash=
