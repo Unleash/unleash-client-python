@@ -31,4 +31,4 @@ mkdocs = "*"
 python_version = "3.7"
 
 [scripts]
-test = "pytest tests/unit_tests"
+test = "pytest --cov UnleashClient tests/unit_tests"
