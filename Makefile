@@ -16,7 +16,7 @@ clean:
 
 generate-requirements:
 	pipenv lock -r > requirements.txt; \
-	pipenv lock -r --dev >> requirements-dev.txt;
+	pipenv lock -r --dev > requirements-dev.txt;
 
 build-package:
 	python setup.py sdist bdist_wheel
