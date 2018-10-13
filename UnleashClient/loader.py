@@ -1,35 +1,30 @@
 from fcache.cache import FileCache
 from UnleashClient.features import Feature
-from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
-    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
 from UnleashClient.constants import FEATURES_URL
+from UnleashClient.utils import LOGGER
 
-STRATEGY_TO_OBJECT = {
-    "applicationHostname": ApplicationHostname,
-    "default": Default,
-    "gradualRolloutRandom": GradualRolloutRandom,
-    "gradualRolloutSessionId": GradualRolloutSessionId,
-    "gradualRolloutUserId": GradualRolloutUserId,
-    "remoteAddress": RemoteAddress,
-    "userWithId": UserWithId
-}
-
-
-def _create_strategies(provisioning: dict) -> list:
+# pylint: disable=broad-except
+def _create_strategies(provisioning: dict,
+                       strategy_mapping: dict) -> list:
     feature_strategies = []
 
     for strategy in provisioning["strategies"]:
-        if "parameters" in strategy.keys():
-            feature_strategies.append(STRATEGY_TO_OBJECT[strategy["name"]](strategy["parameters"]))
-        else:
-            feature_strategies.append(STRATEGY_TO_OBJECT[strategy["name"]])  # type: ignore
+        try:
+            if "parameters" in strategy.keys():
+                feature_strategies.append(strategy_mapping[strategy["name"]](strategy["parameters"]))
+            else:
+                feature_strategies.append(strategy_mapping[strategy["name"]])  # type: ignore
+        except Exception as excep:
+            LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
+                           excep)
 
     return feature_strategies
 
 
-def _create_feature(provisioning: dict) -> Feature:
+def _create_feature(provisioning: dict,
+                    strategy_mapping: dict) -> Feature:
     if "strategies" in provisioning.keys():
-        parsed_strategies = _create_strategies(provisioning)
+        parsed_strategies = _create_strategies(provisioning, strategy_mapping)
     else:
         parsed_strategies = []
 
@@ -39,7 +34,8 @@ def _create_feature(provisioning: dict) -> Feature:
 
 
 def load_features(cache: FileCache,
-                  feature_toggles: dict) -> None:
+                  feature_toggles: dict,
+                  strategy_mapping: dict) -> None:
     """
     Caching
 
@@ -69,11 +65,11 @@ def load_features(cache: FileCache,
 
         feature_for_update.enabled = parsed_features[feature]["enabled"]
         if strategies:
-            parsed_strategies = _create_strategies(parsed_features[feature])
+            parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping)
             feature_for_update.strategies = parsed_strategies
 
     # Handle creation or deletions
     new_features = list(set(feature_names) - set(feature_toggles.keys()))
 
     for feature in new_features:
-        feature_toggles[feature] = _create_feature(parsed_features[feature])
+        feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping)

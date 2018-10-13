@@ -18,6 +18,7 @@ refresh_interval | How often the unleash client should check for configuration c
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {}
+custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
 
 ### `initialize_client()`
 Initializes client and starts communication with central unleash server(s).
