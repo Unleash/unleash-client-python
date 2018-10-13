@@ -9,7 +9,7 @@ class GradualRolloutUserId(Strategy):
 
         :return:
         """
-        percentage = self.parameters["percentage"]
+        percentage = int(self.parameters["percentage"])
         activation_group = self.parameters["groupId"]
 
-        return percentage < normalized_hash(context["userId"], activation_group)
+        return percentage > 0 and normalized_hash(context["userId"], activation_group) <= percentage

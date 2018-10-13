@@ -9,6 +9,6 @@ class GradualRolloutRandom(Strategy):
 
         :return:
         """
-        percentage = self.parameters["percentage"]
+        percentage = int(self.parameters["percentage"])
 
-        return percentage < random.randint(1, 100)
+        return percentage > 0 and random.randint(1, 100) <= percentage

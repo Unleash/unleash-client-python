@@ -17,8 +17,9 @@ Please delete options that are not relevant.
 
 Please describe the tests that you ran to verify your changes.
 
-- [ ] Test A
-- [ ] Test B
+- [ ] Unit tests
+- [ ] Spec Tests
+- [ ] Integration tests / Manual Tests
 
 # Checklist:
 

@@ -54,7 +54,7 @@ class Feature:
         :param default_value: Optional, but allows for override.
         :return:
         """
-        flag_value = False
+        flag_value = default_value
 
         if self.enabled:
             try:
@@ -62,8 +62,9 @@ class Feature:
                     flag_value = flag_value or strategy(context)
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)
-                flag_value = default_value
 
         self.increment_stats(flag_value)
+
+        LOGGER.info("Feature toggle status for feature %s: %s", self.name, flag_value)
 
         return flag_value

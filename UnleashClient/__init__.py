@@ -42,7 +42,7 @@ class UnleashClient():
         self.unleash_custom_headers = custom_headers
 
         # Class objects
-        self.cache = FileCache("Unleash")
+        self.cache = FileCache(self.unleash_instance_id)
         self.features: dict = {}
         self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
@@ -129,8 +129,10 @@ class UnleashClient():
             try:
                 return self.features[feature_name].is_enabled(context, default_value)
             except Exception as excep:
+                LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
                 return default_value
         else:
+            LOGGER.warning("Returning default value for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
             return default_value

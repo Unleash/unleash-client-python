@@ -11,4 +11,9 @@ class UserWithId(Strategy):
 
         :return:
         """
-        return context["userId"] in self.parsed_provisioning
+        return_value = False
+
+        if "userId" in context.keys():
+            return_value = context["userId"] in self.parsed_provisioning
+
+        return return_value
