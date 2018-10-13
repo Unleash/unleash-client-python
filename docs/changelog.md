@@ -1,3 +1,13 @@
+## v0.3.0
+
+**General**
+* Implemented [client specification](https://github.com/Unleash/client-specification) tests.
+* Cache changed to use Instance ID as key.
+
+**Bugfixes**
+* (Major) Fixed interposed arguments in normalized_hash() (aka MurmerHash3 wrapper).  Python client will now do the same thing as the other clients!
+* (Major) Fixed issues with logic in random strategies.
+
 ## v0.2.0
 
 **General**
