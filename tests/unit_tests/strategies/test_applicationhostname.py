@@ -10,3 +10,8 @@ def strategy():
 
 def test_applicationhostname(strategy):
     assert strategy()
+
+
+def test_applicationhostname_nomatch():
+    nomatch_strategy = ApplicationHostname(parameters={"hostNames": "garbage,garbage2"})
+    assert not nomatch_strategy()

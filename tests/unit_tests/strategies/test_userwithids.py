@@ -12,3 +12,7 @@ def strategy():
 
 def test_userwithid(strategy):
     assert strategy(context=CONTEXT)
+
+
+def test_userwithid_missing_parameter(strategy):
+    assert not strategy(context={})
