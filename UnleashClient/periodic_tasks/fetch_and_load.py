@@ -10,7 +10,8 @@ def fetch_and_load_features(url: str,
                             instance_id: str,
                             custom_headers: dict,
                             cache: FileCache,
-                            strategies: dict) -> None:
+                            features: dict,
+                            strategy_mapping: dict) -> None:
     feature_provisioning = get_feature_toggles(url, app_name, instance_id, custom_headers)
 
     if feature_provisioning:
@@ -19,4 +20,4 @@ def fetch_and_load_features(url: str,
     else:
         LOGGER.info("Unable to get feature flag toggles, using cached values.")
 
-    load_features(cache, strategies)
+    load_features(cache, features, strategy_mapping)

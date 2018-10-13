@@ -5,6 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
+from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
+    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
 from .utils import LOGGER
 
 
@@ -20,7 +22,8 @@ class UnleashClient():
                  refresh_interval: int = 15,
                  metrics_interval: int = 60,
                  disable_metrics: bool = False,
-                 custom_headers: dict = {}) -> None:
+                 custom_headers: dict = {},
+                 custom_strategies: dict = {}) -> None:
         """
         A client for the Unleash feature toggle system.
 
@@ -31,6 +34,7 @@ class UnleashClient():
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
         :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
+        :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
         """
         # Configuration
         self.unleash_url = url.rstrip('\\')
@@ -49,6 +53,19 @@ class UnleashClient():
         self.metric_job: Job = None
         self.metrics_last_sent_time = datetime.now()
 
+        # Mappings
+        default_strategy_mapping = {
+            "applicationHostname": ApplicationHostname,
+            "default": Default,
+            "gradualRolloutRandom": GradualRolloutRandom,
+            "gradualRolloutSessionId": GradualRolloutSessionId,
+            "gradualRolloutUserId": GradualRolloutUserId,
+            "remoteAddress": RemoteAddress,
+            "userWithId": UserWithId
+        }
+
+        self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
+
         # Client status
         self.is_initialized = False
 
@@ -64,35 +81,40 @@ class UnleashClient():
         :return:
         """
         # Setup
-        fl_args = [self.unleash_url,
-                   self.unleash_app_name,
-                   self.unleash_instance_id,
-                   self.unleash_custom_headers,
-                   self.cache,
-                   self.features]
+        fl_args = {
+            "url": self.unleash_url,
+            "app_name": self.unleash_app_name,
+            "instance_id": self.unleash_instance_id,
+            "custom_headers": self.unleash_custom_headers,
+            "cache": self.cache,
+            "features": self.features,
+            "strategy_mapping": self.strategy_mapping
+        }
 
-        metrics_args = [self.unleash_url,
-                        self.unleash_app_name,
-                        self.unleash_instance_id,
-                        self.unleash_custom_headers,
-                        self.features,
-                        self.metrics_last_sent_time]
+        metrics_args = {
+            "url": self.unleash_url,
+            "app_name": self.unleash_app_name,
+            "instance_id": self.unleash_instance_id,
+            "custom_headers": self.unleash_custom_headers,
+            "features": self.features,
+            "last_sent": self.metrics_last_sent_time
+        }
 
         # Register app
         register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
-                        self.unleash_metrics_interval, self.unleash_custom_headers)
+                        self.unleash_metrics_interval, self.unleash_custom_headers, self.strategy_mapping)
 
-        fetch_and_load_features(*fl_args)
+        fetch_and_load_features(**fl_args)
 
         # Start periodic jobs
         self.scheduler.start()
         self.fl_job = self.scheduler.add_job(fetch_and_load_features,
                                              trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval)),
-                                             args=fl_args)
+                                             kwargs=fl_args)
 
         self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
                                                  trigger=IntervalTrigger(seconds=int(self.unleash_metrics_interval)),
-                                                 args=metrics_args)
+                                                 kwargs=metrics_args)
 
         self.is_initialized = True
 

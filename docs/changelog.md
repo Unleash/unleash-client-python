@@ -1,3 +1,7 @@
+## v1.0.0
+**General**
+* Implemented custom strategies. 
+
 ## v0.3.0
 
 **General**

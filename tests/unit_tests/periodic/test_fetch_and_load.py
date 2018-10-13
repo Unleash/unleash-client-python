@@ -3,7 +3,7 @@ from UnleashClient.constants import FEATURES_URL
 from UnleashClient.periodic_tasks import fetch_and_load_features
 from UnleashClient.features import Feature
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, DEFAULT_STRATEGY_MAPPING
 from tests.utilities.decorators import cache_empty  # noqa: F401
 
 
@@ -22,7 +22,8 @@ def test_fetch_and_load(cache_empty):
                             INSTANCE_ID,
                             CUSTOM_HEADERS,
                             temp_cache,
-                            in_memory_features)
+                            in_memory_features,
+                            DEFAULT_STRATEGY_MAPPING)
 
     assert isinstance(in_memory_features["testFlag"], Feature)
 
@@ -39,7 +40,8 @@ def test_fetch_and_load_failure(cache_empty):
                             INSTANCE_ID,
                             CUSTOM_HEADERS,
                             temp_cache,
-                            in_memory_features)
+                            in_memory_features,
+                            DEFAULT_STRATEGY_MAPPING)
 
     # Fail next request
     responses.reset()
@@ -50,6 +52,7 @@ def test_fetch_and_load_failure(cache_empty):
                             INSTANCE_ID,
                             CUSTOM_HEADERS,
                             temp_cache,
-                            in_memory_features)
+                            in_memory_features,
+                            DEFAULT_STRATEGY_MAPPING)
 
     assert isinstance(in_memory_features["testFlag"], Feature)

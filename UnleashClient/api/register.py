@@ -1,7 +1,7 @@
 import json
 import datetime
 import requests
-from UnleashClient.constants import DEFAULT_STRATEGIES, SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
+from UnleashClient.constants import SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
 from UnleashClient.utils import LOGGER
 
 
@@ -10,7 +10,8 @@ def register_client(url: str,
                     app_name: str,
                     instance_id: str,
                     metrics_interval: int,
-                    custom_headers: dict) -> bool:
+                    custom_headers: dict,
+                    supported_strategies: dict) -> bool:
     """
     Attempts to register client with unleash server.
 
@@ -23,13 +24,14 @@ def register_client(url: str,
     :param instance_id:
     :param metrics_interval:
     :param custom_headers:
+    :param supported_strategies:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
     registation_request = {
         "appName": app_name,
         "instanceId": instance_id,
         "sdkVersion": "{}:{}".format(SDK_NAME, SDK_VERSION),
-        "strategies": DEFAULT_STRATEGIES,
+        "strategies": [*supported_strategies],
         "started": datetime.datetime.now().isoformat(),
         "interval": metrics_interval
     }

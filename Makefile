@@ -7,6 +7,8 @@ ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 build: clean generate-requirements build-package upload
 
+build-local: clean generate-requirements build-package
+
 #-----------------------------------------------------------------------
 # Rules
 #-----------------------------------------------------------------------

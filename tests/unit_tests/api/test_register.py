@@ -1,8 +1,8 @@
 import responses
 from requests import ConnectionError
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, METRICS_INTERVAL, CUSTOM_HEADERS
 from UnleashClient.constants import REGISTER_URL
 from UnleashClient.api import register_client
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, METRICS_INTERVAL, CUSTOM_HEADERS, DEFAULT_STRATEGY_MAPPING
 
 
 FULL_REGISTER_URL = URL + REGISTER_URL
@@ -16,7 +16,8 @@ def test_register_client_success():
                              APP_NAME,
                              INSTANCE_ID,
                              METRICS_INTERVAL,
-                             CUSTOM_HEADERS)
+                             CUSTOM_HEADERS,
+                             DEFAULT_STRATEGY_MAPPING)
 
     assert len(responses.calls) == 1
     assert result
@@ -30,7 +31,8 @@ def test_register_client_failure():
                              APP_NAME,
                              INSTANCE_ID,
                              METRICS_INTERVAL,
-                             CUSTOM_HEADERS)
+                             CUSTOM_HEADERS,
+                             DEFAULT_STRATEGY_MAPPING)
 
     assert len(responses.calls) == 1
     assert not result
@@ -44,7 +46,8 @@ def test_register_client_exception():
                              APP_NAME,
                              INSTANCE_ID,
                              METRICS_INTERVAL,
-                             CUSTOM_HEADERS)
+                             CUSTOM_HEADERS,
+                             DEFAULT_STRATEGY_MAPPING)
 
     assert len(responses.calls) == 1
     assert not result
