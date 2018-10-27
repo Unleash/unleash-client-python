@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>UnleashClient - unleash-client-python</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "UnleashClient";
+    var mkdocs_page_input_path = "unleashclient.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> unleash-client-python</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">UnleashClient</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#unleashclient">UnleashClient</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#__init__">__init__()</a></li>
+        
+            <li><a class="toctree-l3" href="#initialize_client">initialize_client()</a></li>
+        
+            <li><a class="toctree-l3" href="#destroy">destroy()</a></li>
+        
+            <li><a class="toctree-l3" href="#is_enabled">is_enabled()</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../strategy/">Strategy</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../customstrategies/">Custom Strategies</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../changelog/">Changelog</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../development/">Development</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../resources/">Resources</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">unleash-client-python</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>UnleashClient</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="unleashclient">UnleashClient</h2>
+<h3 id="__init__"><code>__init__()</code></h3>
+<p>A client for the Unleash feature toggle system.</p>
+<p><code>UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, custom_headers)</code></p>
+<p><strong>Arguments</strong></p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th>Required?</th>
+<th>Type</th>
+<th>Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>Unleash server URL</td>
+<td>Y</td>
+<td>String</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>app_name</td>
+<td>Name of your program</td>
+<td>Y</td>
+<td>String</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>instance_id</td>
+<td>Unique ID for your program</td>
+<td>N</td>
+<td>String</td>
+<td>unleash-client-python</td>
+</tr>
+<tr>
+<td>refresh_interval</td>
+<td>How often the unleash client should check for configuration changes.</td>
+<td>N</td>
+<td>Integer</td>
+<td>15</td>
+</tr>
+<tr>
+<td>metrics_interval</td>
+<td>How often the unleash client should send metrics to server.</td>
+<td>N</td>
+<td>Integer</td>
+<td>60</td>
+</tr>
+<tr>
+<td>disable_metrics</td>
+<td>Disables sending metrics to Unleash server.</td>
+<td>N</td>
+<td>Boolean</td>
+<td>F</td>
+</tr>
+<tr>
+<td>custom_headers</td>
+<td>Custom headers to send to Unleash.</td>
+<td>N</td>
+<td>Dictionary</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>custom_strategies</td>
+<td>Custom strategies you'd like UnleashClient to support.</td>
+<td>N</td>
+<td>Dictionary</td>
+<td>{}</td>
+</tr>
+</tbody>
+</table>
+<h3 id="initialize_client"><code>initialize_client()</code></h3>
+<p>Initializes client and starts communication with central unleash server(s).</p>
+<p>This kicks off:
+<em> Client registration
+</em> Provisioning poll
+* Stats poll</p>
+<h3 id="destroy"><code>destroy()</code></h3>
+<p>Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.</p>
+<p>You shouldn't need this too much!</p>
+<h3 id="is_enabled"><code>is_enabled()</code></h3>
+<p>Checks if a feature toggle is enabled.</p>
+<p>Notes:
+* If client hasn't been initialized yet or an error occurs, flat will default to false.</p>
+<p><code>UnleashClient.is_enabled(feature_name, context, default_value)</code></p>
+<p><strong>Arguments</strong></p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th>Required?</th>
+<th>Type</th>
+<th>Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>feature_name</td>
+<td>Name of feature</td>
+<td>Y</td>
+<td>String</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>context</td>
+<td>Custom information for strategies</td>
+<td>N</td>
+<td>Dictionary</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>default_value</td>
+<td>Default value of feature.</td>
+<td>N</td>
+<td>Boolean</td>
+<td>F</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../strategy/" class="btn btn-neutral float-right" title="Strategy">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../strategy/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
