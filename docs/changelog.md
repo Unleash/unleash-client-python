@@ -3,6 +3,9 @@
 General
 * unleash-client-python has moved under the general Unleash project!
 
+**Bugfixes**
+* (Minor) Updated requests version to address security issue in dependency.
+
 ## v1.0.0
 **General**
 * Implemented custom strategies. 
