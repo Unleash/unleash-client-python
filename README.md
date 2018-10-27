@@ -13,7 +13,7 @@ What it supports:
     * Client periodically fetches feature toggles and stores to on-disk cache
     * Client periodically sends metrics to Unleash Server
 
-Check out the project documentation [here](https://ivanklee86.github.io/unleash-client-python/).
+Check out the project documentation [here](https://unleash.github.io/unleash-client-python/).
 
 ## Installation
 
