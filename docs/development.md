@@ -4,19 +4,17 @@ Here's just some random notes on the development process.
 
 ## Setup
 1. `pip install pipenv`
-1. `pipenv install --dev`
+2. `pipenv --python 3.7`
+3. `pipenv install --dev`
 
 
 ## Testing
-1. Run tests: `pipenv run test`
-1. Run pylint: `pylint UnleashClient`
-1. Run mypy: `mypy UnleashCLient`
-
-It's good to run static analysis locally, otherwise CI build will fail!
+1. Activate your pipenv:  `pipenv shell`
+1. Run linting & tests: `make test`
 
 ## Release
 Land all your PRs. :)
 1. Update changelog.md
-1. `mkdocs gh-deploy`
-1. `bumpversion [major/minor/patch]`
-1. `make build`
+2. `mkdocs gh-deploy`
+3. `bumpversion [major/minor/patch]`
+4. `make build`

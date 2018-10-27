@@ -1,9 +1,9 @@
 # unleash-client-python
 
-[![CircleCI](https://circleci.com/gh/ivanklee86/unleash-client-python.svg?style=svg)](https://circleci.com/gh/ivanklee86/unleash-client-python) [![Coverage Status](https://coveralls.io/repos/github/ivanklee86/unleash-client-python/badge.svg?branch=il%2FI-8_releaseprep)](https://coveralls.io/github/ivanklee86/unleash-client-python?branch=il%2FI-8_releaseprep) [![Maintainability](https://api.codeclimate.com/v1/badges/68f61648a29051aa6c36/maintainability)](https://codeclimate.com/github/ivanklee86/unleash-client-python/maintainability) [![PyPI version](https://badge.fury.io/py/UnleashClient.svg)](https://badge.fury.io/py/UnleashClient) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CircleCI](https://circleci.com/gh/Unleash/unleash-client-python.svg?style=svg)](https://circleci.com/gh/Unleash/unleash-client-python) [![Coverage Status](https://coveralls.io/repos/github/Unleash/unleash-client-python/badge.svg?branch=master)](https://coveralls.io/github/Unleash/unleash-client-python?branch=master) [![PyPI version](https://badge.fury.io/py/UnleashClient.svg)](https://badge.fury.io/py/UnleashClient) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-This is a Python client for [Unleash](https://github.com/unleash/unleash).  It implements [Client Specifications 1.0](https://github.com/Unleash/unleash/blob/master/docs/client-specification.md) and checks compliance based on spec in [unleash/client-specifications](https://github.com/Unleash/client-specification)
+This is the Python client for [Unleash](https://github.com/unleash/unleash).  It implements [Client Specifications 1.0](https://github.com/Unleash/unleash/blob/master/docs/client-specification.md) and checks compliance based on spec in [unleash/client-specifications](https://github.com/Unleash/client-specification)
 
 What it supports:
 * Default activation strategies using 32-bit [Murmerhash3](https://en.wikipedia.org/wiki/MurmurHash)
@@ -13,7 +13,7 @@ What it supports:
     * Client periodically fetches feature toggles and stores to on-disk cache
     * Client periodically sends metrics to Unleash Server
 
-Check out the project documentation [here](https://ivanklee86.github.io/unleash-client-python/).
+Check out the project documentation [here](https://unleash.github.io/unleash-client-python/).
 
 ## Installation
 

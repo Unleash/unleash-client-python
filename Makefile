@@ -1,13 +1,29 @@
 SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+PROJECT_NAME = UnleashClient
 
 #-----------------------------------------------------------------------
 # Rules of Rules : Grouped rules that _doathing_
 #-----------------------------------------------------------------------
+test: lint pytest
 
-build: clean generate-requirements build-package upload
+precommit: clean generate-requirements
 
-build-local: clean generate-requirements build-package
+build: clean build-package upload
+
+build-local: clean build-package
+
+#-----------------------------------------------------------------------
+# Testing & Linting
+#-----------------------------------------------------------------------
+lint:
+	pylint ${PROJECT_NAME} && \
+	mypy ${PROJECT_NAME};
+
+pytest:
+	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
+	py.test --cov ${PROJECT_NAME} tests/unit_tests
+
 
 #-----------------------------------------------------------------------
 # Rules

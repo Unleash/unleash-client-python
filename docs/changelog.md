@@ -1,3 +1,8 @@
+## v1.0.2
+
+General
+* unleash-client-python has moved under the general Unleash project!
+
 ## v1.0.0
 **General**
 * Implemented custom strategies. 
