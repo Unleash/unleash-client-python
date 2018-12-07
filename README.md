@@ -29,7 +29,7 @@ pip install UnleashClient
 
 ```
 from UnleashClient import UnleashClient
-client = UnleashClient("https://unleash.herokuapp.com", "My Program")
+client = UnleashClient("https://unleash.herokuapp.com/api", "My Program")
 client.initialize_client()
 ```
 
@@ -43,7 +43,7 @@ Argument | Description | Required? |  Type |  Default Value|
 ---------|-------------|-----------|-------|---------------|
 url      | Unleash server URL | Y | String | N/A |
 app_name | Name of your program | Y | String | N/A |
-instance_id | Unique ID for your program | N | String | unleash-client-python | 
+instance_id | Unique ID for your program | N | String | unleash-client-python |
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
