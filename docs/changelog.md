@@ -1,3 +1,8 @@
+## v2.0.0
+
+**Bugfixes**
+* (Major) Removed hard-coded `/api/` in Unleash server URLs. Before upgrading, please adjust your server URL accordingly (i.e. changing http://unleash.heroku.com to http://unleash.heroku.com/api).
+
 ## v1.0.2
 
 General
