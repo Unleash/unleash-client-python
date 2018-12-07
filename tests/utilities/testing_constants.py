@@ -10,8 +10,8 @@ DISABLE_METRICS = True
 CUSTOM_HEADERS = {"name": "My random header."}
 
 # URLs
-URL = "http://localhost:4242"
-INTEGRATION_URL = "http://localhost:4242"
+URL = "http://localhost:4242/api"
+INTEGRATION_URL = "http://localhost:4242/api"
 
 # Constants
 IP_LIST = "69.208.0.0/29,70.208.1.1,2001:db8:1234::/48,2002:db8:1234:0000:0000:0000:0000:0001"

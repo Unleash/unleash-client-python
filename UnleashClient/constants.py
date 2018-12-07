@@ -7,6 +7,6 @@ REQUEST_TIMEOUT = 30
 APPLICATION_HEADERS = {"Content-Type": "application/json"}
 
 # Paths
-REGISTER_URL = "/api/client/register"
-FEATURES_URL = "/api/client/features"
-METRICS_URL = "/api/client/metrics"
+REGISTER_URL = "/client/register"
+FEATURES_URL = "/client/features"
+METRICS_URL = "/client/metrics"
