@@ -8,6 +8,7 @@ from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
 from .utils import LOGGER
+from UnleashClient.constants import METRIC_LAST_SENT_TIME
 
 
 # pylint: disable=dangerous-default-value
@@ -51,7 +52,7 @@ class UnleashClient():
         self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
         self.metric_job: Job = None
-        self.metrics_last_sent_time = datetime.now()
+        self.cache[METRIC_LAST_SENT_TIME] =  datetime.now()
 
         # Mappings
         default_strategy_mapping = {
@@ -97,7 +98,7 @@ class UnleashClient():
             "instance_id": self.unleash_instance_id,
             "custom_headers": self.unleash_custom_headers,
             "features": self.features,
-            "last_sent": self.metrics_last_sent_time
+            "cache": self.cache
         }
 
         # Register app

@@ -1,7 +1,8 @@
-# Library
+ # Library
 SDK_NAME = "unleash-client-python"
 SDK_VERSION = "2.0.0"
 REQUEST_TIMEOUT = 30
+METRIC_LAST_SENT_TIME = "mlst"
 
 # =Unleash=
 APPLICATION_HEADERS = {"Content-Type": "application/json"}

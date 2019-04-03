@@ -1,6 +1,8 @@
 from collections import ChainMap
 from datetime import datetime
+from fcache import cache
 from UnleashClient.api import send_metrics
+from UnleashClient.constants import METRIC_LAST_SENT_TIME
 
 
 def aggregate_and_send_metrics(url: str,
@@ -8,7 +10,7 @@ def aggregate_and_send_metrics(url: str,
                                instance_id: str,
                                custom_headers: dict,
                                features: dict,
-                               last_sent: datetime
+                               cache: cache
                                ) -> None:
     feature_stats_list = []
 
@@ -27,11 +29,11 @@ def aggregate_and_send_metrics(url: str,
         "appName": app_name,
         "instanceId": instance_id,
         "bucket": {
-            "start": last_sent.isoformat(),
+            "start": cache[METRIC_LAST_SENT_TIME].isoformat(),
             "stop": datetime.now().isoformat(),
             "toggles": dict(ChainMap(*feature_stats_list))
         }
     }
 
     send_metrics(url, metrics_request, custom_headers)
-    last_sent = datetime.now()
+    cache[METRIC_LAST_SENT_TIME] = datetime.now()
