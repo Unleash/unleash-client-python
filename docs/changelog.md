@@ -1,3 +1,8 @@
+## Next
+
+**Bugfixes**
+* (Major) Fix issue where `bucket.start` value sent to Unleash was never updated.
+
 ## v2.0.0
 
 **Bugfixes**
