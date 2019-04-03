@@ -37,3 +37,4 @@ def aggregate_and_send_metrics(url: str,
 
     send_metrics(url, metrics_request, custom_headers)
     ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now()
+    ondisk_cache.sync()
