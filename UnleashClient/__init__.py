@@ -53,6 +53,7 @@ class UnleashClient():
         self.fl_job: Job = None
         self.metric_job: Job = None
         self.cache[METRIC_LAST_SENT_TIME] = datetime.now()
+        self.cache.sync()
 
         # Mappings
         default_strategy_mapping = {
