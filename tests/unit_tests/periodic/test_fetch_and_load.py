@@ -10,8 +10,8 @@ from tests.utilities.decorators import cache_empty  # noqa: F401
 FULL_FEATURE_URL = URL + FEATURES_URL
 
 
-@responses.activate  # noqa: F811
-def test_fetch_and_load(cache_empty):
+@responses.activate
+def test_fetch_and_load(cache_empty):  # noqa: F811
     # Set up for tests
     in_memory_features = {}
     responses.add(responses.GET, FULL_FEATURE_URL, json=MOCK_FEATURE_RESPONSE, status=200)
@@ -28,8 +28,8 @@ def test_fetch_and_load(cache_empty):
     assert isinstance(in_memory_features["testFlag"], Feature)
 
 
-@responses.activate  # noqa: F811
-def test_fetch_and_load_failure(cache_empty):
+@responses.activate
+def test_fetch_and_load_failure(cache_empty):  # noqa: F811
     # Set up for tests
     in_memory_features = {}
     responses.add(responses.GET, FULL_FEATURE_URL, json=MOCK_FEATURE_RESPONSE, status=200)
