@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Dict
+
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
