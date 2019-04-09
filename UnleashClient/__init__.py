@@ -25,7 +25,8 @@ class UnleashClient():
                  metrics_interval: int = 60,
                  disable_metrics: bool = False,
                  custom_headers: dict = {},
-                 custom_strategies: dict = {}) -> None:
+                 custom_strategies: dict = {},
+                 cache_directory: str = None) -> None:
         """
         A client for the Unleash feature toggle system.
 
@@ -37,6 +38,7 @@ class UnleashClient():
         :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
         :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
+        :param cache_directory: Location of the cache directory. When unset, FCache will determine the location
         """
         # Configuration
         self.unleash_url = url.rstrip('\\')
@@ -48,7 +50,7 @@ class UnleashClient():
         self.unleash_custom_headers = custom_headers
 
         # Class objects
-        self.cache = FileCache(self.unleash_instance_id)
+        self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
         self.features = {}  # type: Dict
         self.scheduler = BackgroundScheduler()
         self.fl_job = None  # type: Job
