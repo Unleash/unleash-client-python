@@ -73,6 +73,12 @@
     <a class="current" href="./">Changelog</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#v201">v2.0.1</a></li>
+    
+
+    <li class="toctree-l2"><a href="#v200">v2.0.0</a></li>
+    
+
     <li class="toctree-l2"><a href="#v102">v1.0.2</a></li>
     
 
@@ -136,9 +142,17 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="v102">v1.0.2</h2>
+                <h2 id="v201">v2.0.1</h2>
+<p><strong>Bugfixes</strong>
+* (Major) Fix issue where <code>bucket.start</code> value sent to Unleash was never updated.</p>
+<h2 id="v200">v2.0.0</h2>
+<p><strong>Bugfixes</strong>
+* (Major) Removed hard-coded <code>/api/</code> in Unleash server URLs. Before upgrading, please adjust your server URL accordingly (i.e. changing http://unleash.heroku.com to http://unleash.heroku.com/api).</p>
+<h2 id="v102">v1.0.2</h2>
 <p>General
 * unleash-client-python has moved under the general Unleash project!</p>
+<p><strong>Bugfixes</strong>
+* (Minor) Updated requests version to address security issue in dependency.</p>
 <h2 id="v100">v1.0.0</h2>
 <p><strong>General</strong>
 * Implemented custom strategies. </p>
