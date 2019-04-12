@@ -14,6 +14,18 @@ build: clean build-package upload
 build-local: clean build-package
 
 #-----------------------------------------------------------------------
+# Install
+#-----------------------------------------------------------------------
+
+install:
+	pip install -r requirements.txt
+
+update:
+	pip install -U -r requirements-dev.txt && \
+	pip install -U -r requirements-package.txt && \
+	pip freeze > requirements.txt;
+
+#-----------------------------------------------------------------------
 # Testing & Linting
 #-----------------------------------------------------------------------
 lint:
@@ -31,10 +43,6 @@ pytest:
 clean:
 	rm -rf build; \
 	rm -rf dist;
-
-generate-requirements:
-	pipenv lock -r > requirements.txt; \
-	pipenv lock -r --dev > requirements-dev.txt;
 
 build-package:
 	python setup.py sdist bdist_wheel
