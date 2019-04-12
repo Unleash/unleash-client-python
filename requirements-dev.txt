@@ -1,5 +1,9 @@
+coveralls
+bumpversion
 mimesis
+mkdocs
 mypy
+pur
 pylint
 pytest
 #pytest-benchmark
@@ -10,9 +14,6 @@ pytest-runner
 pytest-rerunfailures 
 pytest-xdist
 responses
-coveralls
-bumpversion
 tox
 tox-conda
 twine
-mkdocs

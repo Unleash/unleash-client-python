@@ -17,13 +17,9 @@ build-local: clean build-package
 # Install
 #-----------------------------------------------------------------------
 
-install:
-	pip install -r requirements.txt
-
-update:
+install-clean:
 	pip install -U -r requirements-dev.txt && \
-	pip install -U -r requirements-package.txt && \
-	pip freeze > requirements.txt;
+	pip install -U -r requirements-package.txt
 
 #-----------------------------------------------------------------------
 # Testing & Linting

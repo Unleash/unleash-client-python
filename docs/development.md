@@ -1,16 +1,26 @@
 Contributions welcome!  
 
-Here's just some random notes on the development process. 
+Here are some notes about common tools and tasks you'll run into when working on `unleash-client-python`.
+
+## Tools
+* [miniconda](https://docs.conda.io/en/latest/miniconda.html) - Used for local tox-ing to minimize friction when developing on a Mac. =)
 
 ## Setup
-1. `pip install pipenv`
-2. `pipenv --python 3.7`
-3. `pipenv install --dev`
-
+1. Create a new conda environment (`conda create -n ucp python=3.7`) or a venv.
+2. Install packages: `pip install requirements.txt`.
+3. If using Pycharm, add [conda env](https://medium.com/infinity-aka-aseem/how-to-setup-pycharm-with-an-anaconda-virtual-environment-already-created-fb927bacbe61) as your project interpreter.
 
 ## Testing
-1. Activate your pipenv:  `pipenv shell`
+1. Activate your virtualenv solution (e.g. `source activate ucp`).
 1. Run linting & tests: `make test`
+1. Run tox tests `make tox-osx`
+
+## Dependency management
+* Adding
+    * Add version-less package to `requirement-*.txt`file (in case we ever just wanna install everything) and versioned package to `requirements.txt`.
+* Updating
+    * Use [pur](https://github.com/alanhamlett/pip-update-requirements) to update requirements.txt.
+    * If updating package requirements, update the `setup.py` file.
 
 ## Release
 Land all your PRs. :)
