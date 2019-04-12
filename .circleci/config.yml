@@ -7,13 +7,13 @@ jobs:
             - checkout
             - run:
                 name: Install dependencies.
-                command: pip install -r requirements.txt
+                command: pip install --user -r requirements.txt
             - run:
                 name: Lint code.
-                command: pipenv run pylint UnleashClient -f parseable >> pylint.log
+                command: pylint UnleashClient -f parseable >> pylint.log
             - run:
                 name: Run mypy
-                command: pipenv run mypy UnleashClient >> mypy.log
+                command: mypy UnleashClient >> mypy.log
             - run:
                 name: Run unit tests.
                 command: py.test --junitxml=pytest/results.xml --cov=UnleashClient tests/unit_tests
