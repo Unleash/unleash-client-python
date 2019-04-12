@@ -1,4 +1,4 @@
-mimesis
+mimesis==2.0.1
 mypy
 pylint
 pytest
