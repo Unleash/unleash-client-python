@@ -22,6 +22,12 @@ Here are some notes about common tools and tasks you'll run into when working on
     * Use [pur](https://github.com/alanhamlett/pip-update-requirements) to update requirements.txt.
     * If updating package requirements, update the `setup.py` file.
 
+## mmh3 on OSX
+If having trouble installing mmh3 on OSX, try:
+```shell
+CFLAGS="-mmacosx-version-min=10.13" pip install mmh3
+```
+
 ## Release
 Land all your PRs. :)
 1. Update changelog.md
