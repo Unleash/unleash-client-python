@@ -13,7 +13,7 @@ def _create_strategies(provisioning: dict,
             if "parameters" in strategy.keys():
                 feature_strategies.append(strategy_mapping[strategy["name"]](strategy["parameters"]))
             else:
-                feature_strategies.append(strategy_mapping[strategy["name"]])  # type: ignore
+                feature_strategies.append(strategy_mapping[strategy["name"]]())  # type: ignore
         except Exception as excep:
             LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
                            excep)

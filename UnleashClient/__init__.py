@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -48,10 +49,10 @@ class UnleashClient():
 
         # Class objects
         self.cache = FileCache(self.unleash_instance_id)
-        self.features: dict = {}
+        self.features = {}  # type: Dict
         self.scheduler = BackgroundScheduler()
-        self.fl_job: Job = None
-        self.metric_job: Job = None
+        self.fl_job = None  # type: Job
+        self.metric_job = None  # type: Job
         self.cache[METRIC_LAST_SENT_TIME] = datetime.now()
         self.cache.sync()
 

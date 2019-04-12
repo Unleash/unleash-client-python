@@ -1,4 +1,3 @@
-import json
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
 from UnleashClient.utils import LOGGER
@@ -38,7 +37,7 @@ def get_feature_toggles(url: str,
             LOGGER.warning("unleash feature fetch failed!")
             raise Exception("unleash feature fetch failed!")
 
-        return json.loads(resp.content)
+        return resp.json()
     except Exception:
         LOGGER.exception("Unleash feature fetch failed!")
 
