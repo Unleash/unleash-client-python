@@ -1,4 +1,4 @@
-mimesis==2.0.1
+mimesis
 mypy
 pylint
 pytest
@@ -13,5 +13,6 @@ responses
 coveralls
 bumpversion
 tox
+tox-conda
 twine
 mkdocs
