@@ -1,46 +1,46 @@
 version: 2
 jobs:
-  test:
-    docker:
-      - image: circleci/python:3.7.0
-    steps:
-      - checkout
-      - run:
-          name: Set up pipenv.
-          command: pip install pipenv
-      - run:
-          name: Install dependencies.
-          command: pipenv install --dev
-      - run:
-          name: Run tests.
-          command: pipenv run py.test --junitxml=pytest/results.xml --cov=UnleashClient tests/unit_tests
-      - run:
-          name: Lint code.
-          command: pipenv run pylint UnleashClient -f parseable >> pylint.log
-      - run:
-          name: Run mypy
-          command: pipenv run mypy UnleashClient >> mypy.log
-      - store_test_results:
-          path: pytest
-      - store_artifacts:
-          path: pylint.log
-      - store_artifacts:
-          path: mypy.log
-      - run:
-          name: Send code coverage to Coveralls
-          command: pipenv run coveralls
+    test:
+        docker:
+            - image: circleci/python:3.7.0
+        steps:
+            - checkout
+            - run:
+                name: Set up pipenv.
+                command: pip install pipenv
+            - run:
+                name: Install dependencies.
+                command: pipenv install --dev
+            - run:
+                name: Run tests.
+                command: pipenv run py.test --junitxml=pytest/results.xml --cov=UnleashClient tests/unit_tests
+            - run:
+                name: Lint code.
+                command: pipenv run pylint UnleashClient -f parseable >> pylint.log
+            - run:
+                name: Run mypy
+                command: pipenv run mypy UnleashClient >> mypy.log
+            - store_test_results:
+                path: pytest
+            - store_artifacts:
+                path: pylint.log
+            - store_artifacts:
+                path: mypy.log
+            - run:
+                name: Send code coverage to Coveralls
+                command: pipenv run coveralls
     toxify:
         docker:
-          - image: themattrix/tox
+             - image: themattrix/tox
         steps:
-        - checkout
-        - run: 
-            name: "Run tox"
-            command: tox
+            - checkout
+            - run: 
+                name: "Run tox"
+                command: tox
 
 workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - test
-      - toxify
+    version: 2
+    build_and_test:
+        jobs:
+            - test
+            - toxify
