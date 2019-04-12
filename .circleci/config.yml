@@ -31,9 +31,12 @@ jobs:
                 command: pipenv run coveralls
     toxify:
         docker:
-             - image: themattrix/tox
+             - image: continuumio/anaconda3
         steps:
             - checkout
+            - run: 
+                name: "Install tox"
+                command: "pip install tox tox-conda"
             - run: 
                 name: "Run tox"
                 command: tox
