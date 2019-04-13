@@ -73,6 +73,9 @@
     <a class="current" href="./">Changelog</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#v210">v2.1.0</a></li>
+    
+
     <li class="toctree-l2"><a href="#v201">v2.0.1</a></li>
     
 
@@ -142,9 +145,12 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="v201">v2.0.1</h2>
+                <h2 id="v210">v2.1.0</h2>
+<p><strong>General</strong>
+* (Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to <a href="https://github.com/baaym">Baaym</a> for 3.5 support!)</p>
+<h2 id="v201">v2.0.1</h2>
 <p><strong>Bugfixes</strong>
-* (Major) Fix issue where <code>bucket.start</code> value sent to Unleash was never updated.</p>
+* (Major) Fix issue where <code>bucket.start</code> value sent to Unleash was never updated. Credit to Calle for bug report/proposed solution! =)</p>
 <h2 id="v200">v2.0.0</h2>
 <p><strong>Bugfixes</strong>
 * (Major) Removed hard-coded <code>/api/</code> in Unleash server URLs. Before upgrading, please adjust your server URL accordingly (i.e. changing http://unleash.heroku.com to http://unleash.heroku.com/api).</p>
@@ -158,18 +164,18 @@
 * Implemented custom strategies. </p>
 <h2 id="v030">v0.3.0</h2>
 <p><strong>General</strong>
-<em> Implemented <a href="https://github.com/Unleash/client-specification">client specification</a> tests.
-</em> Cache changed to use Instance ID as key.</p>
+* Implemented <a href="https://github.com/Unleash/client-specification">client specification</a> tests.
+* Cache changed to use Instance ID as key.</p>
 <p><strong>Bugfixes</strong>
-<em> (Major) Fixed interposed arguments in normalized_hash() (aka MurmerHash3 wrapper).  Python client will now do the same thing as the other clients!
-</em> (Major) Fixed issues with logic in random strategies.</p>
+* (Major) Fixed interposed arguments in normalized_hash() (aka MurmerHash3 wrapper).  Python client will now do the same thing as the other clients!
+* (Major) Fixed issues with logic in random strategies.</p>
 <h2 id="v020">v0.2.0</h2>
 <p><strong>General</strong>
 * Changed cache implementation.  Instead of caching {feature toggle name: provisioning} we'll now cache the entire API response (and use it if the fetch fails in any way).</p>
 <h2 id="v011">v0.1.1</h2>
 <p><strong>General</strong>
-<em> Fixed Github link on pypi.
-</em> Removed unused sphinx documentation.
+* Fixed Github link on pypi.
+* Removed unused sphinx documentation.
 * Added documentation using mkdocs</p>
 <h2 id="v010">v0.1.0</h2>
 <p><strong>General</strong>

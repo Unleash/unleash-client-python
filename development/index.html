@@ -78,10 +78,19 @@
     <a class="current" href="./">Development</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#tools">Tools</a></li>
+    
+
     <li class="toctree-l2"><a href="#setup">Setup</a></li>
     
 
     <li class="toctree-l2"><a href="#testing">Testing</a></li>
+    
+
+    <li class="toctree-l2"><a href="#dependency-management">Dependency management</a></li>
+    
+
+    <li class="toctree-l2"><a href="#mmh3-on-osx">mmh3 on OSX</a></li>
     
 
     <li class="toctree-l2"><a href="#release">Release</a></li>
@@ -128,18 +137,40 @@
             <div class="section">
               
                 <p>Contributions welcome!  </p>
-<p>Here's just some random notes on the development process. </p>
+<p>Here are some notes about common tools and tasks you'll run into when working on <code>unleash-client-python</code>.</p>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><a href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a> - Used for local tox-ing to minimize friction when developing on a Mac. =)</li>
+</ul>
 <h2 id="setup">Setup</h2>
 <ol>
-<li><code>pip install pipenv</code></li>
-<li><code>pipenv --python 3.7</code></li>
-<li><code>pipenv install --dev</code></li>
+<li>Create a new conda environment (<code>conda create -n ucp python=3.7</code>) or a venv.</li>
+<li>Install packages: <code>pip install requirements-local.txt</code>.</li>
+<li>If using Pycharm, add <a href="https://medium.com/infinity-aka-aseem/how-to-setup-pycharm-with-an-anaconda-virtual-environment-already-created-fb927bacbe61">conda env</a> as your project interpreter.</li>
 </ol>
 <h2 id="testing">Testing</h2>
 <ol>
-<li>Activate your pipenv:  <code>pipenv shell</code></li>
+<li>Activate your virtualenv solution (e.g. <code>source activate ucp</code>).</li>
 <li>Run linting &amp; tests: <code>make test</code></li>
+<li>Run tox tests <code>make tox-osx</code></li>
 </ol>
+<h2 id="dependency-management">Dependency management</h2>
+<ul>
+<li>Adding<ul>
+<li>Add version-less package to <code>requirement-*.txt</code>file (in case we ever just wanna install everything) and versioned package to <code>requirements.txt</code>.</li>
+</ul>
+</li>
+<li>Updating<ul>
+<li>Use <a href="https://github.com/alanhamlett/pip-update-requirements">pur</a> to update requirements.txt.</li>
+<li>If updating package requirements, update the <code>setup.py</code> file.</li>
+</ul>
+</li>
+</ul>
+<h2 id="mmh3-on-osx">mmh3 on OSX</h2>
+<p>If having trouble installing mmh3 on OSX, try:</p>
+<pre><code class="shell">CFLAGS=&quot;-mmacosx-version-min=10.13&quot; pip install mmh3
+</code></pre>
+
 <h2 id="release">Release</h2>
 <p>Land all your PRs. :)
 1. Update changelog.md
