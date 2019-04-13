@@ -1,7 +1,12 @@
 ## Next
 
+**General**
+* (Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to [Baaym](https://github.com/baaym) for 3.5 support!)
+
+## v2.0.1
+
 **Bugfixes**
-* (Major) Fix issue where `bucket.start` value sent to Unleash was never updated.
+* (Major) Fix issue where `bucket.start` value sent to Unleash was never updated. Credit to Calle for bug report/proposed solution! =)
 
 ## v2.0.0
 
