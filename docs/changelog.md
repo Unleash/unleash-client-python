@@ -1,4 +1,4 @@
-## Next
+## v2.0.1
 
 **General**
 * (Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to [Baaym](https://github.com/baaym) for 3.5 support!)
