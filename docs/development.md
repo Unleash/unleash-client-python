@@ -7,7 +7,7 @@ Here are some notes about common tools and tasks you'll run into when working on
 
 ## Setup
 1. Create a new conda environment (`conda create -n ucp python=3.7`) or a venv.
-2. Install packages: `pip install requirements.txt`.
+2. Install packages: `pip install requirements-local.txt`.
 3. If using Pycharm, add [conda env](https://medium.com/infinity-aka-aseem/how-to-setup-pycharm-with-an-anaconda-virtual-environment-already-created-fb927bacbe61) as your project interpreter.
 
 ## Testing
