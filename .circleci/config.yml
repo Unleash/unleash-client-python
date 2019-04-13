@@ -4,7 +4,10 @@ references:
     install_tox: &install_tox
         run:
             name: "Install tox"
-            command: pip install tox
+            command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install tox
 
 jobs:
     test:
@@ -53,7 +56,33 @@ jobs:
             - *install_tox
             - run:
                 name: "Run tox for Python 3.5"
-                command: tox -e py35
+                command: |
+                    . venv/bin/activate
+                    tox -e py35
+
+    tox-3.6:
+        docker:
+             - image: circleci/python:3.6.8
+        steps:
+            - checkout
+            - *install_tox
+            - run:
+                name: "Run tox for Python 3.6"
+                command: |
+                    . venv/bin/activate
+                    tox -e py36
+
+    tox-3.8:
+        docker:
+             - image: circleci/python:3.8.0a3
+        steps:
+            - checkout
+            - *install_tox
+            - run:
+                name: "Run tox for Python 3.8"
+                command: |
+                    . venv/bin/activate
+                    tox -e py38
 
 workflows:
     version: 2
@@ -61,5 +90,11 @@ workflows:
         jobs:
             - test
             - tox-3.5:
+                requires: 
+                    - test
+            - tox-3.6:
+                requires: 
+                    - test
+            - tox-3.8:
                 requires: 
                     - test
