@@ -10,7 +10,7 @@ mmh3 = "*"
 apscheduler = "*"
 
 [dev-packages]
-mimesis = "*"
+mimesis = "==2.0.1"
 mypy = "*"
 pylint = "*"
 pytest = "*"
@@ -26,9 +26,10 @@ coveralls = "*"
 bumpversion = "*"
 twine = "*"
 mkdocs = "*"
+pathlib2 = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.5"
 
 [scripts]
 test = "pytest --cov UnleashClient tests/unit_tests tests/specification_tests"
