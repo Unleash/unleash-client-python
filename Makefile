@@ -14,6 +14,14 @@ build: clean build-package upload
 build-local: clean build-package
 
 #-----------------------------------------------------------------------
+# Install
+#-----------------------------------------------------------------------
+
+install-clean:
+	pip install -U -r requirements-dev.txt && \
+	pip install -U -r requirements-package.txt
+
+#-----------------------------------------------------------------------
 # Testing & Linting
 #-----------------------------------------------------------------------
 lint:
@@ -24,6 +32,8 @@ pytest:
 	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
 	py.test --cov ${PROJECT_NAME} tests/unit_tests
 
+tox-osx:
+	tox -c tox-osx.ini --parallel auto
 
 #-----------------------------------------------------------------------
 # Rules
@@ -31,10 +41,6 @@ pytest:
 clean:
 	rm -rf build; \
 	rm -rf dist;
-
-generate-requirements:
-	pipenv lock -r > requirements.txt; \
-	pipenv lock -r --dev > requirements-dev.txt;
 
 build-package:
 	python setup.py sdist bdist_wheel

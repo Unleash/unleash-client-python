@@ -7,7 +7,7 @@ APScheduler==3.6.0
 # Development packages
 bumpversion==0.5.3
 coveralls==1.7.0
-mimesis==2.0.1
+mimesis==3.1.0
 mkdocs==1.0.4
 mypy==0.700
 pur==5.2.2
@@ -21,4 +21,5 @@ pytest-runner==4.4
 pytest-xdist==1.28.0
 responses==0.10.6
 tox==3.8.6
+tox-conda==0.2.0
 twine==1.13.0
