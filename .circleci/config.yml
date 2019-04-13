@@ -7,16 +7,26 @@ jobs:
             - checkout
             - run:
                 name: Install dependencies.
-                command: pip install -r requirements.txt
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
             - run:
                 name: Lint code.
-                command: pylint UnleashClient -f parseable >> pylint.log
-            - run:
-                name: Run mypy
-                command: mypy UnleashClient >> mypy.log
+                command: |
+                    . venv/bin/activate
+                    mypy UnleashClient >> mypy.log
+                    pylint UnleashClient -f parseable >> pylint.log
             - run:
                 name: Run unit tests.
-                command: py.test --junitxml=pytest/results.xml --cov=UnleashClient tests/unit_tests
+                command: |
+                    . venv/bin/activate
+                    py.test --html=pytest/results.html --junitxml=pytest/results.xml --self-contained-html --cov=UnleashClient tests/unit_tests
+            - run:
+                name: Run specification tests.
+                command: |
+                    . venv/bin/activate
+                    py.test tests/specification_tests
             - store_test_results:
                 path: pytest
             - store_artifacts:
@@ -25,7 +35,9 @@ jobs:
                 path: mypy.log
             - run:
                 name: Send code coverage to Coveralls
-                command: pipenv run coveralls
+                command: |
+                    . venv/bin/activate
+                    coveralls
     toxify:
         docker:
              - image: themattrix/tox
