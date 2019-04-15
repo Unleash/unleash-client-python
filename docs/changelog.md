@@ -1,3 +1,6 @@
+## v2.2.0
+* Allow configuration of the cache directory.
+
 ## v2.1.0
 
 **General**
