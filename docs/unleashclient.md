@@ -19,6 +19,7 @@ metrics_interval | How often the unleash client should send metrics to server. |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {}
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
+cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset | 
 
 ### `initialize_client()`
 Initializes client and starts communication with central unleash server(s).
