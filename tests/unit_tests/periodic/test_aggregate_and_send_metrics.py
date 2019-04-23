@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import datetime, timezone, timedelta
 import responses
 from fcache.cache import FileCache
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, IP_LIST
@@ -17,7 +17,7 @@ print(FULL_METRICS_URL)
 def test_aggregate_and_send_metrics():
     responses.add(responses.POST, FULL_METRICS_URL, json={}, status=200)
 
-    start_time = datetime.datetime.now() - datetime.timedelta(seconds=60)
+    start_time = datetime.now(timezone.utc) - timedelta(seconds=60)
     cache = FileCache("TestCache")
     cache[METRIC_LAST_SENT_TIME] = start_time
     strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), Default()]

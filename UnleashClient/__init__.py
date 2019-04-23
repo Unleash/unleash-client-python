@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
 from fcache.cache import FileCache
 from apscheduler.job import Job
@@ -55,7 +55,7 @@ class UnleashClient():
         self.scheduler = BackgroundScheduler()
         self.fl_job = None  # type: Job
         self.metric_job = None  # type: Job
-        self.cache[METRIC_LAST_SENT_TIME] = datetime.now()
+        self.cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
         self.cache.sync()
 
         # Mappings
