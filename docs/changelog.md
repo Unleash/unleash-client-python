@@ -1,3 +1,8 @@
+## v2.2.1
+
+**Bugfixes**
+* (Major) Date/time sent to Unleash (in register, metrics, etc) is correctly in UTC w/timestamp format.
+
 ## v2.2.0
 * Allow configuration of the cache directory.
 

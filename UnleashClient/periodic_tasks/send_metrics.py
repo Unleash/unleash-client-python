@@ -1,5 +1,5 @@
 from collections import ChainMap
-from datetime import datetime
+from datetime import datetime, timezone
 import fcache
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
@@ -30,11 +30,11 @@ def aggregate_and_send_metrics(url: str,
         "instanceId": instance_id,
         "bucket": {
             "start": ondisk_cache[METRIC_LAST_SENT_TIME].isoformat(),
-            "stop": datetime.now().isoformat(),
+            "stop": datetime.now(timezone.utc).isoformat(),
             "toggles": dict(ChainMap(*feature_stats_list))
         }
     }
 
     send_metrics(url, metrics_request, custom_headers)
-    ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now()
+    ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
     ondisk_cache.sync()

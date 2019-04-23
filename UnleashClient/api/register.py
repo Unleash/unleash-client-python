@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import datetime, timezone
 import requests
 from UnleashClient.constants import SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
 from UnleashClient.utils import LOGGER
@@ -32,7 +32,7 @@ def register_client(url: str,
         "instanceId": instance_id,
         "sdkVersion": "{}:{}".format(SDK_NAME, SDK_VERSION),
         "strategies": [*supported_strategies],
-        "started": datetime.datetime.now().isoformat(),
+        "started": datetime.now(timezone.utc).isoformat(),
         "interval": metrics_interval
     }
 
