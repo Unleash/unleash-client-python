@@ -73,6 +73,9 @@
     <a class="current" href="./">Changelog</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#v230">v2.3.0</a></li>
+    
+
     <li class="toctree-l2"><a href="#v221">v2.2.1</a></li>
     
 
@@ -151,48 +154,79 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="v221">v2.2.1</h2>
-<p><strong>Bugfixes</strong>
-* (Major) Date/time sent to Unleash (in register, metrics, etc) is correctly in UTC w/timestamp format.</p>
+                <h2 id="v230">v2.3.0</h2>
+<p><strong>General</strong>
+* (Minor) Add option to disable metrics on client initialization.</p>
+<p><strong>Bugfix</strong></p>
+<ul>
+<li>(Minor) Fixed issue where <code>disable_metrics</code> arugment wasn't honored.</li>
+</ul>
+<h2 id="v221">v2.2.1</h2>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>(Major) Date/time sent to Unleash (in register, metrics, etc) is correctly in UTC w/timestamp format.</li>
+</ul>
 <h2 id="v220">v2.2.0</h2>
 <ul>
 <li>Allow configuration of the cache directory.</li>
 </ul>
 <h2 id="v210">v2.1.0</h2>
-<p><strong>General</strong>
-* (Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to <a href="https://github.com/baaym">Baaym</a> for 3.5 support!)</p>
+<p><strong>General</strong></p>
+<ul>
+<li>(Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to <a href="https://github.com/baaym">Baaym</a> for 3.5 support!)</li>
+</ul>
 <h2 id="v201">v2.0.1</h2>
-<p><strong>Bugfixes</strong>
-* (Major) Fix issue where <code>bucket.start</code> value sent to Unleash was never updated. Credit to Calle for bug report/proposed solution! =)</p>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>(Major) Fix issue where <code>bucket.start</code> value sent to Unleash was never updated. Credit to Calle for bug report/proposed solution! =)</li>
+</ul>
 <h2 id="v200">v2.0.0</h2>
-<p><strong>Bugfixes</strong>
-* (Major) Removed hard-coded <code>/api/</code> in Unleash server URLs. Before upgrading, please adjust your server URL accordingly (i.e. changing http://unleash.heroku.com to http://unleash.heroku.com/api).</p>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>(Major) Removed hard-coded <code>/api/</code> in Unleash server URLs. Before upgrading, please adjust your server URL accordingly (i.e. changing http://unleash.heroku.com to http://unleash.heroku.com/api).</li>
+</ul>
 <h2 id="v102">v1.0.2</h2>
-<p>General
-* unleash-client-python has moved under the general Unleash project!</p>
-<p><strong>Bugfixes</strong>
-* (Minor) Updated requests version to address security issue in dependency.</p>
+<p><strong>General</strong></p>
+<ul>
+<li>unleash-client-python has moved under the general Unleash project!</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>(Minor) Updated requests version to address security issue in dependency.</li>
+</ul>
 <h2 id="v100">v1.0.0</h2>
-<p><strong>General</strong>
-* Implemented custom strategies. </p>
+<p><strong>General</strong></p>
+<ul>
+<li>Implemented custom strategies. </li>
+</ul>
 <h2 id="v030">v0.3.0</h2>
-<p><strong>General</strong>
-* Implemented <a href="https://github.com/Unleash/client-specification">client specification</a> tests.
-* Cache changed to use Instance ID as key.</p>
-<p><strong>Bugfixes</strong>
-* (Major) Fixed interposed arguments in normalized_hash() (aka MurmerHash3 wrapper).  Python client will now do the same thing as the other clients!
-* (Major) Fixed issues with logic in random strategies.</p>
+<p><strong>General</strong></p>
+<ul>
+<li>Implemented <a href="https://github.com/Unleash/client-specification">client specification</a> tests.</li>
+<li>Cache changed to use Instance ID as key.</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>(Major) Fixed interposed arguments in normalized_hash() (aka MurmerHash3 wrapper).  Python client will now do the same thing as the other clients!</li>
+<li>(Major) Fixed issues with logic in random strategies.</li>
+</ul>
 <h2 id="v020">v0.2.0</h2>
-<p><strong>General</strong>
-* Changed cache implementation.  Instead of caching {feature toggle name: provisioning} we'll now cache the entire API response (and use it if the fetch fails in any way).</p>
+<p><strong>General</strong></p>
+<ul>
+<li>Changed cache implementation.  Instead of caching {feature toggle name: provisioning} we'll now cache the entire API response (and use it if the fetch fails in any way).</li>
+</ul>
 <h2 id="v011">v0.1.1</h2>
-<p><strong>General</strong>
-* Fixed Github link on pypi.
-* Removed unused sphinx documentation.
-* Added documentation using mkdocs</p>
+<p><strong>General</strong></p>
+<ul>
+<li>Fixed Github link on pypi.</li>
+<li>Removed unused sphinx documentation.</li>
+<li>Added documentation using mkdocs</li>
+</ul>
 <h2 id="v010">v0.1.0</h2>
-<p><strong>General</strong>
-* First implementation of the Unleash Python client!  Woo!</p>
+<p><strong>General</strong></p>
+<ul>
+<li>First implementation of the Unleash Python client!  Woo!</li>
+</ul>
               
             </div>
           </div>

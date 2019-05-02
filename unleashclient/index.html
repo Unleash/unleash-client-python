@@ -70,6 +70,8 @@
         
             <li><a class="toctree-l3" href="#is_enabled">is_enabled()</a></li>
         
+            <li><a class="toctree-l3" href="#notes">Notes</a></li>
+        
         </ul>
     
 
@@ -136,7 +138,7 @@
                 <h2 id="unleashclient">UnleashClient</h2>
 <h3 id="__init__"><code>__init__()</code></h3>
 <p>A client for the Unleash feature toggle system.</p>
-<p><code>UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, custom_headers)</code></p>
+<p><code>UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, disable_registration, custom_headers)</code></p>
 <p><strong>Arguments</strong></p>
 <table>
 <thead>
@@ -187,6 +189,13 @@
 <tr>
 <td>disable_metrics</td>
 <td>Disables sending metrics to Unleash server.</td>
+<td>N</td>
+<td>Boolean</td>
+<td>F</td>
+</tr>
+<tr>
+<td>disable_registration</td>
+<td>Disables registration with Unleash server.</td>
 <td>N</td>
 <td>Boolean</td>
 <td>F</td>
@@ -263,6 +272,18 @@
 </tr>
 </tbody>
 </table>
+<h3 id="notes">Notes</h3>
+<p><strong>Using <code>unleash-client-python</code> with Gitlab</strong> </p>
+<p><a href="https://docs.gitlab.com/ee/user/project/operations/feature_flags.html">Gitlab's feature flags</a> only supports the features URL.  (API calls to the registration URL and metrics URL will fail with HTTP Error code 401.)</p>
+<p>If using <code>unleash-client-python</code> with Gitlab's feature flages, we recommend initializing the client with <code>disable_metrics</code> = True and <code>disable_registration</code> = True.</p>
+<pre><code class="python">my_client = UnleashClient(
+    url=&quot;https://gitlab.com/api/v4/feature_flags/someproject/someid&quot;,
+    app_name=&quot;myClient1&quot;,
+    instance_id=&quot;myinstanceid&quot;,
+    disable_metrics=True,
+    disable_registration=True
+)
+</code></pre>
               
             </div>
           </div>
