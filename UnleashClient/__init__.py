@@ -24,6 +24,7 @@ class UnleashClient():
                  refresh_interval: int = 15,
                  metrics_interval: int = 60,
                  disable_metrics: bool = False,
+                 disable_registration: bool = False,
                  custom_headers: dict = {},
                  custom_strategies: dict = {},
                  cache_directory: str = None) -> None:
@@ -47,6 +48,7 @@ class UnleashClient():
         self.unleash_refresh_interval = refresh_interval
         self.unleash_metrics_interval = metrics_interval
         self.unleash_disable_metrics = disable_metrics
+        self.unleash_disable_registration = disable_registration
         self.unleash_custom_headers = custom_headers
 
         # Class objects
@@ -106,8 +108,9 @@ class UnleashClient():
         }
 
         # Register app
-        register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
-                        self.unleash_metrics_interval, self.unleash_custom_headers, self.strategy_mapping)
+        if not self.unleash_disable_registration:
+            register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
+                            self.unleash_metrics_interval, self.unleash_custom_headers, self.strategy_mapping)
 
         fetch_and_load_features(**fl_args)
 
@@ -117,9 +120,10 @@ class UnleashClient():
                                              trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval)),
                                              kwargs=fl_args)
 
-        self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
-                                                 trigger=IntervalTrigger(seconds=int(self.unleash_metrics_interval)),
-                                                 kwargs=metrics_args)
+        if not self.unleash_disable_metrics:
+            self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
+                                                     trigger=IntervalTrigger(seconds=int(self.unleash_metrics_interval)),
+                                                     kwargs=metrics_args)
 
         self.is_initialized = True
 
@@ -132,7 +136,8 @@ class UnleashClient():
         :return:
         """
         self.fl_job.remove()
-        self.metric_job.remove()
+        if self.metric_job:
+            self.metric_job.remove()
         self.scheduler.shutdown()
         self.cache.delete()
 
