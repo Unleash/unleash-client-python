@@ -4,7 +4,7 @@ import pytest
 import responses
 from UnleashClient import UnleashClient
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
-    METRICS_INTERVAL, DISABLE_METRICS, CUSTOM_HEADERS
+    METRICS_INTERVAL, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
@@ -13,6 +13,18 @@ from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
 @pytest.fixture()
 def unleash_client():
     unleash_client = UnleashClient(URL, APP_NAME, refresh_interval=REFRESH_INTERVAL, metrics_interval=METRICS_INTERVAL)
+    yield unleash_client
+    unleash_client.destroy()
+
+
+@pytest.fixture()
+def unleash_client_toggle_only():
+    unleash_client = UnleashClient(URL,
+                                   APP_NAME,
+                                   refresh_interval=REFRESH_INTERVAL,
+                                   metrics_interval=METRICS_INTERVAL,
+                                   disable_registration=True,
+                                   disable_metrics=True)
     yield unleash_client
     unleash_client.destroy()
 
@@ -31,11 +43,13 @@ def test_UC_initialize_full():
                            REFRESH_INTERVAL,
                            METRICS_INTERVAL,
                            DISABLE_METRICS,
+                           DISABLE_REGISTRATION,
                            CUSTOM_HEADERS)
     assert client.unleash_instance_id == INSTANCE_ID
     assert client.unleash_refresh_interval == REFRESH_INTERVAL
     assert client.unleash_metrics_interval == METRICS_INTERVAL
     assert client.unleash_disable_metrics == DISABLE_METRICS
+    assert client.unleash_disable_registration == DISABLE_REGISTRATION
     assert client.unleash_custom_headers == CUSTOM_HEADERS
 
 
@@ -114,3 +128,20 @@ def test_uc_metrics(unleash_client):
     time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
     assert request['bucket']["toggles"]["testFlag"]["yes"] == 1
+
+
+@responses.activate
+def test_uc_disabled_registration(unleash_client_toggle_only):
+    unleash_client = unleash_client_toggle_only
+    # Set up APIs
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
+
+    unleash_client.initialize_client()
+    unleash_client.is_enabled("testFlag")
+    time.sleep(20)
+    assert unleash_client.is_enabled("testFlag")
+
+    for api_call in responses.calls:
+        assert '/api/client/features' in api_call.request.url

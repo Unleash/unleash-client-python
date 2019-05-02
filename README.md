@@ -13,7 +13,7 @@ What it supports:
     * Client periodically fetches feature toggles and stores to on-disk cache
     * Client periodically sends metrics to Unleash Server
 
-Check out the project documentation [here](https://unleash.github.io/unleash-client-python/).
+Check out the [project documentation](https://unleash.github.io/unleash-client-python/) and the [changelog](https://unleash.github.io/unleash-client-python/changelog/).
 
 ## Installation
 
@@ -47,6 +47,7 @@ instance_id | Unique ID for your program | N | String | unleash-client-python |
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
+disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {} |
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
 

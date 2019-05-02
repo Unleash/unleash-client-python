@@ -4,7 +4,7 @@
 A client for the Unleash feature toggle system.
 
 `
-UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, custom_headers)
+UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, disable_registration, custom_headers)
 `
 
 **Arguments**
@@ -17,6 +17,7 @@ instance_id | Unique ID for your program | N | String | unleash-client-python |
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
+disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {}
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
 cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset | 
@@ -52,3 +53,21 @@ Argument | Description | Required? |  Type |  Default Value|
 feature_name | Name of feature | Y | String | N/A |
 context | Custom information for strategies | N | Dictionary | {} |
 default_value | Default value of feature. | N | Boolean | F |
+
+### Notes
+
+**Using `unleash-client-python` with Gitlab** 
+
+[Gitlab's feature flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html) only supports the features URL.  (API calls to the registration URL and metrics URL will fail with HTTP Error code 401.)
+
+If using `unleash-client-python` with Gitlab's feature flages, we recommend initializing the client with `disable_metrics` = True and `disable_registration` = True.
+
+``` python
+my_client = UnleashClient(
+    url="https://gitlab.com/api/v4/feature_flags/someproject/someid",
+    app_name="myClient1",
+    instance_id="myinstanceid",
+    disable_metrics=True,
+    disable_registration=True
+)
+```
