@@ -3,7 +3,7 @@ import json
 import pytest
 import responses
 from UnleashClient import UnleashClient
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
+from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
     METRICS_INTERVAL, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
@@ -39,6 +39,7 @@ def test_UC_initialize_default():
 def test_UC_initialize_full():
     client = UnleashClient(URL,
                            APP_NAME,
+                           ENVIRONMENT,
                            INSTANCE_ID,
                            REFRESH_INTERVAL,
                            METRICS_INTERVAL,

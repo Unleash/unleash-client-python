@@ -3,6 +3,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
 
 # General configs
 APP_NAME = "pytest"
+ENVIRONMENT = "unit"
 INSTANCE_ID = "123"
 REFRESH_INTERVAL = 15
 METRICS_INTERVAL = 10
