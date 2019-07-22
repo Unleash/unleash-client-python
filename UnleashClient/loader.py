@@ -3,6 +3,7 @@ from UnleashClient.features import Feature
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
 
+
 # pylint: disable=broad-except
 def _create_strategies(provisioning: dict,
                        strategy_mapping: dict) -> list:

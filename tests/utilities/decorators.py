@@ -22,6 +22,7 @@ def cache_full():
     yield temporary_cache
     temporary_cache.delete()
 
+
 @pytest.fixture()
 def cache_custom():
     cache_name = 'pytest_%s' % uuid.uuid4()
@@ -30,4 +31,3 @@ def cache_custom():
     temporary_cache.sync()
     yield temporary_cache
     temporary_cache.delete()
-
