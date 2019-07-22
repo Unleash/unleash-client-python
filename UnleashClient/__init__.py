@@ -16,10 +16,12 @@ from .utils import LOGGER
 class UnleashClient():
     """
     Client implementation.
+
     """
     def __init__(self,
                  url: str,
                  app_name: str,
+                 environment: str = "default",
                  instance_id: str = "unleash-client-python",
                  refresh_interval: int = 15,
                  metrics_interval: int = 60,
@@ -33,6 +35,7 @@ class UnleashClient():
 
         :param url: URL of the unleash server, required.
         :param app_name: Name of the application using the unleash client, required.
+        :param environment: Name of the environment using the unleash client, optinal & defaults to "default".
         :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
         :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
@@ -44,12 +47,17 @@ class UnleashClient():
         # Configuration
         self.unleash_url = url.rstrip('\\')
         self.unleash_app_name = app_name
+        self.unleash_environment = environment
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval
         self.unleash_metrics_interval = metrics_interval
         self.unleash_disable_metrics = disable_metrics
         self.unleash_disable_registration = disable_registration
         self.unleash_custom_headers = custom_headers
+        self.unleash_static_context = {
+            "appName": self.unleash_app_name,
+            "environment": self.unleash_environment
+        }
 
         # Class objects
         self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
@@ -157,6 +165,8 @@ class UnleashClient():
         :param default_value: Allows override of default value.
         :return: True/False
         """
+        context.update(self.unleash_static_context)
+
         if self.is_initialized:
             try:
                 return self.features[feature_name].is_enabled(context, default_value)
