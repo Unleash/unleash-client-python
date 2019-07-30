@@ -43,6 +43,7 @@ Argument | Description | Required? |  Type |  Default Value|
 ---------|-------------|-----------|-------|---------------|
 url      | Unleash server URL | Y | String | N/A |
 app_name | Name of your program | Y | String | N/A |
+environment | Name of current environment | N | String | default |
 instance_id | Unique ID for your program | N | String | unleash-client-python |
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |

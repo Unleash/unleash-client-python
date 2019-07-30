@@ -26,6 +26,20 @@ MOCK_FEATURE_RESPONSE = {
                 }
             ],
             "createdAt": "2018-10-04T11:03:56.062Z"
+        },
+        {
+            "name": "testContextFlag",
+            "description": "This is a test for static context fileds!",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "custom-context",
+                    "parameters": {
+                        "environments": "prod"
+                    }
+                }
+            ],
+            "createdAt": "2018-10-04T01:27:28.477Z"
         }
     ]
 }
