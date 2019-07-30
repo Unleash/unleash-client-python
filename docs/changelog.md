@@ -1,3 +1,8 @@
+## v2.4.0
+
+**General**
+* (Minor) Added static context values (app name, env) in preparation for Unleash v4 features.
+
 ## v2.3.0
 
 **General**
