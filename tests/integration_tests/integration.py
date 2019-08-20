@@ -15,7 +15,6 @@ handler.setFormatter(formatter)
 root.addHandler(handler)
 # ---
 
-
 my_client = UnleashClient(
     url="http://localhost:4242/api",
     app_name="pyIvan"

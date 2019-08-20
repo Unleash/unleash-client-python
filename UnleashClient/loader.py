@@ -45,32 +45,36 @@ def load_features(cache: FileCache,
     :return:
     """
     # Pull raw provisioning from cache.
-    feature_provisioning = cache[FEATURES_URL]
+    try:
+        feature_provisioning = cache[FEATURES_URL]
 
-    # Parse provisioning
-    parsed_features = {}
-    feature_names = [d["name"] for d in feature_provisioning["features"]]
+        # Parse provisioning
+        parsed_features = {}
+        feature_names = [d["name"] for d in feature_provisioning["features"]]
 
-    for provisioning in feature_provisioning["features"]:
-        parsed_features[provisioning["name"]] = provisioning
+        for provisioning in feature_provisioning["features"]:
+            parsed_features[provisioning["name"]] = provisioning
 
-    # Delete old features/cache
-    for feature in list(feature_toggles.keys()):
-        if feature not in feature_names:
-            del feature_toggles[feature]
+        # Delete old features/cache
+        for feature in list(feature_toggles.keys()):
+            if feature not in feature_names:
+                del feature_toggles[feature]
 
-    # Update existing objects
-    for feature in feature_toggles.keys():
-        feature_for_update = feature_toggles[feature]
-        strategies = parsed_features[feature]["strategies"]
+        # Update existing objects
+        for feature in feature_toggles.keys():
+            feature_for_update = feature_toggles[feature]
+            strategies = parsed_features[feature]["strategies"]
 
-        feature_for_update.enabled = parsed_features[feature]["enabled"]
-        if strategies:
-            parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping)
-            feature_for_update.strategies = parsed_strategies
+            feature_for_update.enabled = parsed_features[feature]["enabled"]
+            if strategies:
+                parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping)
+                feature_for_update.strategies = parsed_strategies
 
-    # Handle creation or deletions
-    new_features = list(set(feature_names) - set(feature_toggles.keys()))
+        # Handle creation or deletions
+        new_features = list(set(feature_names) - set(feature_toggles.keys()))
 
-    for feature in new_features:
-        feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping)
+        for feature in new_features:
+            feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping)
+    except KeyError as cache_exception:
+        LOGGER.warning("Cache Exception: %s", cache_exception)
+        LOGGER.warning("Unleash client does not have cached features.  Please make sure client can communicate with Unleash server!")

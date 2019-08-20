@@ -30,20 +30,41 @@ class EnvironmentStrategy(Strategy):
 
 
 @pytest.fixture()
-def unleash_client():
-    unleash_client = UnleashClient(URL, APP_NAME, refresh_interval=REFRESH_INTERVAL, metrics_interval=METRICS_INTERVAL)
+def unleash_client(tmpdir):
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache_directory=tmpdir.dirname
+    )
     yield unleash_client
     unleash_client.destroy()
 
 
 @pytest.fixture()
-def unleash_client_toggle_only():
-    unleash_client = UnleashClient(URL,
-                                   APP_NAME,
-                                   refresh_interval=REFRESH_INTERVAL,
-                                   metrics_interval=METRICS_INTERVAL,
-                                   disable_registration=True,
-                                   disable_metrics=True)
+def unleash_client_nodestroy(tmpdir):
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache_directory=tmpdir.dirname
+    )
+    yield unleash_client
+
+
+@pytest.fixture()
+def unleash_client_toggle_only(tmpdir):
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        disable_registration=True,
+        disable_metrics=True,
+        cache_directory=str(tmpdir)
+    )
     yield unleash_client
     unleash_client.destroy()
 
@@ -109,6 +130,26 @@ def test_uc_is_enabled(unleash_client):
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
     time.sleep(1)
+    assert unleash_client.is_enabled("testFlag")
+
+
+@responses.activate
+def test_uc_dirty_cache(unleash_client_nodestroy):
+    unleash_client = unleash_client_nodestroy
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(5)
+    assert unleash_client.is_enabled("testFlag")
+    unleash_client.scheduler.shutdown()
+
+    # Check that everything works if previous cache exists.
+    unleash_client.initialize_client()
+    time.sleep(5)
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -185,3 +226,41 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 
     for api_call in responses.calls:
         assert '/api/client/features' in api_call.request.url
+
+
+@responses.activate
+def test_uc_server_error(unleash_client):
+    # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
+
+    unleash_client = unleash_client
+    # Set up APIs
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
+    responses.add(responses.GET, URL + FEATURES_URL, status=500)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
+
+    unleash_client.initialize_client()
+    assert not unleash_client.is_enabled("testFlag")
+
+    responses.remove(responses.GET, URL + FEATURES_URL)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    time.sleep(20)
+    assert unleash_client.is_enabled("testFlag")
+
+
+@responses.activate
+def test_uc_server_error_recovery(unleash_client):
+    # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
+
+    unleash_client = unleash_client
+    # Set up APIs
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
+    responses.add(responses.GET, URL + FEATURES_URL, status=500)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
+
+    unleash_client.initialize_client()
+    assert not unleash_client.is_enabled("testFlag")
+
+    responses.remove(responses.GET, URL + FEATURES_URL)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    time.sleep(20)
+    assert unleash_client.is_enabled("testFlag")
