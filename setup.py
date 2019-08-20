@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='UnleashClient',
-    version='2.4.0',
+    version='2.5.0',
     author='Ivan Lee',
     author_email='ivanklee86@gmail.com',
     description='Python client for the Unleash feature toggle system!',
