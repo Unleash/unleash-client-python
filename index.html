@@ -63,6 +63,8 @@
         
             <li><a class="toctree-l3" href="#checking-if-a-feature-is-enabled">Checking if a feature is enabled</a></li>
         
+            <li><a class="toctree-l3" href="#logging">Logging</a></li>
+        
         </ul>
     
 
@@ -161,6 +163,24 @@ client.initialize_client()
 <pre><code>app_context = {&quot;userId&quot;: &quot;test@email.com&quot;}
 client.is_enabled(&quot;User ID Toggle&quot;, app_context)
 </code></pre>
+
+<h2 id="logging">Logging</h2>
+<p>Unleash Client uses the built-in logging facility to show information about errors, background jobs (feature-flag updates and metrics), et cetera.</p>
+<p>It's highly recommended that users implement</p>
+<p>To see what's going on when PoCing code, you can use the following:</p>
+<pre><code class="python">import logging
+import sys
+
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+root.addHandler(handler)
+
+</code></pre>
               
             </div>
           </div>
@@ -209,5 +229,5 @@ client.is_enabled(&quot;User ID Toggle&quot;, app_context)
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-07-30 23:27:44
+Build Date UTC : 2019-08-20 18:11:37
 -->
