@@ -18,6 +18,6 @@ def fetch_and_load_features(url: str,
         cache[FEATURES_URL] = feature_provisioning
         cache.sync()
     else:
-        LOGGER.info("Unable to get feature flag toggles, using cached values.")
+        LOGGER.warning("Unable to get feature flag toggles, using cached provisioning.")
 
     load_features(cache, features, strategy_mapping)
