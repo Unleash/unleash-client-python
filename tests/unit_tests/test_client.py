@@ -241,14 +241,14 @@ def test_uc_server_error(unleash_client):
     unleash_client.initialize_client()
     assert not unleash_client.is_enabled("testFlag")
 
-    responses.remove(responses.GET, URL+FEATURES_URL)
+    responses.remove(responses.GET, URL + FEATURES_URL)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
     time.sleep(20)
     assert unleash_client.is_enabled("testFlag")
 
 
 @responses.activate
-def test_uc_server_error(unleash_client):
+def test_uc_server_error_recovery(unleash_client):
     # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
 
     unleash_client = unleash_client
@@ -260,7 +260,7 @@ def test_uc_server_error(unleash_client):
     unleash_client.initialize_client()
     assert not unleash_client.is_enabled("testFlag")
 
-    responses.remove(responses.GET, URL+FEATURES_URL)
+    responses.remove(responses.GET, URL + FEATURES_URL)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
     time.sleep(20)
     assert unleash_client.is_enabled("testFlag")

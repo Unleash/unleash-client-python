@@ -6,7 +6,7 @@ import logging
 import sys
 
 root = logging.getLogger()
-root.setLevel(logging.DEBUG)
+root.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
@@ -15,10 +15,10 @@ handler.setFormatter(formatter)
 root.addHandler(handler)
 # ---
 
-
 my_client = UnleashClient(
     url="http://localhost:4242/api",
-    app_name="pyIvan"
+    app_name="pyIvan",
+    cache_directory="/Users/ivan/Temp/unleash"
 )
 
 my_client.initialize_client()
