@@ -1,3 +1,8 @@
+## Next
+
+**General**
+* (Minor) Unleash client will not error if cache is not present and Unleash server not accessible during initialization.
+
 ## v2.4.0
 
 **General**
