@@ -9,7 +9,7 @@ bumpversion==0.5.3
 coveralls==1.8.2
 mimesis==2.0.1
 mkdocs==1.0.4
-mypy==0.700
+mypy==0.720
 pur==5.2.2
 pylint==2.3.1
 pytest==4.4.0
