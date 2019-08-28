@@ -74,7 +74,7 @@ jobs:
 
     tox-3.8:
         docker:
-             - image: circleci/python:3.8-rc
+             - image: circleci/python:3.8.0b3
         steps:
             - checkout
             - *install_tox
