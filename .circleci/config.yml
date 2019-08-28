@@ -12,7 +12,7 @@ references:
 jobs:
     test:
         docker:
-            - image: circleci/python:3.7.3
+            - image: circleci/python:3.7
         steps:
             - checkout
             - run:
@@ -50,7 +50,7 @@ jobs:
                     coveralls
     tox-3.5:
         docker:
-             - image: circleci/python:3.5.3
+             - image: circleci/python:3.5
         steps:
             - checkout
             - *install_tox
@@ -62,7 +62,7 @@ jobs:
 
     tox-3.6:
         docker:
-             - image: circleci/python:3.6.8
+             - image: circleci/python:3.6
         steps:
             - checkout
             - *install_tox
@@ -72,17 +72,18 @@ jobs:
                     . venv/bin/activate
                     tox -e py36
 
-    tox-3.8:
-        docker:
-             - image: circleci/python:3.8.0a3
-        steps:
-            - checkout
-            - *install_tox
-            - run:
-                name: "Run tox for Python 3.8"
-                command: |
-                    . venv/bin/activate
-                    tox -e py38
+    # Commenting until Python 3.8 dependencies simmer down.
+    # tox-3.8:
+    #     docker:
+    #          - image: circleci/python:3.8.0b3
+    #     steps:
+    #         - checkout
+    #         - *install_tox
+    #         - run:
+    #             name: "Run tox for Python 3.8"
+    #             command: |
+    #                 . venv/bin/activate
+    #                 tox -e py38
 
 workflows:
     version: 2
@@ -95,6 +96,6 @@ workflows:
             - tox-3.6:
                 requires: 
                     - test
-            - tox-3.8:
-                requires: 
-                    - test
+            # - tox-3.8:
+            #     requires: 
+            #         - test

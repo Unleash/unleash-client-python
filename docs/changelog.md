@@ -32,7 +32,7 @@
 
 **General**
 
-* (Major) Support for Python 3.5, 3.6, and (provisionally) 3.8.  (Credit to [Baaym](https://github.com/baaym) for 3.5 support!)
+* (Major) Support for Python 3.5, 3.6, and 3.7.  (Credit to [Baaym](https://github.com/baaym) for 3.5 support!)
 
 ## v2.0.1
 
