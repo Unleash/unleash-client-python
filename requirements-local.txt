@@ -12,7 +12,7 @@ mkdocs==1.0.4
 mypy==0.700
 pur==5.2.2
 pylint==2.3.1
-pytest==5.1.1
+pytest==5.1.2
 pytest-cov==2.7.1
 pytest-flake8==1.0.4
 pytest-html==1.22.0
