@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timezone, timedelta
 import responses
 from fcache.cache import FileCache
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, IP_LIST
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, IP_LIST
 from UnleashClient.constants import METRICS_URL, METRIC_LAST_SENT_TIME
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics
 from UnleashClient.features import Feature
@@ -31,7 +31,7 @@ def test_aggregate_and_send_metrics():
 
     features = {"My Feature1": my_feature1, "My Feature 2": my_feature2}
 
-    aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, features, cache)
+    aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache)
 
     assert len(responses.calls) == 1
     request = json.loads(responses.calls[0].request.body)

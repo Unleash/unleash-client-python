@@ -7,7 +7,8 @@ from UnleashClient.utils import LOGGER
 # pylint: disable=broad-except
 def send_metrics(url: str,
                  request_body: dict,
-                 custom_headers: dict) -> bool:
+                 custom_headers: dict,
+                 custom_options: dict) -> bool:
     """
     Attempts to send metrics to Unleash server
 
@@ -19,6 +20,7 @@ def send_metrics(url: str,
     :param instance_id:
     :param metrics_interval:
     :param custom_headers:
+    :param custom_options:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
     try:
@@ -28,7 +30,7 @@ def send_metrics(url: str,
         resp = requests.post(url + METRICS_URL,
                              data=json.dumps(request_body),
                              headers={**custom_headers, **APPLICATION_HEADERS},
-                             timeout=REQUEST_TIMEOUT)
+                             timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 202:
             LOGGER.warning("unleash metrics submission failed.")
