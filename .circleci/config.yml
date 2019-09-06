@@ -25,8 +25,8 @@ jobs:
                 name: Lint code.
                 command: |
                     . venv/bin/activate
-                    mypy UnleashClient >> mypy.log
-                    pylint UnleashClient -f parseable >> pylint.log
+                    mypy UnleashClient
+                    pylint UnleashClient
             - run:
                 name: Run unit tests.
                 command: |
@@ -39,10 +39,6 @@ jobs:
                     py.test tests/specification_tests
             - store_test_results:
                 path: pytest
-            - store_artifacts:
-                path: pylint.log
-            - store_artifacts:
-                path: mypy.log
             - run:
                 name: Send code coverage to Coveralls
                 command: |
