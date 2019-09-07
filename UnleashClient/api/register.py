@@ -11,6 +11,7 @@ def register_client(url: str,
                     instance_id: str,
                     metrics_interval: int,
                     custom_headers: dict,
+                    custom_options: dict,
                     supported_strategies: dict) -> bool:
     """
     Attempts to register client with unleash server.
@@ -24,6 +25,7 @@ def register_client(url: str,
     :param instance_id:
     :param metrics_interval:
     :param custom_headers:
+    :param custom_options:
     :param supported_strategies:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
@@ -43,7 +45,7 @@ def register_client(url: str,
         resp = requests.post(url + REGISTER_URL,
                              data=json.dumps(registation_request),
                              headers={**custom_headers, **APPLICATION_HEADERS},
-                             timeout=REQUEST_TIMEOUT)
+                             timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 202:
             LOGGER.warning("unleash client registration failed.")

@@ -7,7 +7,8 @@ from UnleashClient.utils import LOGGER
 def get_feature_toggles(url: str,
                         app_name: str,
                         instance_id: str,
-                        custom_headers: dict) -> dict:
+                        custom_headers: dict,
+                        custom_options: dict) -> dict:
     """
     Retrieves feature flags from unleash central server.
 
@@ -19,6 +20,7 @@ def get_feature_toggles(url: str,
     :param app_name:
     :param instance_id:
     :param custom_headers:
+    :param custom_options:
     :return: Feature flags if successful, empty dict if not.
     """
     try:
@@ -31,7 +33,7 @@ def get_feature_toggles(url: str,
 
         resp = requests.get(url + FEATURES_URL,
                             headers={**custom_headers, **headers},
-                            timeout=REQUEST_TIMEOUT)
+                            timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 200:
             LOGGER.warning("unleash feature fetch failed!")

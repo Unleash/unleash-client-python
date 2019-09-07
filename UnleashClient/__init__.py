@@ -28,6 +28,7 @@ class UnleashClient():
                  disable_metrics: bool = False,
                  disable_registration: bool = False,
                  custom_headers: dict = {},
+                 custom_options: dict = {},
                  custom_strategies: dict = {},
                  cache_directory: str = None) -> None:
         """
@@ -41,6 +42,7 @@ class UnleashClient():
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
         :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
+        :param custom_options: Default requests parameters, optional & defaults to empty.
         :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
         :param cache_directory: Location of the cache directory. When unset, FCache will determine the location
         """
@@ -54,6 +56,7 @@ class UnleashClient():
         self.unleash_disable_metrics = disable_metrics
         self.unleash_disable_registration = disable_registration
         self.unleash_custom_headers = custom_headers
+        self.unleash_custom_options = custom_options
         self.unleash_static_context = {
             "appName": self.unleash_app_name,
             "environment": self.unleash_environment
@@ -101,6 +104,7 @@ class UnleashClient():
             "app_name": self.unleash_app_name,
             "instance_id": self.unleash_instance_id,
             "custom_headers": self.unleash_custom_headers,
+            "custom_options": self.unleash_custom_options,
             "cache": self.cache,
             "features": self.features,
             "strategy_mapping": self.strategy_mapping
@@ -111,6 +115,7 @@ class UnleashClient():
             "app_name": self.unleash_app_name,
             "instance_id": self.unleash_instance_id,
             "custom_headers": self.unleash_custom_headers,
+            "custom_options": self.unleash_custom_options,
             "features": self.features,
             "ondisk_cache": self.cache
         }
@@ -118,7 +123,8 @@ class UnleashClient():
         # Register app
         if not self.unleash_disable_registration:
             register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
-                            self.unleash_metrics_interval, self.unleash_custom_headers, self.strategy_mapping)
+                            self.unleash_metrics_interval, self.unleash_custom_headers,
+                            self.unleash_custom_options, self.strategy_mapping)
 
         fetch_and_load_features(**fl_args)
 

@@ -9,6 +9,7 @@ def aggregate_and_send_metrics(url: str,
                                app_name: str,
                                instance_id: str,
                                custom_headers: dict,
+                               custom_options: dict,
                                features: dict,
                                ondisk_cache: fcache.cache
                                ) -> None:
@@ -35,6 +36,6 @@ def aggregate_and_send_metrics(url: str,
         }
     }
 
-    send_metrics(url, metrics_request, custom_headers)
+    send_metrics(url, metrics_request, custom_headers, custom_options)
     ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
     ondisk_cache.sync()

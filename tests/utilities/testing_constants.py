@@ -10,6 +10,7 @@ METRICS_INTERVAL = 10
 DISABLE_METRICS = True
 DISABLE_REGISTRATION = True
 CUSTOM_HEADERS = {"name": "My random header."}
+CUSTOM_OPTIONS = {"verify": False}
 
 # URLs
 URL = "http://localhost:4242/api"
