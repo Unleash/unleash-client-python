@@ -208,6 +208,13 @@
 <td>{}</td>
 </tr>
 <tr>
+<td>custom_options</td>
+<td>Custom arguments for requests package.</td>
+<td>N</td>
+<td>Dictionary</td>
+<td>{}</td>
+</tr>
+<tr>
 <td>custom_strategies</td>
 <td>Custom strategies you'd like UnleashClient to support.</td>
 <td>N</td>
@@ -282,6 +289,17 @@
     instance_id=&quot;myinstanceid&quot;,
     disable_metrics=True,
     disable_registration=True
+)
+</code></pre>
+
+<p><strong>Overriding SSL certificate verification</strong></p>
+<p>(Do this at your own risk!)</p>
+<p>If using an on-prem SSL certificate with a self-signed cert, you can pass custom arguments through to the <strong>request</strong> package using the <em>custom_options</em> argument.</p>
+<pre><code class="python">my_client = UnleashClient(
+    url=&quot;https://myunleash.hamster.com&quot;,
+    app_name=&quot;myClient1&quot;,
+    instance_id=&quot;myinstanceid&quot;,
+    custom_options={&quot;verify&quot;: False}
 )
 </code></pre>
               
