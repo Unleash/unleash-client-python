@@ -19,6 +19,7 @@ metrics_interval | How often the unleash client should send metrics to server. |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
 disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {}
+custom_options | Custom arguments for requests package. | N | Dictionary | {}
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
 cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset | 
 
@@ -69,5 +70,20 @@ my_client = UnleashClient(
     instance_id="myinstanceid",
     disable_metrics=True,
     disable_registration=True
+)
+```
+
+**Overriding SSL certificate verification**
+
+(Do this at your own risk!)
+
+If using an on-prem SSL certificate with a self-signed cert, you can pass custom arguments through to the **request** package using the *custom_options* argument.
+
+```python
+my_client = UnleashClient(
+    url="https://myunleash.hamster.com",
+    app_name="myClient1",
+    instance_id="myinstanceid",
+    custom_options={"verify": False}
 )
 ```

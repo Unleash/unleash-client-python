@@ -1,7 +1,12 @@
+## v2.6.0
+
+General
+* (Minor) Add ability to add request kwargs when initializing the client.  These will be used when registering the client, fetching feature flags, and sending metrics. 
+
 ## v2.5.0
 
 **General**
-* (Minor) Unleash client will not error if cache is not present and Unleash server not accessible during initialization..
+* (Minor) Unleash client will not error if cache is not present and Unleash server not accessible during initialization.
 
 ## v2.4.0
 
