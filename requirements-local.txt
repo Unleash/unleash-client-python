@@ -22,4 +22,4 @@ pytest-xdist==1.29.0
 responses==0.10.6
 tox==3.14.0
 tox-conda==0.2.0
-twine==1.13.0
+twine==1.14.0
