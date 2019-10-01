@@ -11,7 +11,7 @@ mimesis==3.1.0
 mkdocs==1.0.4
 mypy==0.700
 pur==5.2.2
-pylint==2.4.1
+pylint==2.4.2
 pytest==5.2.0
 pytest-cov==2.7.1
 pytest-flake8==1.0.4
