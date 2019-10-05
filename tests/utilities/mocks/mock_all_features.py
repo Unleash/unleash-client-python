@@ -99,6 +99,58 @@ MOCK_ALL_FEATURES = \
         }
       ],
       "createdAt": "2018-10-09T06:09:19.203Z"
+    },
+    {
+      "name": "ivantest",
+      "description": "ivantest",
+      "enabled": True,
+      "strategies": [
+        {
+          "name": "flexibleRollout",
+          "parameters": {
+            "rollout": "21",
+            "stickiness": "userId",
+            "groupId": "ivantest"
+          },
+          "constraints": [
+            {
+              "contextName": "environment",
+              "operator": "IN",
+              "values": [
+                "staging",
+                "prod"
+              ]
+            },
+            {
+              "contextName": "userId",
+              "operator": "NOT_IN",
+              "values": [
+                "1",
+                "2",
+                "3"
+              ]
+            },
+            {
+              "contextName": "userId",
+              "operator": "IN",
+              "values": [
+                "4",
+                "5",
+                "6"
+              ]
+            },
+            {
+              "contextName": "appName",
+              "operator": "IN",
+              "values": [
+                "test"
+              ]
+            }
+          ]
+        }
+      ],
+      "variants": None,
+      "createdAt": "2019-10-05T07:30:29.896Z"
     }
   ]
 }
