@@ -4,9 +4,9 @@ BASE_FLEXIBLE_ROLLOUT_DICT = \
     {
         "name": "flexibleRollout",
         "parameters": {
-            "rollout": "50",
+            "rollout": 50,
             "stickiness": "userId",
-            "groupId": "ivantest"
+            "groupId": "AB12A"
         },
         "constraints": [
             {
@@ -21,8 +21,9 @@ BASE_FLEXIBLE_ROLLOUT_DICT = \
                 "contextName": "userId",
                 "operator": "IN",
                 "values": [
-                    "1",
-                    "2"
+                    "122",
+                    "155",
+                    "9"
                 ]
             },
             {
@@ -47,7 +48,7 @@ SCHEMA = FlexibleRolloutSchema()
 
 def test_flexiblerollout_satisfiesconstraints():
     context = {
-        'userId': "2",
+        'userId': "122",
         'appName': 'test',
         'environment': 'prod'
     }
@@ -71,21 +72,21 @@ def test_flexiblerollout_userid():
     strategy = SCHEMA.load(BASE_FLEXIBLE_ROLLOUT_DICT)
 
     base_context = dict(appName='test', environment='prod')
-    base_context['userId'] = "1"
-    assert not strategy(base_context)
-    base_context['userId'] = "2"
+    base_context['userId'] = "122"
     assert strategy(base_context)
+    base_context['userId'] = "155"
+    assert not strategy(base_context)
 
 
 def test_flexiblerollout_sessionid():
     BASE_FLEXIBLE_ROLLOUT_DICT['parameters']['stickiness'] = 'sessionId'
     strategy = SCHEMA.load(BASE_FLEXIBLE_ROLLOUT_DICT)
 
-    base_context = dict(appName='test', environment='prod', userId="1")
-    base_context['sessionId'] = 1
-    assert not strategy(base_context)
-    base_context['sessionId'] = 2
+    base_context = dict(appName='test', environment='prod', userId="9")
+    base_context['sessionId'] = "122"
     assert strategy(base_context)
+    base_context['sessionId'] = "155"
+    assert not strategy(base_context)
 
 
 def test_flexiblerollout_random():
@@ -101,9 +102,9 @@ def test_flexiblerollout_default():
     BASE_FLEXIBLE_ROLLOUT_DICT['constraints'] = [x for x in BASE_FLEXIBLE_ROLLOUT_DICT['constraints'] if x['contextName'] != 'userId']
     strategy = SCHEMA.load(BASE_FLEXIBLE_ROLLOUT_DICT)
 
-    base_context = dict(appName='test', environment='prod', userId="1", sessionId="2")
-    assert not strategy(base_context)
-    base_context = dict(appName='test', environment='prod', userId="2", sessionId="1")
+    base_context = dict(appName='test', environment='prod', userId="122", sessionId="155")
+    assert strategy(base_context)
+    base_context = dict(appName='test', environment='prod', sessionId="122")
     assert strategy(base_context)
     base_context = dict(appName='test', environment='prod')
     assert strategy(base_context) in [True, False]

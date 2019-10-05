@@ -1,40 +1,44 @@
+from UnleashClient.strategies.parameters import Parameter
+
 # pylint: disable=dangerous-default-value
 class StrategyV2:
     """
     In general, default & custom classes should only need to override:
-    * __call__() - Implementation of the strategy.
-    * load_provisioning - Loads strategy provisioning
+    * __init__() - Depending on the parameters your feature needs
+    * strategy() - Your feature provisioning
     """
     def __init__(self,
                  constraints: list = [],
-                 parameters: dict = {},
+                 parameters: Parameter = None,
                  ) -> None:
         """
         A generic strategy objects.
 
-        :param parameters: 'parameters' key from strategy section (...from feature section) of
+        :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of
         /api/clients/features response
         """
-        # Experiment information
         self.parameters = parameters
         self.constraints = constraints
 
-        self.parsed_provisioning = self.load_provisioning()
-
-    # pylint: disable=no-self-use
-    def load_provisioning(self) -> list:
-        """
-        Method to load data on object initialization, if desired.
-
-        This should parse the raw values in self.parameters into format Python can comprehend.
-        """
-        return []
-
     def __call__(self, context: dict = None) -> bool:
+        """
+        Check constraints before applying strategy.
+
+        :param context: Context information
+        :return:
+        """
+        flag_state = False
+
+        if all([constraint(context) for constraint in self.constraints]):
+            flag_state = self.strategy(context)
+
+        return flag_state
+
+    def strategy(self, context: dict = None) -> bool:  #pylint: disable=W0613,R0201
         """
         Strategy implementation goes here.
 
-        :param context: Context information
+        :param context:
         :return:
         """
         return False
