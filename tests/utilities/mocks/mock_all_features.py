@@ -101,8 +101,8 @@ MOCK_ALL_FEATURES = \
       "createdAt": "2018-10-09T06:09:19.203Z"
     },
     {
-      "name": "ivantest",
-      "description": "ivantest",
+      "name": "FlexibleRollout",
+      "description": "FlexibleRollout strategies",
       "enabled": True,
       "strategies": [
         {
