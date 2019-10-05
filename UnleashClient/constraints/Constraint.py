@@ -1,22 +1,15 @@
 from UnleashClient.utils import LOGGER
 
 class Constraint:
-    def __init__(
-            self,
-            context_name: str,
-            operator: str,
-            values: list
-    ) -> None:
+    def __init__(self, constraint_dict: dict) -> None:
         """
         Represents a constraint on a flexible rollout strategy
 
-        :param context_name: Thing to constrain on
-        :param operator: IN or NOT_IN
-        :param values: List of values to compare against.
+        constraint_dict = From the strategy document.
         """
-        self.context_name = context_name
-        self.operator = operator
-        self.values = values
+        self.context_name = constraint_dict['contextName']
+        self.operator = constraint_dict['operator']
+        self.values = constraint_dict['values']
 
     def __call__(self, context: dict = None) -> bool:
         """
