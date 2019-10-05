@@ -2,6 +2,7 @@ from fcache.cache import FileCache
 from UnleashClient.features import Feature
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
+from UnleashClient.strategies.schemas import FlexibleRolloutSchema
 
 
 # pylint: disable=broad-except
@@ -11,7 +12,10 @@ def _create_strategies(provisioning: dict,
 
     for strategy in provisioning["strategies"]:
         try:
-            if "parameters" in strategy.keys():
+            if strategy['name'] == 'flexibleRollout':
+                schema = FlexibleRolloutSchema()
+                feature_strategies.append(schema.load(strategy))
+            elif "parameters" in strategy.keys():
                 feature_strategies.append(strategy_mapping[strategy["name"]](strategy["parameters"]))
             else:
                 feature_strategies.append(strategy_mapping[strategy["name"]]())  # type: ignore

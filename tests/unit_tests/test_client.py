@@ -119,7 +119,7 @@ def test_uc_lifecycle(unleash_client):
     # Simulate server provisioning change
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200)
     time.sleep(30)
-    assert len(unleash_client.features) == 7
+    assert len(unleash_client.features) == 8
 
 
 @responses.activate
