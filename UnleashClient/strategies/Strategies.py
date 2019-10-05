@@ -63,6 +63,7 @@ class StrategyV2:
         """
         self.parameters = parameters
         self.parsed_constraints = self.load_constraints(constraints)
+        self.parsed_provisioning = self.load_provisioning()
 
     def __call__(self, context: dict = None) -> bool:
         """

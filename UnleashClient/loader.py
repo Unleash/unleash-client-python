@@ -2,6 +2,7 @@ from fcache.cache import FileCache
 from UnleashClient.features import Feature
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
+from UnleashClient.strategies.Strategies import Strategy, StrategyV2
 
 
 # pylint: disable=broad-except
@@ -11,22 +12,20 @@ def _create_strategies(provisioning: dict,
 
     for strategy in provisioning["strategies"]:
         try:
-            if "parameters" in strategy.keys() and "constraints" in strategy.keys():  # Temp hacky while I transition.
-                if "parameters" in strategy.keys():
-                    strategy_provisioning = strategy['parameters']
-                else:
-                    strategy_provisioning = {}
-
-                if "constraints" in strategy.keys():
-                    constraint_provisioning = strategy['constraints']
-                else:
-                    constraint_provisioning = {}
-
-                feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
-            elif "parameters" in strategy.keys():
-                feature_strategies.append(strategy_mapping[strategy["name"]](strategy["parameters"]))
+            if "parameters" in strategy.keys():
+                strategy_provisioning = strategy['parameters']
             else:
-                feature_strategies.append(strategy_mapping[strategy["name"]]())  # type: ignore
+                strategy_provisioning = {}
+
+            if "constraints" in strategy.keys():
+                constraint_provisioning = strategy['constraints']
+            else:
+                constraint_provisioning = {}
+
+            if type(StrategyV2) in strategy_mapping[strategy['name']].__mro__:
+                feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
+            else:
+                feature_strategies.append(strategy_mapping[strategy['name']](parameters=strategy_provisioning))
         except Exception as excep:
             LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
                            excep)

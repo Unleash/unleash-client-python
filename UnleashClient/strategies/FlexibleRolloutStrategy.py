@@ -2,6 +2,7 @@ import random
 from UnleashClient.strategies.Strategies import StrategyV2
 from UnleashClient.utils import normalized_hash
 
+
 class FlexibleRollout(StrategyV2):
     @staticmethod
     def random_hash() -> int:

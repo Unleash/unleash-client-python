@@ -1,9 +1,9 @@
 import random
-from UnleashClient.strategies import Strategy
+from UnleashClient.strategies import StrategyV2
 
 
-class GradualRolloutRandom(Strategy):
-    def __call__(self, context: dict = None) -> bool:
+class GradualRolloutRandom(StrategyV2):
+    def apply_strategy(self, context: dict = None) -> bool:
         """
         Returns random assignment.
 
