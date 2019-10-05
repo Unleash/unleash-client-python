@@ -1,5 +1,5 @@
 import random
-from UnleashClient.strategies.Strategy_v2 import StrategyV2
+from UnleashClient.strategies.Strategies import StrategyV2
 from UnleashClient.utils import normalized_hash
 
 class FlexibleRollout(StrategyV2):
@@ -7,7 +7,7 @@ class FlexibleRollout(StrategyV2):
     def random_hash() -> int:
         return random.randint(1, 100)
 
-    def strategy(self, context: dict = None) -> bool:
+    def apply_strategy(self, context: dict = None) -> bool:
         """
         If constraints are satisfied, return a percentage rollout on provisioned.
 

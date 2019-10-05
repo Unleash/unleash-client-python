@@ -1,8 +1,8 @@
-from UnleashClient.strategies import Strategy
+from UnleashClient.strategies import StrategyV2
 
 
-class Default(Strategy):
-    def __call__(self, context: dict = None) -> bool:
+class Default(StrategyV2):
+    def apply_strategy(self, context: dict = None) -> bool:
         """
         Return true if enabled.
 
