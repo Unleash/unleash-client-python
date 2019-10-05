@@ -2,7 +2,7 @@ from fcache.cache import FileCache
 from UnleashClient.features import Feature
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
-from UnleashClient.strategies.Strategies import Strategy, StrategyV2
+from UnleashClient.strategies import StrategyV2
 
 
 # pylint: disable=broad-except
@@ -22,7 +22,7 @@ def _create_strategies(provisioning: dict,
             else:
                 constraint_provisioning = {}
 
-            if type(StrategyV2) in strategy_mapping[strategy['name']].__mro__:
+            if type(StrategyV2) in strategy_mapping[strategy['name']].__mro__:  #pylint: disable=C0123
                 feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
             else:
                 feature_strategies.append(strategy_mapping[strategy['name']](parameters=strategy_provisioning))

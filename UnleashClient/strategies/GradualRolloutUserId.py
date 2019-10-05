@@ -1,5 +1,5 @@
 from UnleashClient.utils import normalized_hash
-from UnleashClient.strategies import StrategyV2
+from UnleashClient.strategies.Strategies import StrategyV2
 
 
 class GradualRolloutUserId(StrategyV2):

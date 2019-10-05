@@ -1,5 +1,5 @@
 import platform
-from UnleashClient.strategies import StrategyV2
+from UnleashClient.strategies.Strategies import StrategyV2
 
 
 class ApplicationHostname(StrategyV2):
