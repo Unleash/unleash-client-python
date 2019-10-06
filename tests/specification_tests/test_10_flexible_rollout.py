@@ -212,7 +212,7 @@ def test_feature_55_nouserdisabled(unleash_client):
 @responses.activate
 def test_feature_42sessionid_disabled(unleash_client):
     """
-    Feature.flexibleRollout.sessionId.42 should be disabled for sessionId=147
+    Feature.flexibleRollout.sessionId.42 should be enabled for sessionId=147
     """
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
