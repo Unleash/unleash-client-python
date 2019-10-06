@@ -1,5 +1,5 @@
 import pytest
-from UnleashClient.strategies.constraints.constraint_schema import ConstraintSchema
+from UnleashClient.constraints import Constraint
 
 
 CONSTRAINT_DICT_IN = \
@@ -26,14 +26,12 @@ CONSTRAINT_DICT_NOTIN = \
 
 @pytest.fixture()
 def constraint_IN():
-    schema = ConstraintSchema()
-    yield schema.load(CONSTRAINT_DICT_IN)
+    yield Constraint(CONSTRAINT_DICT_IN)
 
 
 @pytest.fixture()
 def constraint_NOTIN():
-    schema = ConstraintSchema()
-    yield schema.load(CONSTRAINT_DICT_NOTIN)
+    yield Constraint(CONSTRAINT_DICT_NOTIN)
 
 
 def test_constraint_IN_match(constraint_IN):

@@ -1,11 +1,11 @@
-from UnleashClient.strategies import Strategy
+from UnleashClient.strategies.Strategies import StrategyV2
 
 
-class UserWithId(Strategy):
+class UserWithId(StrategyV2):
     def load_provisioning(self) -> list:
         return [x.strip() for x in self.parameters["userIds"].split(',')]
 
-    def __call__(self, context: dict = None) -> bool:
+    def apply_strategy(self, context: dict = None) -> bool:
         """
         Returns true if userId is a member of id list.
 

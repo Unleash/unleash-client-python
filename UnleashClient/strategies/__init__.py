@@ -1,5 +1,4 @@
-from .Strategy import Strategy
-from .Strategy_v2 import StrategyV2
+from .Strategies import Strategy, StrategyV2
 from .Default import Default
 from .UserWithId import UserWithId
 from .GradualRolloutUserId import GradualRolloutUserId
