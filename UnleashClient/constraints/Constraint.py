@@ -19,13 +19,11 @@ class Constraint:
         :return:
         """
         constraint_check = False
+        value = None
 
         try:
             if self.context_name in context.keys():
                 value = context[self.context_name]
-            else:
-                value = None
-                constraint_check = False
 
             if value:
                 if self.operator.upper() == "IN":
