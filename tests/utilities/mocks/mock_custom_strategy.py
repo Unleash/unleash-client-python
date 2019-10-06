@@ -16,6 +16,30 @@ MOCK_CUSTOM_STRATEGY = {
       "createdAt": "2018-10-13T10:15:29.009Z"
     },
     {
+      "name": "CustomToggleV2",
+      "description": "CustomToggle v2 Test",
+      "enabled": True,
+      "strategies": [
+        {
+          "name": "amIADog",
+          "parameters": {
+            "sound": "arf,bark"
+          },
+          "constraints": [
+            {
+              "contextName": "environment",
+              "operator": "IN",
+              "values": [
+                "staging",
+                "prod"
+              ]
+            }
+          ]
+        }
+      ],
+      "createdAt": "2018-10-13T10:15:29.009Z"
+    },
+    {
       "name": "UserWithId",
       "description": "UserWithId",
       "enabled": True,

@@ -62,6 +62,7 @@ class StrategyV2:
         /api/clients/features response
         """
         self.parameters = parameters
+        self.constraints = constraints
         self.parsed_constraints = self.load_constraints(constraints)
         self.parsed_provisioning = self.load_provisioning()
 
