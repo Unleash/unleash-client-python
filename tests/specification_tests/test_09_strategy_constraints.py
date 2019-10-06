@@ -17,12 +17,10 @@ MOCK_JSON = """
          "enabled":true,
          "strategies":[
             {
-               "name":"flexibleRollout",
-               "parameters": {
-                    "rollout": "100",
-                    "stickiness": "random",
-                    "groupId": "spectest"
-                },
+               "name":"default",
+               "parameters":{
+
+               },
                "constraints":[
                   {
                      "contextName":"environment",
@@ -153,6 +151,28 @@ MOCK_JSON = """
                      "values":[
                         "dev",
                         "qa"
+                     ]
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Feature.constraints.empty",
+         "description":"Always disabled for empty list of values",
+         "enabled":true,
+         "strategies":[
+            {
+               "name":"default",
+               "parameters":{
+
+               },
+               "constraints":[
+                  {
+                     "contextName":"environment",
+                     "operator":"IN",
+                     "values":[
+
                      ]
                   }
                ]
@@ -349,3 +369,19 @@ def test_feature_constraintsdual_dev(unleash_client):
     unleash_client.initialize_client()
     unleash_client.unleash_static_context["environment"] = "dev"
     assert not unleash_client.is_enabled("Feature.constraints.dual", {})
+
+
+@responses.activate
+def test_feature_constraintsempty(unleash_client):
+    """
+    Feature.constraints.empty should always be disabled
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    unleash_client.unleash_static_context["environment"] = "dev"
+    assert not unleash_client.is_enabled("Feature.constraints.empty", {})
