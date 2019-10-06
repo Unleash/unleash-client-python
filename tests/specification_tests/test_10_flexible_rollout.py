@@ -210,7 +210,7 @@ def test_feature_55_nouserdisabled(unleash_client):
 
 
 @responses.activate
-def test_feature_42sessionid_disabled(unleash_client):
+def test_feature_42sessionid_enabled(unleash_client):
     """
     Feature.flexibleRollout.sessionId.42 should be enabled for sessionId=147
     """
