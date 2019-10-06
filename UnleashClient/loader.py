@@ -22,7 +22,7 @@ def _create_strategies(provisioning: dict,
             else:
                 constraint_provisioning = {}
 
-            if type(StrategyV2) in strategy_mapping[strategy['name']].__mro__:  #pylint: disable=C0123
+            if StrategyV2 in strategy_mapping[strategy['name']].__mro__:
                 feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
             else:
                 feature_strategies.append(strategy_mapping[strategy['name']](parameters=strategy_provisioning))
