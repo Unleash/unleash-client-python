@@ -21,12 +21,17 @@ class Constraint:
         constraint_check = False
 
         try:
-            value = context[self.context_name]
+            if self.context_name in context.keys():
+                value = context[self.context_name]
+            else:
+                value = None
+                constraint_check = False
 
-            if self.operator.upper() == "IN":
-                constraint_check = value in self.values
-            elif self.operator.upper() == "NOT_IN":
-                constraint_check = value not in self.values
+            if value:
+                if self.operator.upper() == "IN":
+                    constraint_check = value in self.values
+                elif self.operator.upper() == "NOT_IN":
+                    constraint_check = value not in self.values
         except Exception as excep:  #pylint: disable=W0703
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
 
