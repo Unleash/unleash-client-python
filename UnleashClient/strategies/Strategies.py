@@ -4,6 +4,8 @@ from UnleashClient.constraints import Constraint
 
 class Strategy():
     """
+    OG Strategy object.  This is the parent class for default and custom strategies.
+
     In general, default & custom classes should only need to override:
     * __call__() - Implementation of the strategy.
     * load_provisioning - Loads strategy provisioning
@@ -45,6 +47,8 @@ class Strategy():
 
 class StrategyV2:
     """
+    The new and shiny parent class for default and custom strategies.  This supports constraints out-of-box!
+
     In general, default & custom classes should only need to override:
     * __init__() - Depending on the parameters your feature needs
     * apply_strategy() - Your feature provisioning
