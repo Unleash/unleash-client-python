@@ -1,4 +1,5 @@
 # pylint: disable=dangerous-default-value
+import warnings
 from UnleashClient.constraints import Constraint
 
 
@@ -27,8 +28,11 @@ class Strategy:
         self.parsed_constraints = self.load_constraints(constraints)
         self.parsed_provisioning = self.load_provisioning()
 
-    def __call__(self, context: dict = None) -> bool:
-        raise DeprecationWarning("unleash-client-python no longer uses the __call__() method.  Please use execute_strategy() instead.")
+    def __call__(self, context: dict = None):
+        warnings.warn(
+            "unleash-client-python v3.x.x requires overriding the execute() method instead of the __call__() method.",
+            DeprecationWarning
+        )
 
     def execute(self, context: dict = None) -> bool:
         """
