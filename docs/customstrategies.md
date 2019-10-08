@@ -38,7 +38,7 @@ unleash_client = UnleashClient(URL, APP_NAME, custom_strategies=my_custom_strate
 
 * Fire up Unleash! You can now use the "amIACat" strategy in a feature toggle.
 
-### Migrating your custom strategies from Strategy to StrategyV2 (for fun and profit)
+### Migrating your custom strategies from Strategy from v2.x.x to v3.x.x (for fun and profit)
 To get support for for constraints in your custom strategy, take the following steps:
 
 - Instead of overriding the `__call__()` method, override the `apply()` method.  (In practice, you can just rename the method!)
