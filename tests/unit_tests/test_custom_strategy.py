@@ -3,6 +3,7 @@ from UnleashClient import UnleashClient
 from UnleashClient.strategies import Strategy
 from tests.utilities.testing_constants import URL, APP_NAME
 from tests.utilities.mocks import MOCK_CUSTOM_STRATEGY
+from tests.utilities.old_code.StrategyV2 import StrategyOldV2
 from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
 
 
@@ -24,7 +25,7 @@ class CatTest(Strategy):
         return default_value
 
 
-class DogTest(Strategy):
+class DogTest(StrategyOldV2):
     def load_provisioning(self) -> list:
         return [x.strip() for x in self.parameters["sound"].split(',')]
 
@@ -43,7 +44,7 @@ class DogTest(Strategy):
 
 
 @responses.activate
-def test_uc_customstrategy_happypath():
+def test_uc_customstrategy_happypath(recwarn):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200)
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
@@ -61,12 +62,17 @@ def test_uc_customstrategy_happypath():
 
     unleash_client.initialize_client()
 
+    # Check custom strategy.
     assert unleash_client.is_enabled("CustomToggle", {"sound": "meow"})
     assert not unleash_client.is_enabled("CustomToggle", {"sound": "bark"})
 
+    # Check warning on deprecated strategy.
+    assert len(recwarn) == 1
+    assert recwarn.pop(DeprecationWarning)
+
 
 @responses.activate
-def test_uc_customstrategy_depredationwarning(recwarn):
+def test_uc_customstrategy_depredationwarning():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200)
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
@@ -84,11 +90,8 @@ def test_uc_customstrategy_depredationwarning(recwarn):
 
     unleash_client.initialize_client()
 
-    # Generate a deprecation warning.
-
+    # Check a toggle that contains an outdated custom strategy
     assert not unleash_client.is_enabled("CustomToggleWarning", {"sound": "meow"})
-    assert len(recwarn) == 1
-    assert recwarn.pop(DeprecationWarning)
 
 
 @responses.activate
@@ -110,6 +113,5 @@ def test_uc_customstrategy_safemulti():
 
     unleash_client.initialize_client()
 
-    # Generate a deprecation warning.
-
+    # Check a toggle that contains an outdated custom strategy and a default strategy.
     assert unleash_client.is_enabled("CustomToggleWarningMultiStrat", {"sound": "meow"})

@@ -10,6 +10,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from .utils import LOGGER
+from .deprecation_warnings import strategy_v2xx_deprecation_check
 
 
 # pylint: disable=dangerous-default-value
@@ -84,6 +85,7 @@ class UnleashClient():
         }
 
         self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
+        strategy_v2xx_deprecation_check([x for x in custom_strategies.values()])  #pylint: disable=R1721
 
         # Client status
         self.is_initialized = False
