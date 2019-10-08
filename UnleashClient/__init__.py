@@ -84,8 +84,10 @@ class UnleashClient():
             "flexibleRollout": FlexibleRollout
         }
 
+        if custom_strategies:
+            strategy_v2xx_deprecation_check([x for x in custom_strategies.values()])  # pylint: disable=R1721
+
         self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
-        strategy_v2xx_deprecation_check([x for x in custom_strategies.values()])  #pylint: disable=R1721
 
         # Client status
         self.is_initialized = False
