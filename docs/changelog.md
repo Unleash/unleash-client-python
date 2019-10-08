@@ -1,6 +1,7 @@
 ## v3.0.0
 **General**
-* (Major) Support constraints on all default strategies.  To add constraints to your custom strategy, please checkout the [custom strategy migration guide](https://unleash.github.io/unleash-client-python/customstrategies/).
+* (Major) Support constraints on all default strategies.  
+    * This is a breaking change!  To update your custom strategy, please checkout the [custom strategy migration guide](https://unleash.github.io/unleash-client-python/customstrategies/).
 * (Major) Added flexibleRollout strategy.
 
 ## v2.6.0

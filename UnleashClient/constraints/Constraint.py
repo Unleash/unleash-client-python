@@ -11,7 +11,7 @@ class Constraint:
         self.operator = constraint_dict['operator']
         self.values = constraint_dict['values']
 
-    def __call__(self, context: dict = None) -> bool:
+    def apply(self, context: dict = None) -> bool:
         """
         Returns true/false depending on constraint provisioning and context.
 

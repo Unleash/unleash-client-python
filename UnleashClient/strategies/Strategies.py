@@ -2,56 +2,13 @@
 from UnleashClient.constraints import Constraint
 
 
-class Strategy():
+class Strategy:
     """
-    OG Strategy object.  This is the parent class for default and custom strategies.
-
-    In general, default & custom classes should only need to override:
-    * __call__() - Implementation of the strategy.
-    * load_provisioning - Loads strategy provisioning
-    """
-    def __init__(self,
-                 parameters: dict = {}) -> None:
-        """
-        A generic strategy objects.
-
-        :param parameters: 'parameters' key from strategy section (...from feature section) of
-        /api/clients/features response
-        """
-        # Experiment information
-        self.parameters = parameters
-
-        self.parsed_provisioning = self.load_provisioning()
-
-    # pylint: disable=no-self-use
-    def load_provisioning(self) -> list:
-        """
-        Method to load data on object initialization, if desired.
-
-        This should parse the raw values in self.parameters into format Python can comprehend.
-        """
-        return []
-
-    def __eq__(self, other):
-        return self.parameters == other.parameters
-
-    def __call__(self, context: dict = None) -> bool:
-        """
-        Strategy implementation goes here.
-
-        :param context: Context information
-        :return:
-        """
-        return False
-
-
-class StrategyV2:
-    """
-    The new and shiny parent class for default and custom strategies.  This supports constraints out-of-box!
+    The parent class for default and custom strategies.
 
     In general, default & custom classes should only need to override:
     * __init__() - Depending on the parameters your feature needs
-    * apply_strategy() - Your feature provisioning
+    * apply() - Your feature provisioning
     """
     def __init__(self,
                  constraints: list = [],
@@ -71,16 +28,21 @@ class StrategyV2:
         self.parsed_provisioning = self.load_provisioning()
 
     def __call__(self, context: dict = None) -> bool:
+        raise DeprecationWarning("unleash-client-python no longer uses the __call__() method.  Please use execute_strategy() instead.")
+
+    def execute(self, context: dict = None) -> bool:
         """
-        Check constraints before applying strategy.
+        Executes the strategies by:
+        - Checking constraints
+        - Applying the strategy
 
         :param context: Context information
         :return:
         """
         flag_state = False
 
-        if all([constraint(context) for constraint in self.parsed_constraints]):
-            flag_state = self.apply_strategy(context)
+        if all([constraint.apply(context) for constraint in self.parsed_constraints]):
+            flag_state = self.apply(context)
 
         return flag_state
 
@@ -106,7 +68,7 @@ class StrategyV2:
         """
         return []
 
-    def apply_strategy(self, context: dict = None) -> bool:  #pylint: disable=W0613,R0201
+    def apply(self, context: dict = None) -> bool:  #pylint: disable=W0613,R0201
         """
         Strategy implementation goes here.
 

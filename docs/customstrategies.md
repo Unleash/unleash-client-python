@@ -10,7 +10,7 @@ class CatTest(StrategyV2):
     def load_provisioning(self) -> list:
         return [x.strip() for x in self.parameters["sound"].split(',')]
 
-    def apply_strategy(self, context: dict = None) -> bool:
+    def apply(self, context: dict = None) -> bool:
         """
         Turn on if I'm a cat.
 
@@ -39,9 +39,8 @@ unleash_client = UnleashClient(URL, APP_NAME, custom_strategies=my_custom_strate
 * Fire up Unleash! You can now use the "amIACat" strategy in a feature toggle.
 
 ### Migrating your custom strategies from Strategy to StrategyV2 (for fun and profit)
-Constraints for feature flags are built into the `StrategyV2` object, which is extended by all the default strategies.  To get support for for constraints in your custom strategy, take the following steps:
+To get support for for constraints in your custom strategy, take the following steps:
 
-- Change the base class from `Strategy` to `StrategyV2`.
-- Instead of overriding the `__call__()` method, override the `apply_strategy()` method.  (In practice, you can just rename the method!)
+- Instead of overriding the `__call__()` method, override the `apply()` method.  (In practice, you can just rename the method!)
 - ???
 - Profit!

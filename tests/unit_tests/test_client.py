@@ -15,7 +15,7 @@ class EnvironmentStrategy(Strategy):
     def load_provisioning(self) -> list:
         return [x.strip() for x in self.parameters["environments"].split(',')]
 
-    def __call__(self, context: dict = None) -> bool:
+    def apply(self, context: dict = None) -> bool:
         """
         Turn on if environemnt is a match.
 

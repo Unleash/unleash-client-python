@@ -2,7 +2,6 @@ from fcache.cache import FileCache
 from UnleashClient.features import Feature
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
-from UnleashClient.strategies import StrategyV2
 
 
 # pylint: disable=broad-except
@@ -22,10 +21,7 @@ def _create_strategies(provisioning: dict,
             else:
                 constraint_provisioning = {}
 
-            if StrategyV2 in strategy_mapping[strategy['name']].__mro__:
-                feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
-            else:
-                feature_strategies.append(strategy_mapping[strategy['name']](parameters=strategy_provisioning))
+            feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
         except Exception as excep:
             LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
                            excep)

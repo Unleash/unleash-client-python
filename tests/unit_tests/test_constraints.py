@@ -40,7 +40,7 @@ def test_constraint_IN_match(constraint_IN):
         'appName': 'test'
     }
 
-    assert constraint(context)
+    assert constraint.apply(context)
 
 
 def test_constraint_IN_not_match(constraint_IN):
@@ -49,12 +49,12 @@ def test_constraint_IN_not_match(constraint_IN):
         'appName': 'test3'
     }
 
-    assert not constraint(context)
+    assert not constraint.apply(context)
 
 
 def test_constraint_IN_missingcontext(constraint_IN):
     constraint = constraint_IN
-    assert not constraint({})
+    assert not constraint.apply({})
 
 
 def test_constraint_NOTIN_match(constraint_NOTIN):
@@ -63,7 +63,7 @@ def test_constraint_NOTIN_match(constraint_NOTIN):
         'appName': 'test'
     }
 
-    assert not constraint(context)
+    assert not constraint.apply(context)
 
 
 def test_constraint_NOTIN_not_match(constraint_NOTIN):
@@ -72,4 +72,4 @@ def test_constraint_NOTIN_not_match(constraint_NOTIN):
         'appName': 'test3'
     }
 
-    assert constraint(context)
+    assert constraint.apply(context)
