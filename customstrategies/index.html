@@ -70,6 +70,12 @@
             
     <li class="toctree-l2"><a href="#implementing-a-custom-strategy">Implementing a custom strategy</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l3" href="#migrating-your-custom-strategies-from-strategy-from-v2xx-to-v3xx-for-fun-and-profit">Migrating your custom strategies from Strategy from v2.x.x to v3.x.x (for fun and profit)</a></li>
+        
+        </ul>
+    
 
     </ul>
 	    </li>
@@ -124,15 +130,15 @@
                 <h2 id="implementing-a-custom-strategy">Implementing a custom strategy</h2>
 <ul>
 <li>Set up a custom strategy in Unleash.  Note down the name - you'll need this exact value to ensure we're loading the custom strategy correctly.</li>
-<li>Create a custom strategy object by sub-classing the Strategy object. </li>
+<li>Create a custom strategy object by sub-classing the StrategyV2 object. </li>
 </ul>
-<pre><code>from UnleashClient.strategies import Strategy
+<pre><code>from UnleashClient.strategies.Strategies import StrategyV2
 
-class CatTest(Strategy):
+class CatTest(StrategyV2):
     def load_provisioning(self) -&gt; list:
         return [x.strip() for x in self.parameters[&quot;sound&quot;].split(',')]
 
-    def __call__(self, context: dict = None) -&gt; bool:
+    def apply(self, context: dict = None) -&gt; bool:
         &quot;&quot;&quot;
         Turn on if I'm a cat.
 
@@ -160,6 +166,13 @@ class CatTest(Strategy):
 
 <ul>
 <li>Fire up Unleash! You can now use the "amIACat" strategy in a feature toggle.</li>
+</ul>
+<h3 id="migrating-your-custom-strategies-from-strategy-from-v2xx-to-v3xx-for-fun-and-profit">Migrating your custom strategies from Strategy from v2.x.x to v3.x.x (for fun and profit)</h3>
+<p>To get support for for constraints in your custom strategy, take the following steps:</p>
+<ul>
+<li>Instead of overriding the <code>__call__()</code> method, override the <code>apply()</code> method.  (In practice, you can just rename the method!)</li>
+<li>???</li>
+<li>Profit!</li>
 </ul>
               
             </div>
