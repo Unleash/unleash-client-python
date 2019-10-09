@@ -7,7 +7,7 @@ APScheduler==3.6.1
 # Development packages
 bumpversion
 coveralls
-mimesis
+mimesis==2.0.1
 mkdocs
 mypy
 pur
