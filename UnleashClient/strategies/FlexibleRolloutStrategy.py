@@ -1,5 +1,5 @@
 import random
-from UnleashClient.strategies.Strategies import Strategy
+from UnleashClient.strategies.Strategy import Strategy
 from UnleashClient.utils import normalized_hash
 
 

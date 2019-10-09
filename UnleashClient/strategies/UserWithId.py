@@ -1,4 +1,4 @@
-from UnleashClient.strategies.Strategies import Strategy
+from UnleashClient.strategies.Strategy import Strategy
 
 
 class UserWithId(Strategy):
