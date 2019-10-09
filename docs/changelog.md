@@ -1,5 +1,6 @@
 ## v3.0.0
 **General**
+
 * (Major) Support constraints on all default strategies.  
     * This is a breaking change!  To update your custom strategy, please checkout the [custom strategy migration guide](https://unleash.github.io/unleash-client-python/customstrategies/).
 * (Major) Added flexibleRollout strategy.
@@ -7,23 +8,26 @@
 ## v2.6.0
 
 **General**
+
 * (Minor) Add ability to add request kwargs when initializing the client.  These will be used when registering the client, fetching feature flags, and sending metrics. 
 
 ## v2.5.0
 
 **General**
+
 * (Minor) Unleash client will not error if cache is not present and Unleash server not accessible during initialization.
 
 ## v2.4.0
 
 **General**
+
 * (Minor) Added static context values (app name, env) in preparation for Unleash v4 features.
 
 ## v2.3.0
 
 **General**
-* (Minor) Add option to disable metrics on client initialization.
 
+* (Minor) Add option to disable metrics on client initialization.
 
 **Bugfix**
 
