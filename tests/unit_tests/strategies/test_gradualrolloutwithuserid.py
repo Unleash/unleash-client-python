@@ -9,4 +9,4 @@ def strategy():
 
 
 def test_userwithid(strategy):
-    strategy(context=generate_context())
+    strategy.execute(context=generate_context())

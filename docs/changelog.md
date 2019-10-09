@@ -1,6 +1,12 @@
+## v3.0.0
+**General**
+* (Major) Support constraints on all default strategies.  
+    * This is a breaking change!  To update your custom strategy, please checkout the [custom strategy migration guide](https://unleash.github.io/unleash-client-python/customstrategies/).
+* (Major) Added flexibleRollout strategy.
+
 ## v2.6.0
 
-General
+**General**
 * (Minor) Add ability to add request kwargs when initializing the client.  These will be used when registering the client, fetching feature flags, and sending metrics. 
 
 ## v2.5.0

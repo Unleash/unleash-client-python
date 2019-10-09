@@ -1,9 +1,9 @@
 from UnleashClient.utils import normalized_hash
-from UnleashClient.strategies import Strategy
+from UnleashClient.strategies.Strategy import Strategy
 
 
 class GradualRolloutUserId(Strategy):
-    def __call__(self, context: dict = None) -> bool:
+    def apply(self, context: dict = None) -> bool:
         """
         Returns true if userId is a member of id list.
 

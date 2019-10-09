@@ -8,4 +8,4 @@ def strategy():
 
 
 def test_defaultstrategy(strategy):
-    assert isinstance(strategy(), bool)
+    assert isinstance(strategy.execute(), bool)

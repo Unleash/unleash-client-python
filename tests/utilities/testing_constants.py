@@ -1,5 +1,5 @@
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
-    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
+    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 
 # General configs
 APP_NAME = "pytest"
@@ -27,5 +27,6 @@ DEFAULT_STRATEGY_MAPPING = {
     "gradualRolloutSessionId": GradualRolloutSessionId,
     "gradualRolloutUserId": GradualRolloutUserId,
     "remoteAddress": RemoteAddress,
-    "userWithId": UserWithId
+    "userWithId": UserWithId,
+    "flexibleRollout": FlexibleRollout
 }

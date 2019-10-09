@@ -58,8 +58,8 @@ class Feature:
 
         if self.enabled:
             try:
-                for strategy in self.strategies:
-                    flag_value = flag_value or strategy(context)
+                strategy_result = any([x.execute(context) for x in self.strategies])
+                flag_value = flag_value or strategy_result
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)
 

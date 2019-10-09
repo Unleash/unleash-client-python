@@ -21,20 +21,20 @@ def test_init_with_bad_range():
 
 
 def test_ipv4_range(strategy):
-    assert strategy(context={"remoteAddress": "69.208.0.1"})
+    assert strategy.execute(context={"remoteAddress": "69.208.0.1"})
 
 
 def test_ipv4_value(strategy):
-    assert strategy(context={"remoteAddress": "70.208.1.1"})
+    assert strategy.execute(context={"remoteAddress": "70.208.1.1"})
 
 
 def test_ipv6_rangee(strategy):
-    assert strategy(context={"remoteAddress": "2001:db8:1234:0000:0000:0000:0000:0001"})
+    assert strategy.execute(context={"remoteAddress": "2001:db8:1234:0000:0000:0000:0000:0001"})
 
 
 def test_ipv6_value(strategy):
-    assert strategy(context={"remoteAddress": "2002:db8:1234:0000:0000:0000:0000:0001"})
+    assert strategy.execute(context={"remoteAddress": "2002:db8:1234:0000:0000:0000:0000:0001"})
 
 
 def test_garbage_value(strategy):
-    assert not strategy(context={"remoteAddress": "WTFISTHISURCRAZY"})
+    assert not strategy.execute(context={"remoteAddress": "WTFISTHISURCRAZY"})

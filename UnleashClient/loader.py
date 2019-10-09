@@ -12,9 +12,16 @@ def _create_strategies(provisioning: dict,
     for strategy in provisioning["strategies"]:
         try:
             if "parameters" in strategy.keys():
-                feature_strategies.append(strategy_mapping[strategy["name"]](strategy["parameters"]))
+                strategy_provisioning = strategy['parameters']
             else:
-                feature_strategies.append(strategy_mapping[strategy["name"]]())  # type: ignore
+                strategy_provisioning = {}
+
+            if "constraints" in strategy.keys():
+                constraint_provisioning = strategy['constraints']
+            else:
+                constraint_provisioning = {}
+
+            feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
         except Exception as excep:
             LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
                            excep)

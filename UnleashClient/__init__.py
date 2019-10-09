@@ -7,9 +7,10 @@ from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
-    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress
+    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from .utils import LOGGER
+from .deprecation_warnings import strategy_v2xx_deprecation_check
 
 
 # pylint: disable=dangerous-default-value
@@ -79,8 +80,12 @@ class UnleashClient():
             "gradualRolloutSessionId": GradualRolloutSessionId,
             "gradualRolloutUserId": GradualRolloutUserId,
             "remoteAddress": RemoteAddress,
-            "userWithId": UserWithId
+            "userWithId": UserWithId,
+            "flexibleRollout": FlexibleRollout
         }
+
+        if custom_strategies:
+            strategy_v2xx_deprecation_check([x for x in custom_strategies.values()])  # pylint: disable=R1721
 
         self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
 

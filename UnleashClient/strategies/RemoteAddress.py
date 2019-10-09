@@ -1,5 +1,5 @@
 import ipaddress
-from UnleashClient.strategies import Strategy
+from UnleashClient.strategies.Strategy import Strategy
 from UnleashClient.utils import LOGGER
 
 
@@ -22,7 +22,7 @@ class RemoteAddress(Strategy):
 
         return parsed_ips
 
-    def __call__(self, context: dict = None) -> bool:
+    def apply(self, context: dict = None) -> bool:
         """
         Returns true if IP is in list of IPs
 
