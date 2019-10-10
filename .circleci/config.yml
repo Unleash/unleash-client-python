@@ -69,17 +69,17 @@ jobs:
                     tox -e py36
 
     # Commenting until Python 3.8 dependencies simmer down.
-    # tox-3.8:
-    #     docker:
-    #          - image: circleci/python:3.8.0b3
-    #     steps:
-    #         - checkout
-    #         - *install_tox
-    #         - run:
-    #             name: "Run tox for Python 3.8"
-    #             command: |
-    #                 . venv/bin/activate
-    #                 tox -e py38
+     tox-3.8:
+         docker:
+              - image: circleci/python:3.8.0b3
+         steps:
+             - checkout
+             - *install_tox
+             - run:
+                 name: "Run tox for Python 3.8"
+                 command: |
+                     . venv/bin/activate
+                     tox -e py38
 
 workflows:
     version: 2
