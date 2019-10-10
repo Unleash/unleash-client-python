@@ -15,7 +15,7 @@ pylint
 pytest
 pytest-cov
 pytest-flake8
-pytest-html
+pytest-html==1.22.0
 pytest-rerunfailures
 pytest-runner
 pytest-xdist

@@ -319,7 +319,7 @@ def test_feature_constraintscustom_norway(unleash_client):
     unleash_client.initialize_client()
     unleash_client.unleash_static_context["environment"] = "prod"
     unleash_client.unleash_static_context["appName"] = "web"
-    assert unleash_client.is_enabled("Feature.constraints.custom", {"country": "norway"})
+    assert unleash_client.is_enabled("Feature.constraints.custom", {"properties": {"country": "norway"}})
 
 
 @responses.activate
@@ -336,7 +336,7 @@ def test_feature_constraintscustom_denmark(unleash_client):
     unleash_client.initialize_client()
     unleash_client.unleash_static_context["environment"] = "prod"
     unleash_client.unleash_static_context["appName"] = "web"
-    assert not unleash_client.is_enabled("Feature.constraints.custom", {"country": "denmark"})
+    assert not unleash_client.is_enabled("Feature.constraints.custom", {"properties": {"country": "denmark"}})
 
 
 @responses.activate

@@ -24,6 +24,8 @@ class Constraint:
         try:
             if self.context_name in context.keys():
                 value = context[self.context_name]
+            elif self.context_name in context['properties'].keys():
+                value = context['properties'][self.context_name]
 
             if value:
                 if self.operator.upper() == "IN":
