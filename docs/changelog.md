@@ -1,3 +1,8 @@
+## v3.1.0
+**General**
+
+* (Minor) Add official-ish support for Python 3.8.
+
 ## v3.0.0
 **General**
 
