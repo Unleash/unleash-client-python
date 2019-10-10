@@ -1,3 +1,8 @@
+## v3.1.1
+**Bugfixes**
+
+* Custom constraints check should check for values in the `properties` sub-property in the context as specified by [Unleash context documentation](https://unleash.github.io/docs/unleash_context).
+
 ## v3.1.0
 **General**
 
