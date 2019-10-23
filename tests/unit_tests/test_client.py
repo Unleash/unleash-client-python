@@ -152,9 +152,14 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
     time.sleep(1)
+    # Only fallback function.
     assert unleash_client.is_enabled("testFlag", fallback_function=fallback_spy)
     assert fallback_spy.call_count == 2
+
+    # Default value and fallback function.
     assert unleash_client.is_enabled("testFlag", default_value=True, fallback_function=bad_fallback)
+
+    # Handle exceptions or invalid feature flags.
     assert unleash_client.is_enabled("notFoundTestFlag", fallback_function=good_fallback)
 
 
