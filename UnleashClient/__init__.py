@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Dict
+from typing import Dict, Callable
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -164,7 +164,8 @@ class UnleashClient():
     def is_enabled(self,
                    feature_name: str,
                    context: dict = {},
-                   default_value: bool = False) -> bool:
+                   default_value: bool = False,
+                   fallback_function: Callable = None) -> bool:
         """
         Checks if a feature toggle is enabled.
 
@@ -174,17 +175,23 @@ class UnleashClient():
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :param default_value: Allows override of default value.
+        :param fallback_function: Allows users to provide a custom function to set default value.
         :return: True/False
         """
         context.update(self.unleash_static_context)
 
+        if fallback_function:
+            fallback_value = default_value or fallback_function(feature_name, context)
+        else:
+            fallback_value = default_value
+
         if self.is_initialized:
             try:
-                return self.features[feature_name].is_enabled(context, default_value)
+                return self.features[feature_name].is_enabled(context, default_value, fallback_function)
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
-                return default_value
+                return fallback_value
         else:
             LOGGER.warning("Returning default value for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
