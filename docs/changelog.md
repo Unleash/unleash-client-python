@@ -1,3 +1,8 @@
+## v3.2.0
+**General**
+
+* (Major) Allow users to supply a fallback function to customize the default value of a feature flag.
+
 ## v3.1.1
 **Bugfixes**
 

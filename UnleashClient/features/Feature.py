@@ -1,3 +1,4 @@
+from typing import Callable
 from UnleashClient.utils import LOGGER
 
 
@@ -46,15 +47,20 @@ class Feature:
 
     def is_enabled(self,
                    context: dict = None,
-                   default_value: bool = False) -> bool:
+                   default_value: bool = False,
+                   fallback_function: Callable = None) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
         :param default_value: Optional, but allows for override.
+        :param fallback_function: Optional, but allows for fallback function.
         :return:
         """
-        flag_value = default_value
+        if fallback_function:
+            flag_value = default_value or fallback_function(self.name, context)
+        else:
+            flag_value = default_value
 
         if self.enabled:
             try:

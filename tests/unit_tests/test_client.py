@@ -136,6 +136,40 @@ def test_uc_is_enabled(unleash_client):
 
 
 @responses.activate
+def test_uc_fallbackfunction(unleash_client, mocker):
+    def good_fallback(feature_name: str, context: dict) -> bool:
+        return True
+
+    def bad_fallback(feature_name: str, context: dict) -> bool:
+        return False
+
+    def context_fallback(feature_name: str, context: dict) -> bool:
+        return context['wat']
+
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    fallback_spy = mocker.Mock(wraps=good_fallback)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    # Only fallback function.
+    assert unleash_client.is_enabled("testFlag", fallback_function=fallback_spy)
+    assert fallback_spy.call_count == 1
+
+    # Default value and fallback function.
+    assert unleash_client.is_enabled("testFlag", default_value=True, fallback_function=bad_fallback)
+
+    # Handle exceptions or invalid feature flags.
+    assert unleash_client.is_enabled("notFoundTestFlag", fallback_function=good_fallback)
+
+    # Handle execption using context.
+    assert unleash_client.is_enabled("notFoundTestFlag", context={'wat': True}, fallback_function=context_fallback)
+
+
+@responses.activate
 def test_uc_dirty_cache(unleash_client_nodestroy):
     unleash_client = unleash_client_nodestroy
     # Set up API
