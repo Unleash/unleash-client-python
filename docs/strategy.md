@@ -16,7 +16,7 @@ Method to load data on object initialization, if desired.  This should parse the
 
 The value returned by `load_provisioning()` will be stored in the _self.parsed_provisioning_ class variable when object is created.  The superclass returns an empty list since most of Unleash's default strategies are list-based (in one way or another).
 
-## `_call_(context)`
+## `apply(context)`
 Strategy implementation goes here.
 
 **Arguments**
