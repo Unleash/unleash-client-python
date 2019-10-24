@@ -143,6 +143,9 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     def bad_fallback(feature_name: str, context: dict) -> bool:
         return False
 
+    def context_fallback(feature_name: str, context: dict) -> bool:
+        return context['wat']
+
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
@@ -161,6 +164,9 @@ def test_uc_fallbackfunction(unleash_client, mocker):
 
     # Handle exceptions or invalid feature flags.
     assert unleash_client.is_enabled("notFoundTestFlag", fallback_function=good_fallback)
+
+    # Handle execption using context.
+    assert unleash_client.is_enabled("notFoundTestFlag", context={'wat': True}, fallback_function=context_fallback)
 
 
 @responses.activate
