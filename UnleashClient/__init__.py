@@ -180,17 +180,18 @@ class UnleashClient():
         """
         context.update(self.unleash_static_context)
 
-        if fallback_function:
-            fallback_value = default_value or fallback_function(feature_name, context)
-        else:
-            fallback_value = default_value
-
         if self.is_initialized:
             try:
                 return self.features[feature_name].is_enabled(context, default_value, fallback_function)
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
+
+                if fallback_function:
+                    fallback_value = default_value or fallback_function(feature_name, context)
+                else:
+                    fallback_value = default_value
+
                 return fallback_value
         else:
             LOGGER.warning("Returning default value for feature: %s", feature_name)

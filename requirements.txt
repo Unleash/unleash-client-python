@@ -16,7 +16,7 @@ pytest
 pytest-cov
 pytest-flake8
 pytest-html==1.22.0
-pytest-mock
+pytest-mocke
 pytest-rerunfailures
 pytest-runner
 pytest-xdist
