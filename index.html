@@ -152,18 +152,30 @@ client.initialize_client()
 
 <h2 id="checking-if-a-feature-is-enabled">Checking if a feature is enabled</h2>
 <p>A check of a simple toggle:</p>
-<pre><code>client.is_enabled(&quot;My Toggle&quot;)
+<pre><code class="Python">client.is_enabled(&quot;My Toggle&quot;)
 </code></pre>
 
 <p>Specifying a default value:</p>
-<pre><code>client.is_enabled(&quot;My Toggle&quot;, default_value=True)
+<pre><code class="Python">client.is_enabled(&quot;My Toggle&quot;, default_value=True)
 </code></pre>
 
 <p>Supplying application context:</p>
-<pre><code>app_context = {&quot;userId&quot;: &quot;test@email.com&quot;}
+<pre><code class="Python">app_context = {&quot;userId&quot;: &quot;test@email.com&quot;}
 client.is_enabled(&quot;User ID Toggle&quot;, app_context)
 </code></pre>
 
+<p>Supplying a fallback function:</p>
+<pre><code class="Python">def custom_fallback(feature_name: str, context: dict) -&gt; bool:
+    return True
+
+client.is_enabled(&quot;My Toggle&quot;, fallback_function=custom_fallback)
+</code></pre>
+
+<ul>
+<li>Must accept the fature name and context as an argument.</li>
+<li>Client will evaluate the fallback function once per call of <code>is_enabled()</code>.  Please keep this in mind when creating your fallback function!</li>
+<li>If both a <code>default_value</code> and <code>fallback_function</code> are supplied, client will define the default value by <code>OR</code>ing the default value and the output of the fallback function.</li>
+</ul>
 <h2 id="logging">Logging</h2>
 <p>Unleash Client uses the built-in logging facility to show information about errors, background jobs (feature-flag updates and metrics), et cetera.</p>
 <p>It's highly recommended that users implement</p>
@@ -229,5 +241,5 @@ root.addHandler(handler)
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-10-10 14:02:04
+Build Date UTC : 2019-10-24 16:34:27
 -->
