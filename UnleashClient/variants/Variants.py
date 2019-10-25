@@ -1,3 +1,4 @@
+import random
 from UnleashClient import utils
 
 
@@ -28,6 +29,21 @@ class Variants():
 
         return override_variant
 
+    def _get_seed(self, context: dict) -> str:
+        """
+        Grabs seed value from context.
+        """
+        seed = str(random.random() * 10000)
+
+        if 'userId' in context:
+            seed = context['userId']
+        elif 'sessionId' in context:
+            seed = context['sessionId']
+        elif 'remoteAddress' in context:
+            seed = context['remoteAddress']
+
+        return seed
+
     def select_variant(self, context: dict) -> dict:
         """
         Determines what variation a user is in.
@@ -35,3 +51,4 @@ class Variants():
         :param context:
         :return:
         """
+        pass
