@@ -41,15 +41,15 @@ VARIANTS = \
 
 @pytest.fixture()
 def variations():
-    yield Variants(VARIANTS)
+    yield Variants(VARIANTS, "TestFeature")
 
 
-def test_variations_overridematch(variations):
+def test_variations_override_match(variations):
     override_variant = variations._apply_overrides({'userId': 'ivanklee86@gmail.com'})
     assert override_variant['name'] == 'VarA'
 
 
-def test_variations_overridnoematch(variations):
+def test_variations_overrid_nomatch(variations):
     assert not variations._apply_overrides({'userId': 'ivanklee87@gmail.com'})
 
 
@@ -71,3 +71,31 @@ def test_variations_seed(variations):
     assert context['sessionId'] == variations._get_seed(context)
     del context['sessionId']
     assert context['remoteAddress'] == variations._get_seed(context)
+
+
+def test_variation_selectvariation_happypath(variations):
+    variant = variations.select_variant({'userId': '2'})
+    assert variant
+    assert 'payload' in variant
+    assert variant['name'] == 'VarC'
+
+
+def test_variation_selectvariation_multi(variations):
+    tracker = {}
+    for x in range(100):
+        variant = variations.select_variant({})
+        name = variant['name']
+        if name in tracker:
+            tracker[name] += 1
+        else:
+            tracker[name] = 1
+
+    assert len(tracker) == 3
+    assert sum([tracker[x] for x in tracker.keys()]) == 100
+
+
+def test_variation_override(variations):
+    variant = variations.select_variant({'userId': 'ivanklee86@gmail.com'})
+    assert variant
+    assert 'payload' in variant
+    assert variant['name'] == 'VarA'

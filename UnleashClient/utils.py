@@ -4,8 +4,9 @@ import mmh3  # pylint: disable=import-error
 LOGGER = logging.getLogger(__name__)
 
 def normalized_hash(identifier: str,
-                    activation_group: str) -> int:
-    return mmh3.hash("{}:{}".format(activation_group, identifier), signed=False) % 100 + 1
+                    activation_group: str,
+                    normalizer: int = 100) -> int:
+    return mmh3.hash("{}:{}".format(activation_group, identifier), signed=False) % normalizer + 1
 
 
 def get_identifier(context_key_name: str, context: dict) -> str:

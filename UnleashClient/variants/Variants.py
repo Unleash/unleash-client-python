@@ -1,15 +1,17 @@
 import random
+import copy
 from UnleashClient import utils
 
 
 class Variants():
-    def __init__(self, variants_list: list) -> None:
+    def __init__(self, variants_list: list, feature_name: str) -> None:
         """
         Represents an A/B test
 
         variants_list = From the strategy document.
         """
         self.variants = variants_list
+        self.feature_name = feature_name
 
     def _apply_overrides(self, context: dict) -> dict:
         """
@@ -29,7 +31,8 @@ class Variants():
 
         return override_variant
 
-    def _get_seed(self, context: dict) -> str:
+    @staticmethod
+    def _get_seed(context: dict) -> str:
         """
         Grabs seed value from context.
         """
@@ -44,6 +47,14 @@ class Variants():
 
         return seed
 
+    @staticmethod
+    def _format_variation(variation: dict) -> dict:
+        formatted_variation = copy.deepcopy(variation)
+        del formatted_variation['weight']
+        if 'overrides' in formatted_variation:
+            del formatted_variation['overrides']
+        return formatted_variation
+
     def select_variant(self, context: dict) -> dict:
         """
         Determines what variation a user is in.
@@ -51,4 +62,21 @@ class Variants():
         :param context:
         :return:
         """
-        pass
+        override_variant = self._apply_overrides(context)
+        if override_variant:
+            return self._format_variation(override_variant)
+
+        total_weight = sum([x['weight'] for x in self.variants])
+        if total_weight <= 0:
+            return {}
+
+        target = utils.normalized_hash(self._get_seed(context), self.feature_name, total_weight)
+        counter = 0
+        for variation in self.variants:
+            counter += variation['weight']
+
+            if counter >= target:
+                return self._format_variation(variation)
+
+        # Catch all return.
+        return {}
