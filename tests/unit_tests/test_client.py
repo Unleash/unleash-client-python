@@ -114,7 +114,7 @@ def test_uc_lifecycle(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) == 3
+    assert len(unleash_client.features) >= 4
 
     # Simulate server provisioning change
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200)
