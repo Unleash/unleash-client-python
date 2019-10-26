@@ -81,3 +81,26 @@ client.is_enabled("My Toggle", fallback_function=custom_fallback)
 - Must accept the fature name and context as an argument.
 - Client will evaluate the fallback function once per call of `is_enabled()`.  Please keep this in mind when creating your fallback function!
 - If both a `default_value` and `fallback_function` are supplied, client will define the default value by `OR`ing the default value and the output of the fallback function.
+
+### Getting a varient
+
+Checking for a varient:
+```python
+context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
+
+varient = client.select_variant("MyVarientToggle", context)
+
+print(varient)
+> {
+>    "name": "variant1",
+>    "payload": {
+>        "type": "string",
+>        "value": "val1"
+>        },
+>    "enabled": True
+> }
+```
+
+`select_variant()` supports the same arguments (i.e. fallback functions) as the `is_enabled()` method.
+
+For more information about varients, see the [Beta feature documentation](https://unleash.github.io/docs/beta_features).
