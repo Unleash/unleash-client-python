@@ -20,7 +20,7 @@ class Variants():
         Figures out if an override should be applied based on a context.
 
         Notes:
-            - This matches only the first varient found.
+            - This matches only the first variant found.
         """
         variants_with_overrides = [x for x in self.variants if 'overrides' in x.keys()]
         override_variant = {}  # type: Dict

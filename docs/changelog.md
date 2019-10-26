@@ -1,6 +1,6 @@
 ## v3.3.0
 **General**
-* (Major) Add support for varients on feature toggles.
+* (Major) Add support for variants on feature toggles.
 
 ## v3.2.0
 **General**
