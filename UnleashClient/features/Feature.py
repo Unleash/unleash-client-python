@@ -1,4 +1,5 @@
 from typing import Callable
+from UnleashClient.variants import Variants
 from UnleashClient.utils import LOGGER
 
 
@@ -7,7 +8,8 @@ class Feature:
     def __init__(self,
                  name: str,
                  enabled: bool,
-                 strategies: list) -> None:
+                 strategies: list,
+                 variants: Variants = None) -> None:
         """
         An representation of a fewature object
 
@@ -19,6 +21,7 @@ class Feature:
         self.name = name
         self.enabled = enabled
         self.strategies = strategies
+        self.variations = variants
 
         # Stats tracking
         self.yes_count = 0

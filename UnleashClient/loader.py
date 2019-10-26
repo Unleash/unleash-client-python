@@ -1,5 +1,6 @@
 from fcache.cache import FileCache
 from UnleashClient.features import Feature
+from UnleashClient.variants import Variants
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
 
@@ -36,9 +37,16 @@ def _create_feature(provisioning: dict,
     else:
         parsed_strategies = []
 
+    if "variants" in provisioning:
+        variant = Variants(provisioning['variants'], provisioning['name'])
+    else:
+        variant = None
+
     return Feature(name=provisioning["name"],
                    enabled=provisioning["enabled"],
-                   strategies=parsed_strategies)
+                   strategies=parsed_strategies,
+                   variants=variant
+                   )
 
 
 def load_features(cache: FileCache,
@@ -76,6 +84,12 @@ def load_features(cache: FileCache,
             if strategies:
                 parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping)
                 feature_for_update.strategies = parsed_strategies
+
+            if 'variants' in parsed_features[feature]:
+                feature_for_update.variants = Variants(
+                    parsed_features[feature]['variants'],
+                    parsed_features[feature]['name']
+                )
 
         # Handle creation or deletions
         new_features = list(set(feature_names) - set(feature_toggles.keys()))
