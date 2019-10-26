@@ -1,8 +1,10 @@
 import pytest
 from UnleashClient.features import Feature
-from UnleashClient.strategies import RemoteAddress, UserWithId
+from UnleashClient.strategies import RemoteAddress, UserWithId, Default
+from UnleashClient.variants import Variants
 from tests.utilities import generate_email_list
 from tests.utilities.testing_constants import IP_LIST
+from tests.utilities.mocks.mock_variants import VARIANTS
 
 
 (EMAIL_LIST, CONTEXT) = generate_email_list(20)
@@ -12,6 +14,13 @@ from tests.utilities.testing_constants import IP_LIST
 def test_feature():
     strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), UserWithId(parameters={"userIds": EMAIL_LIST})]
     yield Feature("My Feature", True, strategies)
+
+
+@pytest.fixture()
+def test_feature_variants():
+    strategies = [Default()]
+    variants = Variants(VARIANTS, "My Feature")
+    yield Feature("My Feature", True, strategies, variants)
 
 
 def test_create_feature_true(test_feature):
@@ -51,3 +60,15 @@ def test_create_feature_exception(test_feature):
 
     CONTEXT["remoteAddress"] = "69.208.0.1"
     assert not my_feature.is_enabled(CONTEXT)
+
+
+def test_select_variation_novariation(test_feature):
+    selected_variant = test_feature.select_variant()
+    assert type(selected_variant) == dict
+    assert selected_variant['name'] == 'disabled'
+
+
+def test_select_variation_variation(test_feature_variants):
+    selected_variant = test_feature_variants.select_variant({'userId': '2'})
+    assert selected_variant['enabled']
+    assert selected_variant['name'] == 'VarB'
