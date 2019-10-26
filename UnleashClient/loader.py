@@ -1,6 +1,6 @@
 from fcache.cache import FileCache
-from UnleashClient.features import Feature
-from UnleashClient.variants import Variants
+from UnleashClient.features.Feature import Feature
+from UnleashClient.variants.Variants import Variants
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
 
