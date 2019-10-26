@@ -66,7 +66,10 @@ MOCK_JSON = """
          "description":"Testing three variants",
          "enabled":true,
          "strategies":[
-
+            {
+               "name":"default",
+               "parameters":{}
+            }
          ],
          "variants":[
             {
@@ -100,7 +103,10 @@ MOCK_JSON = """
          "description":"Variants with payload",
          "enabled":true,
          "strategies":[
-
+            {
+               "name":"default",
+               "parameters":{}
+            }
          ],
          "variants":[
             {
@@ -134,7 +140,10 @@ MOCK_JSON = """
          "description":"Variant with overrides",
          "enabled":true,
          "strategies":[
-
+            {
+               "name":"default",
+               "parameters":{}
+            }
          ],
          "variants":[
             {
@@ -211,7 +220,8 @@ def test_feature_variantsA_enabled(unleash_client):
         "enabled": True
     }
 
-    assert unleash_client.select_variant("Feature.Variants.A", context) == expected_result
+    actual_result = unleash_client.select_variant("Feature.Variants.A", context)
+    assert actual_result == expected_result
 
 
 @responses.activate
@@ -233,13 +243,14 @@ def test_feature_variantsMissingToggle(unleash_client):
         "enabled": False
     }
 
-    assert unleash_client.select_variant("Feature.Variants.MissingToggle", context) == expected_result
+    actual_result = unleash_client.select_variant("Feature.Variants.MissingToggle", context)
+    assert actual_result == expected_result
 
 
 @responses.activate
-def test_feature_variantsB_enabled(unleash_client):
+def test_feature_variantsB_2(unleash_client):
     """
-    Feature.Variants.B should be enabled for user 2
+    Feature.Variants.B should be enabled for user 2.
     """
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
@@ -261,4 +272,295 @@ def test_feature_variantsB_enabled(unleash_client):
         "enabled": True
     }
 
-    assert unleash_client.select_variant("Feature.Variants.B", context) == expected_result
+    actual_result = unleash_client.select_variant("Feature.Variants.B", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsB_0(unleash_client):
+    """
+    Feature.Variants.B should be enabled for user 0
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "0"
+    }
+
+    expected_result = {
+        "name": "variant2",
+        "payload": {
+            "type": "string",
+            "value": "val2"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.B", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsC_315(unleash_client):
+    """
+    Feature.Variants.C should return variant1 for user 315
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "315"
+    }
+
+    expected_result = {
+        "name": "variant1",
+        "payload": {
+            "type": "string",
+            "value": "val1"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsC_320(unleash_client):
+    """
+    Feature.Variants.C should return variant1 for user 320
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "320"
+    }
+
+    expected_result = {
+        "name": "variant2",
+        "payload": {
+            "type": "string",
+            "value": "val2"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsC_729(unleash_client):
+    """
+    Feature.Variants.C should return variant1 for user 729
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "729"
+    }
+
+    expected_result = {
+        "name": "variant3",
+        "payload": {
+            "type": "string",
+            "value": "val3"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsD_enabled367(unleash_client):
+    """
+    Feature.Variants.D should return variant1 for user 367
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "367"
+    }
+
+    expected_result = {
+        "name": "variant1",
+        "payload": {
+            "type": "string",
+            "value": "val1"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsD_enabled31(unleash_client):
+    """
+    Feature.Variants.D should return variant2 for user id 31
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "31"
+    }
+
+    expected_result = {
+        "name": "variant2",
+        "payload": {
+            "type": "string",
+            "value": "val2"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsD_19(unleash_client):
+    """
+    Feature.Variants.D should return variant3 for user ID 19
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "19"
+    }
+
+    expected_result = {
+        "name": "variant3",
+        "payload": {
+            "type": "string",
+            "value": "val3"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsoverrideD_132(unleash_client):
+    """
+    Feature.Variants.override.D should return variant1 for user ID 132
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "132"
+    }
+
+    expected_result = {
+        "name": "variant1",
+        "payload": {
+            "type": "string",
+            "value": "val1"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsoverrideD_61(unleash_client):
+    """
+    Feature.Variants.override.D should return variant1 for user ID 61
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "61"
+    }
+
+    expected_result = {
+        "name": "variant1",
+        "payload": {
+            "type": "string",
+            "value": "val1"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    assert actual_result == expected_result
+
+
+@responses.activate
+def test_feature_variantsoverrideD_82(unleash_client):
+    """
+    Feature.Variants.override.D should return variant2 for user ID 82
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    context = {
+        'userId': "82"
+    }
+
+    expected_result = {
+        "name": "variant2",
+        "payload": {
+            "type": "string",
+            "value": "val2"
+        },
+        "enabled": True
+    }
+
+    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    assert actual_result == expected_result
