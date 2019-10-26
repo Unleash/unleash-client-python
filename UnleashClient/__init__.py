@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Dict, Callable
+from typing import Dict, Callable, Any
 import copy
 from fcache.cache import FileCache
 from apscheduler.job import Job
@@ -205,10 +205,10 @@ class UnleashClient():
 
     # pylint: disable=broad-except
     def select_variant(self,
-                   feature_name: str,
-                   context: dict = {},
-                   default_value: bool = False,
-                   fallback_function: Callable = None) -> dict:
+                       feature_name: str,
+                       context: dict = {},
+                       default_value: bool = False,
+                       fallback_function: Callable = None) -> dict:
         """
         Checks if a feature toggle is enabled.  If so, return variant.
 
@@ -222,7 +222,7 @@ class UnleashClient():
         :return: True/False
         """
         context.update(self.unleash_static_context)
-        disabled_response = copy.deepcopy(DISABLED_VARIATION)
+        disabled_response = copy.deepcopy(DISABLED_VARIATION)  # type: Dict[str, Any]
 
         if self.is_initialized:
             try:
