@@ -68,7 +68,12 @@ class Feature:
 
         if self.enabled:
             try:
-                strategy_result = any([x.execute(context) for x in self.strategies])
+                if self.strategies:
+                    strategy_result = any([x.execute(context) for x in self.strategies])
+                else:
+                    # If no strategies are present, should default to true.  This isn't possible via UI.
+                    strategy_result = True
+
                 flag_value = flag_value or strategy_result
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)

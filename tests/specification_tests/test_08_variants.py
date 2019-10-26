@@ -36,12 +36,7 @@ MOCK_JSON = """
          "name":"Feature.Variants.B",
          "description":"Enabled for user=123",
          "enabled":true,
-         "strategies":[
-            {
-               "name":"default",
-               "parameters":{}
-            }
-         ],
+         "strategies":[],
          "variants":[
             {
                "name":"variant1",
@@ -65,12 +60,7 @@ MOCK_JSON = """
          "name":"Feature.Variants.C",
          "description":"Testing three variants",
          "enabled":true,
-         "strategies":[
-            {
-               "name":"default",
-               "parameters":{}
-            }
-         ],
+         "strategies":[],
          "variants":[
             {
                "name":"variant1",
@@ -102,12 +92,7 @@ MOCK_JSON = """
          "name":"Feature.Variants.D",
          "description":"Variants with payload",
          "enabled":true,
-         "strategies":[
-            {
-               "name":"default",
-               "parameters":{}
-            }
-         ],
+         "strategies":[],
          "variants":[
             {
                "name":"variant1",
@@ -139,12 +124,7 @@ MOCK_JSON = """
          "name":"Feature.Variants.override.D",
          "description":"Variant with overrides",
          "enabled":true,
-         "strategies":[
-            {
-               "name":"default",
-               "parameters":{}
-            }
-         ],
+         "strategies":[],
          "variants":[
             {
                "name":"variant1",
