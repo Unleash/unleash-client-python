@@ -2,6 +2,7 @@ import random
 import copy
 from typing import Dict
 from UnleashClient import utils
+from UnleashClient.constants import DISABLED_VARIATION
 
 
 class Variants():
@@ -63,21 +64,24 @@ class Variants():
         :param context:
         :return:
         """
-        override_variant = self._apply_overrides(context)
-        if override_variant:
-            return self._format_variation(override_variant)
+        fallback_variant = copy.deepcopy(DISABLED_VARIATION)
 
-        total_weight = sum([x['weight'] for x in self.variants])
-        if total_weight <= 0:
-            return {}
+        if self.variants:
+            override_variant = self._apply_overrides(context)
+            if override_variant:
+                return self._format_variation(override_variant)
 
-        target = utils.normalized_hash(self._get_seed(context), self.feature_name, total_weight)
-        counter = 0
-        for variation in self.variants:
-            counter += variation['weight']
+            total_weight = sum([x['weight'] for x in self.variants])
+            if total_weight <= 0:
+                return fallback_variant
 
-            if counter >= target:
-                return self._format_variation(variation)
+            target = utils.normalized_hash(self._get_seed(context), self.feature_name, total_weight)
+            counter = 0
+            for variation in self.variants:
+                counter += variation['weight']
+
+                if counter >= target:
+                    return self._format_variation(variation)
 
         # Catch all return.
-        return {}
+        return fallback_variant

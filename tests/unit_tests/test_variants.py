@@ -63,3 +63,10 @@ def test_variation_override(variations):
     assert variant
     assert 'payload' in variant
     assert variant['name'] == 'VarA'
+
+
+def test_variation_novariants():
+    variations = Variants([], "TestFeature")
+    variant = variations.select_variant({})
+    assert variant
+    assert variant['name'] == 'disabled'
