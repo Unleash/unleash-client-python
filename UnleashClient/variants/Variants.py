@@ -21,7 +21,7 @@ class Variants():
             - This matches only the first varient found.
         """
         variants_with_overrides = [x for x in self.variants if 'overrides' in x.keys()]
-        override_variant: dict = {}
+        override_variant = {}  # type: Dict
 
         for variant in variants_with_overrides:
             for override in variant['overrides']:
