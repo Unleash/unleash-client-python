@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from typing import Dict, Callable
+import copy
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -8,7 +9,7 @@ from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
-from UnleashClient.constants import METRIC_LAST_SENT_TIME
+from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 
@@ -160,6 +161,15 @@ class UnleashClient():
         self.scheduler.shutdown()
         self.cache.delete()
 
+    @staticmethod
+    def _get_fallback_value(default_value: bool, fallback_function: Callable, feature_name: str, context: dict) -> bool:
+        if fallback_function:
+            fallback_value = default_value or fallback_function(feature_name, context)
+        else:
+            fallback_value = default_value
+
+        return fallback_value
+
     # pylint: disable=broad-except
     def is_enabled(self,
                    feature_name: str,
@@ -186,14 +196,44 @@ class UnleashClient():
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
-
-                if fallback_function:
-                    fallback_value = default_value or fallback_function(feature_name, context)
-                else:
-                    fallback_value = default_value
-
-                return fallback_value
+                return self._get_fallback_value(default_value, fallback_function, feature_name, context)
         else:
             LOGGER.warning("Returning default value for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
-            return default_value
+            return self._get_fallback_value(default_value, fallback_function, feature_name, context)
+
+
+    # pylint: disable=broad-except
+    def select_variant(self,
+                   feature_name: str,
+                   context: dict = {},
+                   default_value: bool = False,
+                   fallback_function: Callable = None) -> dict:
+        """
+        Checks if a feature toggle is enabled.  If so, return variant.
+
+        Notes:
+        * If client hasn't been initialized yet or an error occurs, flat will default to false.
+
+        :param feature_name: Name of the feature
+        :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
+        :param default_value: Allows override of default value.
+        :param fallback_function: Allows users to provide a custom function to set default value.
+        :return: True/False
+        """
+        context.update(self.unleash_static_context)
+        disabled_response = copy.deepcopy(DISABLED_VARIATION)
+
+        if self.is_initialized:
+            try:
+                return self.features[feature_name].select_variant(context, default_value, fallback_function)
+            except Exception as excep:
+                LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
+                LOGGER.warning("Error checking feature flag variant: %s", excep)
+                disabled_response['enabled'] = self._get_fallback_value(default_value, fallback_function, feature_name, context)
+                return disabled_response
+        else:
+            LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
+            LOGGER.warning("Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
+            disabled_response['enabled'] = self._get_fallback_value(default_value, fallback_function, feature_name, context)
+            return disabled_response
