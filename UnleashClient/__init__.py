@@ -219,7 +219,7 @@ class UnleashClient():
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :param default_value: Allows override of default value.
         :param fallback_function: Allows users to provide a custom function to set default value.
-        :return: True/False
+        :return: Dict with variant and feature flag status.
         """
         context.update(self.unleash_static_context)
         disabled_response = copy.deepcopy(DISABLED_VARIATION)  # type: Dict[str, Any]
