@@ -231,7 +231,7 @@ def test_uc_not_initialized_isenabled():
 
 
 @responses.activate
-def test_uc_select_variant():
+def test_uc_get_variant():
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
@@ -256,7 +256,7 @@ def test_uc_select_variant():
 
 
 @responses.activate
-def test_uc_not_initialized_selectvariant():
+def test_uc_not_initialized_getvariant():
     unleash_client = UnleashClient(URL, APP_NAME)
     variant = unleash_client.get_variant("ThisFlagDoesn'tExist")
     assert not variant['enabled']

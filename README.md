@@ -101,6 +101,4 @@ print(variant)
 > }
 ```
 
-`select_variant()` supports the same arguments (i.e. fallback functions) as the `is_enabled()` method.
-
 For more information about variants, see the [Beta feature documentation](https://unleash.github.io/docs/beta_features).

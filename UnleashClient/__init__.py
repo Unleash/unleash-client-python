@@ -206,9 +206,7 @@ class UnleashClient():
     # pylint: disable=broad-except
     def get_variant(self,
                     feature_name: str,
-                    context: dict = {},
-                    default_value: bool = False,
-                    fallback_function: Callable = None) -> dict:
+                    context: dict = {}) -> dict:
         """
         Checks if a feature toggle is enabled.  If so, return variant.
 
@@ -217,23 +215,18 @@ class UnleashClient():
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
-        :param default_value: Allows override of default value.
-        :param fallback_function: Allows users to provide a custom function to set default value.
         :return: Dict with variant and feature flag status.
         """
         context.update(self.unleash_static_context)
-        disabled_response = copy.deepcopy(DISABLED_VARIATION)  # type: Dict[str, Any]
 
         if self.is_initialized:
             try:
-                return self.features[feature_name].get_variant(context, default_value, fallback_function)
+                return self.features[feature_name].get_variant(context)
             except Exception as excep:
                 LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag variant: %s", excep)
-                disabled_response['enabled'] = self._get_fallback_value(default_value, fallback_function, feature_name, context)
-                return disabled_response
+                return DISABLED_VARIATION
         else:
             LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
-            disabled_response['enabled'] = self._get_fallback_value(default_value, fallback_function, feature_name, context)
-            return disabled_response
+            return DISABLED_VARIATION
