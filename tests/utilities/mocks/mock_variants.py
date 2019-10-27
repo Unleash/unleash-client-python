@@ -11,7 +11,7 @@ VARIANTS = \
                 {
                     "contextName": "userId",
                     "values": [
-                        "ivanklee86@gmail.com"
+                        "1"
                     ]
                 }
             ]

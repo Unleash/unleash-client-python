@@ -9,12 +9,12 @@ def variations():
 
 
 def test_variations_override_match(variations):
-    override_variant = variations._apply_overrides({'userId': 'ivanklee86@gmail.com'})
+    override_variant = variations._apply_overrides({'userId': '1'})
     assert override_variant['name'] == 'VarA'
 
 
 def test_variations_overrid_nomatch(variations):
-    assert not variations._apply_overrides({'userId': 'ivanklee87@gmail.com'})
+    assert not variations._apply_overrides({'userId': '2'})
 
 
 def test_variations_seed(variations):
@@ -25,7 +25,7 @@ def test_variations_seed(variations):
 
     # UserId, SessionId, and remoteAddress
     context = {
-        'userId': 'ivanklee86@gmail.com',
+        'userId': '1',
         'sessionId': '1',
         'remoteAddress': '1.1.1.1'
     }
@@ -59,7 +59,7 @@ def test_variation_selectvariation_multi(variations):
 
 
 def test_variation_override(variations):
-    variant = variations.select_variant({'userId': 'ivanklee86@gmail.com'})
+    variant = variations.select_variant({'userId': '1'})
     assert variant
     assert 'payload' in variant
     assert variant['name'] == 'VarA'
