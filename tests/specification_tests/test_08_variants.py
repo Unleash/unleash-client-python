@@ -200,7 +200,7 @@ def test_feature_variantsA_enabled(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.A", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.A", context)
     assert actual_result == expected_result
 
 
@@ -223,7 +223,7 @@ def test_feature_variantsMissingToggle(unleash_client):
         "enabled": False
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.MissingToggle", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.MissingToggle", context)
     assert actual_result == expected_result
 
 
@@ -252,7 +252,7 @@ def test_feature_variantsB_2(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.B", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.B", context)
     assert actual_result == expected_result
 
 
@@ -281,7 +281,7 @@ def test_feature_variantsB_0(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.B", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.B", context)
     assert actual_result == expected_result
 
 
@@ -310,7 +310,7 @@ def test_feature_variantsC_315(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.C", context)
     assert actual_result == expected_result
 
 
@@ -339,7 +339,7 @@ def test_feature_variantsC_320(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.C", context)
     assert actual_result == expected_result
 
 
@@ -368,7 +368,7 @@ def test_feature_variantsC_729(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.C", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.C", context)
     assert actual_result == expected_result
 
 
@@ -397,7 +397,7 @@ def test_feature_variantsD_enabled367(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.D", context)
     assert actual_result == expected_result
 
 
@@ -426,7 +426,7 @@ def test_feature_variantsD_enabled31(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.D", context)
     assert actual_result == expected_result
 
 
@@ -455,7 +455,7 @@ def test_feature_variantsD_19(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.D", context)
     assert actual_result == expected_result
 
 
@@ -484,7 +484,7 @@ def test_feature_variantsoverrideD_132(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.override.D", context)
     assert actual_result == expected_result
 
 
@@ -513,7 +513,7 @@ def test_feature_variantsoverrideD_61(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.override.D", context)
     assert actual_result == expected_result
 
 
@@ -542,5 +542,5 @@ def test_feature_variantsoverrideD_82(unleash_client):
         "enabled": True
     }
 
-    actual_result = unleash_client.select_variant("Feature.Variants.override.D", context)
+    actual_result = unleash_client.get_variant("Feature.Variants.override.D", context)
     assert actual_result == expected_result

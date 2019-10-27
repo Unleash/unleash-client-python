@@ -63,12 +63,12 @@ def test_create_feature_exception(test_feature):
 
 
 def test_select_variation_novariation(test_feature):
-    selected_variant = test_feature.select_variant()
+    selected_variant = test_feature.get_variant()
     assert type(selected_variant) == dict
     assert selected_variant['name'] == 'disabled'
 
 
 def test_select_variation_variation(test_feature_variants):
-    selected_variant = test_feature_variants.select_variant({'userId': '2'})
+    selected_variant = test_feature_variants.get_variant({'userId': '2'})
     assert selected_variant['enabled']
     assert selected_variant['name'] == 'VarB'

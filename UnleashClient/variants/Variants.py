@@ -57,7 +57,7 @@ class Variants():
             del formatted_variation['overrides']
         return formatted_variation
 
-    def select_variant(self, context: dict) -> dict:
+    def get_variant(self, context: dict) -> dict:
         """
         Determines what variation a user is in.
 

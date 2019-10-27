@@ -59,7 +59,7 @@ Checking for a variant:
 ```python
 context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
 
-variant = client.select_variant("MyvariantToggle", context)
+variant = client.get_variant("MyvariantToggle", context)
 
 print(variant)
 > {

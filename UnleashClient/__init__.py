@@ -204,11 +204,11 @@ class UnleashClient():
 
 
     # pylint: disable=broad-except
-    def select_variant(self,
-                       feature_name: str,
-                       context: dict = {},
-                       default_value: bool = False,
-                       fallback_function: Callable = None) -> dict:
+    def get_variant(self,
+                    feature_name: str,
+                    context: dict = {},
+                    default_value: bool = False,
+                    fallback_function: Callable = None) -> dict:
         """
         Checks if a feature toggle is enabled.  If so, return variant.
 
@@ -226,7 +226,7 @@ class UnleashClient():
 
         if self.is_initialized:
             try:
-                return self.features[feature_name].select_variant(context, default_value, fallback_function)
+                return self.features[feature_name].get_variant(context, default_value, fallback_function)
             except Exception as excep:
                 LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag variant: %s", excep)

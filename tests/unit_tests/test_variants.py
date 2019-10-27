@@ -38,7 +38,7 @@ def test_variations_seed(variations):
 
 
 def test_variation_selectvariation_happypath(variations):
-    variant = variations.select_variant({'userId': '2'})
+    variant = variations.get_variant({'userId': '2'})
     assert variant
     assert 'payload' in variant
     assert variant['name'] == 'VarC'
@@ -47,7 +47,7 @@ def test_variation_selectvariation_happypath(variations):
 def test_variation_selectvariation_multi(variations):
     tracker = {}
     for x in range(100):
-        variant = variations.select_variant({})
+        variant = variations.get_variant({})
         name = variant['name']
         if name in tracker:
             tracker[name] += 1
@@ -59,7 +59,7 @@ def test_variation_selectvariation_multi(variations):
 
 
 def test_variation_override(variations):
-    variant = variations.select_variant({'userId': '1'})
+    variant = variations.get_variant({'userId': '1'})
     assert variant
     assert 'payload' in variant
     assert variant['name'] == 'VarA'
@@ -67,6 +67,6 @@ def test_variation_override(variations):
 
 def test_variation_novariants():
     variations = Variants([], "TestFeature")
-    variant = variations.select_variant({})
+    variant = variations.get_variant({})
     assert variant
     assert variant['name'] == 'disabled'

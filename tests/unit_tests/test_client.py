@@ -243,12 +243,12 @@ def test_uc_select_variant():
 
     time.sleep(1)
     # If feature flag is on.
-    variant = unleash_client.select_variant("testVariations", context={'userId': '2'})
+    variant = unleash_client.get_variant("testVariations", context={'userId': '2'})
     assert variant['name'] == 'VarA'
     assert variant['enabled']
 
     # If feature flag is not.
-    variant = unleash_client.select_variant("testVariations", context={'userId': '3'})
+    variant = unleash_client.get_variant("testVariations", context={'userId': '3'})
     assert variant['name'] == 'disabled'
     assert not variant['enabled']
 
@@ -258,7 +258,7 @@ def test_uc_select_variant():
 @responses.activate
 def test_uc_not_initialized_selectvariant():
     unleash_client = UnleashClient(URL, APP_NAME)
-    variant = unleash_client.select_variant("ThisFlagDoesn'tExist")
+    variant = unleash_client.get_variant("ThisFlagDoesn'tExist")
     assert not variant['enabled']
     assert variant['name'] == 'disabled'
 

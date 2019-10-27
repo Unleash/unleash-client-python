@@ -84,10 +84,10 @@ class Feature:
 
         return flag_value
 
-    def select_variant(self,
-                       context: dict = None,
-                       default_value: bool = False,
-                       fallback_function: Callable = None) -> dict:
+    def get_variant(self,
+                    context: dict = None,
+                    default_value: bool = False,
+                    fallback_function: Callable = None) -> dict:
         """
         Checks if feature is enabled and, if so, get the variant.
 
@@ -100,7 +100,7 @@ class Feature:
 
         if is_feature_enabled and self.variations is not None:
             try:
-                variant = self.variations.select_variant(context)
+                variant = self.variations.get_variant(context)
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
         else:
