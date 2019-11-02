@@ -63,6 +63,8 @@
         
             <li><a class="toctree-l3" href="#checking-if-a-feature-is-enabled">Checking if a feature is enabled</a></li>
         
+            <li><a class="toctree-l3" href="#getting-a-variant">Getting a variant</a></li>
+        
             <li><a class="toctree-l3" href="#logging">Logging</a></li>
         
         </ul>
@@ -176,6 +178,25 @@ client.is_enabled(&quot;My Toggle&quot;, fallback_function=custom_fallback)
 <li>Client will evaluate the fallback function once per call of <code>is_enabled()</code>.  Please keep this in mind when creating your fallback function!</li>
 <li>If both a <code>default_value</code> and <code>fallback_function</code> are supplied, client will define the default value by <code>OR</code>ing the default value and the output of the fallback function.</li>
 </ul>
+<h2 id="getting-a-variant">Getting a variant</h2>
+<p>Checking for a variant:</p>
+<pre><code class="python">context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
+
+variant = client.get_variant(&quot;MyvariantToggle&quot;, context)
+
+print(variant)
+&gt; {
+&gt;    &quot;name&quot;: &quot;variant1&quot;,
+&gt;    &quot;payload&quot;: {
+&gt;        &quot;type&quot;: &quot;string&quot;,
+&gt;        &quot;value&quot;: &quot;val1&quot;
+&gt;        },
+&gt;    &quot;enabled&quot;: True
+&gt; }
+</code></pre>
+
+<p><code>select_variant()</code> supports the same arguments (i.e. fallback functions) as the <code>is_enabled()</code> method.</p>
+<p>For more information about variants, see the <a href="https://unleash.github.io/docs/beta_features">Beta feature documentation</a>.</p>
 <h2 id="logging">Logging</h2>
 <p>Unleash Client uses the built-in logging facility to show information about errors, background jobs (feature-flag updates and metrics), et cetera.</p>
 <p>It's highly recommended that users implement</p>
@@ -241,5 +262,5 @@ root.addHandler(handler)
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-10-24 16:34:27
+Build Date UTC : 2019-11-02 12:08:39
 -->
