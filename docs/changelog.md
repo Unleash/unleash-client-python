@@ -2,6 +2,9 @@
 **General**
 * (Major) Add support for variants on feature toggles.
 
+**Bugfixes**
+* (Minor) Fixed issue with applying custom constraints to non-standard parameters in context.
+
 ## v3.2.0
 **General**
 
