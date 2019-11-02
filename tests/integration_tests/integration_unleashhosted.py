@@ -30,3 +30,4 @@ while True:
         'userId': "1"
     }
     print(my_client.is_enabled("ivantest", context))
+    print(my_client.get_variant("ivan-variations", context))

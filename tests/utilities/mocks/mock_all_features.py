@@ -151,6 +151,52 @@ MOCK_ALL_FEATURES = \
       ],
       "variants": None,
       "createdAt": "2019-10-05T07:30:29.896Z"
-    }
+    },
+    {
+      "name": "Variations",
+      "description": "Test variation",
+      "enabled": True,
+      "strategies": [
+          {
+              "name": "default"
+          }
+      ],
+      "variants": [
+          {
+              "name": "VarA",
+              "weight": 34,
+              "payload": {
+                  "type": "string",
+                  "value": "Test1"
+              },
+              "overrides": [
+                  {
+                      "contextName": "userId",
+                      "values": [
+                          "ivanklee86@gmail.com",
+                          "ivan@aaptiv.com"
+                      ]
+                  }
+              ]
+          },
+          {
+              "name": "VarB",
+              "weight": 33,
+              "payload": {
+                  "type": "string",
+                  "value": "Test 2"
+              }
+          },
+          {
+              "name": "VarC",
+              "weight": 33,
+              "payload": {
+                  "type": "string",
+                  "value": "Test 3"
+              }
+          }
+      ],
+      "createdAt": "2019-10-25T13:22:02.035Z"
+  }
   ]
 }

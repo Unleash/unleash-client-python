@@ -1,9 +1,9 @@
-from UnleashClient.utils import LOGGER
+from UnleashClient.utils import LOGGER, get_identifier
 
 class Constraint:
     def __init__(self, constraint_dict: dict) -> None:
         """
-        Represents a constraint on a flexible rollout strategy
+        Represents a constraint on a strategy
 
         constraint_dict = From the strategy document.
         """
@@ -19,13 +19,9 @@ class Constraint:
         :return:
         """
         constraint_check = False
-        value = None
 
         try:
-            if self.context_name in context.keys():
-                value = context[self.context_name]
-            elif self.context_name in context['properties'].keys():
-                value = context['properties'][self.context_name]
+            value = get_identifier(self.context_name, context)
 
             if value:
                 if self.operator.upper() == "IN":

@@ -2,6 +2,7 @@ import copy
 from UnleashClient.loader import load_features
 from UnleashClient.features import Feature
 from UnleashClient.strategies import GradualRolloutUserId, FlexibleRollout, UserWithId
+from UnleashClient.variants import Variants
 from UnleashClient.constants import FEATURES_URL
 from tests.utilities.mocks import MOCK_ALL_FEATURES
 from tests.utilities.testing_constants import DEFAULT_STRATEGY_MAPPING
@@ -32,6 +33,9 @@ def test_loader_initialization(cache_full):  # noqa: F811
 
         if isinstance(strategy, FlexibleRollout):
             len(strategy.parsed_constraints) > 0
+
+        if isinstance(strategy, Variants):
+            assert strategy.variants
 
 
 def test_loader_refresh(cache_full):  # noqa: F811

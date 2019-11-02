@@ -6,6 +6,10 @@ METRIC_LAST_SENT_TIME = "mlst"
 
 # =Unleash=
 APPLICATION_HEADERS = {"Content-Type": "application/json"}
+DISABLED_VARIATION = {
+        'name': 'disabled',
+        'enabled': False
+}
 
 # Paths
 REGISTER_URL = "/client/register"

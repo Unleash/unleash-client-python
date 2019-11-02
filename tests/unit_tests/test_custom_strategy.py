@@ -91,7 +91,7 @@ def test_uc_customstrategy_depredationwarning():
     unleash_client.initialize_client()
 
     # Check a toggle that contains an outdated custom strategy
-    assert not unleash_client.is_enabled("CustomToggleWarning", {"sound": "meow"})
+    assert unleash_client.is_enabled("CustomToggleWarning", {"sound": "meow"})
 
 
 @responses.activate

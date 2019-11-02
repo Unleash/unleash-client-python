@@ -87,7 +87,7 @@ def test_feature_c(unleash_client):
 
     # Tests
     unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("Feature.C")
+    assert unleash_client.is_enabled("Feature.C")
 
 
 @responses.activate

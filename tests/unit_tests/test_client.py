@@ -114,12 +114,12 @@ def test_uc_lifecycle(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) == 3
+    assert len(unleash_client.features) >= 4
 
     # Simulate server provisioning change
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200)
     time.sleep(30)
-    assert len(unleash_client.features) == 8
+    assert len(unleash_client.features) >= 9
 
 
 @responses.activate
@@ -224,10 +224,43 @@ def test_uc_is_enabled_error_states(unleash_client):
 
 
 @responses.activate
-def test_uc_not_initialized():
+def test_uc_not_initialized_isenabled():
     unleash_client = UnleashClient(URL, APP_NAME)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
     assert unleash_client.is_enabled("ThisFlagDoesn'tExist", default_value=True)
+
+
+@responses.activate
+def test_uc_get_variant():
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    unleash_client = UnleashClient(URL, APP_NAME)
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+
+    time.sleep(1)
+    # If feature flag is on.
+    variant = unleash_client.get_variant("testVariations", context={'userId': '2'})
+    assert variant['name'] == 'VarA'
+    assert variant['enabled']
+
+    # If feature flag is not.
+    variant = unleash_client.get_variant("testVariations", context={'userId': '3'})
+    assert variant['name'] == 'disabled'
+    assert not variant['enabled']
+
+    unleash_client.destroy()
+
+
+@responses.activate
+def test_uc_not_initialized_getvariant():
+    unleash_client = UnleashClient(URL, APP_NAME)
+    variant = unleash_client.get_variant("ThisFlagDoesn'tExist")
+    assert not variant['enabled']
+    assert variant['name'] == 'disabled'
 
 
 @responses.activate
