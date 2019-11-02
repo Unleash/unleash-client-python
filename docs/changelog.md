@@ -1,4 +1,5 @@
 ## v3.3.0
+
 **General**
 * (Major) Add support for variants on feature toggles.
 
@@ -6,21 +7,25 @@
 * (Minor) Fixed issue with applying custom constraints to non-standard parameters in context.
 
 ## v3.2.0
+
 **General**
 
 * (Major) Allow users to supply a fallback function to customize the default value of a feature flag.
 
 ## v3.1.1
+
 **Bugfixes**
 
 * Custom constraints check should check for values in the `properties` sub-property in the context as specified by [Unleash context documentation](https://unleash.github.io/docs/unleash_context).
 
 ## v3.1.0
+
 **General**
 
 * (Minor) Add official-ish support for Python 3.8.
 
 ## v3.0.0
+
 **General**
 
 * (Major) Support constraints on all default strategies.  
