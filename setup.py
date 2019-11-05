@@ -21,7 +21,7 @@ setup(
     install_requires=["requests==2.22.0",
                       "fcache==0.4.7",
                       "mmh3==2.5.1",
-                      "apscheduler==3.6.1"],
+                      "apscheduler==3.6.3"],
     tests_require=['pytest', "mimesis", "responses", 'pytest-mock'],
     zip_safe=False,
     include_package_data=True,
