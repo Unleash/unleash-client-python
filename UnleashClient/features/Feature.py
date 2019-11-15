@@ -51,21 +51,14 @@ class Feature:
 
     def is_enabled(self,
                    context: dict = None,
-                   default_value: bool = False,
-                   fallback_function: Callable = None) -> bool:
+                   default_value: bool = False) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
         :param default_value: Optional, but allows for override.
-        :param fallback_function: Optional, but allows for fallback function.
         :return:
         """
-        if fallback_function:
-            flag_value = default_value or fallback_function(self.name, context)
-        else:
-            flag_value = default_value
-
         if self.enabled:
             try:
                 if self.strategies:
@@ -74,7 +67,7 @@ class Feature:
                     # If no strategies are present, should default to true.  This isn't possible via UI.
                     strategy_result = True
 
-                flag_value = flag_value or strategy_result
+                flag_value = default_value or strategy_result
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)
 

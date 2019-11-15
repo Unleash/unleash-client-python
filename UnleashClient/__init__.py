@@ -192,7 +192,7 @@ class UnleashClient():
 
         if self.is_initialized:
             try:
-                return self.features[feature_name].is_enabled(context, default_value, fallback_function)
+                return self.features[feature_name].is_enabled(context, default_value)
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
