@@ -79,7 +79,7 @@ client.is_enabled("My Toggle", fallback_function=custom_fallback)
 ```
 
 - Must accept the fature name and context as an argument.
-- Client will evaluate the fallback function once per call of `is_enabled()`.  Please keep this in mind when creating your fallback function!
+- Client will evaluate the fallback function only if exception occurs when calling the `is_enabled()` method i.e. feature flag not found or other general exception.
 - If both a `default_value` and `fallback_function` are supplied, client will define the default value by `OR`ing the default value and the output of the fallback function.
 
 ### Getting a variant

@@ -1,4 +1,3 @@
-from typing import Callable
 from UnleashClient.variants import Variants
 from UnleashClient.utils import LOGGER
 from UnleashClient.constants import DISABLED_VARIATION
@@ -51,20 +50,15 @@ class Feature:
 
     def is_enabled(self,
                    context: dict = None,
-                   default_value: bool = False,
-                   fallback_function: Callable = None) -> bool:
+                   default_value: bool = False) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
         :param default_value: Optional, but allows for override.
-        :param fallback_function: Optional, but allows for fallback function.
         :return:
         """
-        if fallback_function:
-            flag_value = default_value or fallback_function(self.name, context)
-        else:
-            flag_value = default_value
+        flag_value = default_value
 
         if self.enabled:
             try:
