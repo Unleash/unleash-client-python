@@ -1,3 +1,8 @@
+## v3.4.0
+
+**Bugfixes**
+* (Major) Fallback function will only be called if exception (feature flag not found, general exception) occurs when calling `is_enabled()`.  It will not be called on successful execution of the method.
+
 ## v3.3.0
 
 **General**
