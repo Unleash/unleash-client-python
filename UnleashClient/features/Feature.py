@@ -1,4 +1,3 @@
-from typing import Callable
 from UnleashClient.variants import Variants
 from UnleashClient.utils import LOGGER
 from UnleashClient.constants import DISABLED_VARIATION
