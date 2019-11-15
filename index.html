@@ -175,7 +175,7 @@ client.is_enabled(&quot;My Toggle&quot;, fallback_function=custom_fallback)
 
 <ul>
 <li>Must accept the fature name and context as an argument.</li>
-<li>Client will evaluate the fallback function once per call of <code>is_enabled()</code>.  Please keep this in mind when creating your fallback function!</li>
+<li>Client will evaluate the fallback function only if exception occurs when calling the <code>is_enabled()</code> method i.e. feature flag not found or other general exception. </li>
 <li>If both a <code>default_value</code> and <code>fallback_function</code> are supplied, client will define the default value by <code>OR</code>ing the default value and the output of the fallback function.</li>
 </ul>
 <h2 id="getting-a-variant">Getting a variant</h2>
@@ -262,5 +262,5 @@ root.addHandler(handler)
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-11-02 12:09:43
+Build Date UTC : 2019-11-15 16:51:22
 -->
