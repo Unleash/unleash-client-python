@@ -58,6 +58,8 @@ class Feature:
         :param default_value: Optional, but allows for override.
         :return:
         """
+        flag_value = default_value
+
         if self.enabled:
             try:
                 if self.strategies:
@@ -66,7 +68,7 @@ class Feature:
                     # If no strategies are present, should default to true.  This isn't possible via UI.
                     strategy_result = True
 
-                flag_value = default_value or strategy_result
+                flag_value = flag_value or strategy_result
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)
 
