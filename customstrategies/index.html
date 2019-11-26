@@ -132,7 +132,7 @@
 <li>Set up a custom strategy in Unleash.  Note down the name - you'll need this exact value to ensure we're loading the custom strategy correctly.</li>
 <li>Create a custom strategy object by sub-classing the StrategyV2 object. </li>
 </ul>
-<pre><code>from UnleashClient.strategies.Strategies import StrategyV2
+<pre><code>from UnleashClient.strategies.Strategies import Strategy
 
 class CatTest(StrategyV2):
     def load_provisioning(self) -&gt; list:
