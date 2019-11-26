@@ -4,7 +4,7 @@
 * Create a custom strategy object by sub-classing the StrategyV2 object. 
 
 ```
-from UnleashClient.strategies.Strategies import StrategyV2
+from UnleashClient.strategies.Strategies import Strategy
 
 class CatTest(StrategyV2):
     def load_provisioning(self) -> list:
