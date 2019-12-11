@@ -130,11 +130,11 @@
                 <h2 id="implementing-a-custom-strategy">Implementing a custom strategy</h2>
 <ul>
 <li>Set up a custom strategy in Unleash.  Note down the name - you'll need this exact value to ensure we're loading the custom strategy correctly.</li>
-<li>Create a custom strategy object by sub-classing the StrategyV2 object. </li>
+<li>Create a custom strategy object by sub-classing the Strategy object. </li>
 </ul>
 <pre><code>from UnleashClient.strategies.Strategies import Strategy
 
-class CatTest(StrategyV2):
+class CatTest(Strategy):
     def load_provisioning(self) -&gt; list:
         return [x.strip() for x in self.parameters[&quot;sound&quot;].split(',')]
 
@@ -153,7 +153,7 @@ class CatTest(StrategyV2):
 </code></pre>
 
 <ul>
-<li>Create a dictionary where the key is the name of the custom strategy.</li>
+<li>Create a dictionary where the key is the name of the custom strategy.  Note: The key must match the name of the custom strategy created on the Unleash server exactly (including capitalization!).</li>
 </ul>
 <pre><code>my_custom_strategies = {&quot;amIACat&quot;: CatTest}
 </code></pre>
