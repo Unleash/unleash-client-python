@@ -1,12 +1,12 @@
 ## Implementing a custom strategy
 
 * Set up a custom strategy in Unleash.  Note down the name - you'll need this exact value to ensure we're loading the custom strategy correctly.
-* Create a custom strategy object by sub-classing the StrategyV2 object. 
+* Create a custom strategy object by sub-classing the Strategy object. 
 
 ```
 from UnleashClient.strategies.Strategies import Strategy
 
-class CatTest(StrategyV2):
+class CatTest(Strategy):
     def load_provisioning(self) -> list:
         return [x.strip() for x in self.parameters["sound"].split(',')]
 
@@ -24,7 +24,7 @@ class CatTest(StrategyV2):
         return default_value
 ```
 
-* Create a dictionary where the key is the name of the custom strategy.
+* Create a dictionary where the key is the name of the custom strategy.  Note: The key must match the name of the custom strategy created on the Unleash server exactly (including capitalization!).
 
 ```
 my_custom_strategies = {"amIACat": CatTest}
