@@ -1,0 +1,37 @@
+name: UCP - CI pipeline
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Build package
+        run: |
+          python setup.py sdist bdist_wheel
+      - name: Build package
+        run: |
+          twine upload dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.pypi_username }}
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+      - name: Notify Slack of pipeline completion
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Github Action
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_slack_token }}
+          SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
+        if: always() 
