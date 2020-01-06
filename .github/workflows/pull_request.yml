@@ -30,18 +30,18 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_repo_token }}
         run: |
           coveralls
-      - uses: 8398a7/action-slack@v2
+      - name: Notify Slack of Python 3.7 test completion.
+        uses: 8398a7/action-slack@v2
         with:
           status: ${{ job.status }}
           author_name: Github Action
         env:
           GITHUB_TOKEN: ${{ secrets.github_slack_token }}
           SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
-        if: always() # Pick up events even if the job fails or is canceled.
+        if: always() 
 
   tox:
     runs-on: ubuntu-latest
-    needs: [main]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -61,3 +61,17 @@ jobs:
           pip install tox
       - name: Run Tox
         run: tox -e py
+
+  notifications:
+    runs-on: ubuntu-latest
+    needs: [main, tox]
+    steps:
+      - name: Notify Slack of pipeline completion
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Github Action
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_slack_token }}
+          SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
+        if: always() 
