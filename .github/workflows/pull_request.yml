@@ -1,4 +1,4 @@
-name: Python package
+name: UCP - CI pipeline
 
 on: [push]
 
@@ -26,5 +26,7 @@ jobs:
         run: |
           py.test tests/specification_tests
       - name: Send coverage to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_repo_token }}
         run: |
           coveralls
