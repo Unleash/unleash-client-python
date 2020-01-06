@@ -22,7 +22,6 @@ jobs:
       - name: Unit tests
         run: |
           py.test --html=pytest/results.html --junitxml=pytest/results.xml --self-contained-html --cov=UnleashClient tests/unit_tests
-          cat doesnotexist
       - name: Specification tests
         run: |
           py.test tests/specification_tests
