@@ -12,6 +12,7 @@ What it supports:
     * Client registers with Unleash server
     * Client periodically fetches feature toggles and stores to on-disk cache
     * Client periodically sends metrics to Unleash Server
+* Tested on Linux (Ubuntu), OSX, and Windows
 
 Check out the [project documentation](https://unleash.github.io/unleash-client-python/) and the [changelog](https://unleash.github.io/unleash-client-python/changelog/).
 

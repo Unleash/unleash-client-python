@@ -1,3 +1,8 @@
+## v3.4.1
+
+**General**
+* (Minor) Move CI to Github Actions, add auto-publishing.
+
 ## v3.4.0
 
 **Bugfixes**
