@@ -1,4 +1,4 @@
-name: UCP - CI pipeline
+name: release
 
 on:
   release:
