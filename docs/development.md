@@ -33,6 +33,6 @@ CFLAGS="-mmacosx-version-min=10.13" pip install mmh3
 1. Update changelog.md and other sundry documentation.
 1. Deploy documents by running `mkdocs gh-deploy`
 1. Run `bumpversion [major/minor/patch]` to generate new version & tag.
-1. Push tag to remote branch.
+1. Push tag to remotes.
 1. Create new Release in Github and paste in Changelog.
 1. Github Actions workflow will automagically publish to Pypi. ^^
