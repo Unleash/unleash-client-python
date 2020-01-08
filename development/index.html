@@ -172,11 +172,15 @@
 </code></pre>
 
 <h2 id="release">Release</h2>
-<p>Land all your PRs. :)
-1. Update changelog.md
-2. <code>mkdocs gh-deploy</code>
-3. <code>bumpversion [major/minor/patch]</code>
-4. <code>make build</code></p>
+<ol>
+<li>Land all your PRs on <code>master</code>. :)</li>
+<li>Update changelog.md and other sundry documentation.</li>
+<li>Deploy documents by running <code>mkdocs gh-deploy</code></li>
+<li>Run <code>bumpversion [major/minor/patch]</code> to generate new version &amp; tag.</li>
+<li>Push tag to remotes.</li>
+<li>Create new Release in Github and paste in Changelog.</li>
+<li>Github Actions workflow will automagically publish to Pypi. ^^</li>
+</ol>
               
             </div>
           </div>
