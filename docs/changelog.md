@@ -1,4 +1,4 @@
-## v3.4.1
+## v3.4.1, v3.4.2
 
 **General**
 * (Minor) Move CI to Github Actions, add auto-publishing.
