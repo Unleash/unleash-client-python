@@ -1,7 +1,7 @@
 import json
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, APPLICATION_HEADERS, METRICS_URL
-from UnleashClient.utils import LOGGER
+from UnleashClient.utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
@@ -33,13 +33,14 @@ def send_metrics(url: str,
                              timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 202:
-            LOGGER.warning("unleash metrics submission failed.")
+            log_resp_info(resp)
+            LOGGER.warning("Unleash CLient metrics submission failed.")
             return False
 
-        LOGGER.info("unleash metrics successfully sent!")
+        LOGGER.info("Unleash Client metrics successfully sent!")
 
         return True
     except Exception:
-        LOGGER.exception("unleash metrics failed to send.")
+        LOGGER.exception("Unleash Client metrics submission failed dye to exception: %s", Exception)
 
     return False
