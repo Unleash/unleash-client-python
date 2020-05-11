@@ -1,6 +1,6 @@
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
-from UnleashClient.utils import LOGGER
+from UnleashClient.utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
@@ -36,11 +36,12 @@ def get_feature_toggles(url: str,
                             timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 200:
-            LOGGER.warning("unleash feature fetch failed!")
-            raise Exception("unleash feature fetch failed!")
+            log_resp_info(resp)
+            LOGGER.warning("Unleash Client feature fetch failed due to unexpected HTTP status code.")
+            raise Exception("Unleash Client feature fetch failed!")
 
         return resp.json()
     except Exception:
-        LOGGER.exception("Unleash feature fetch failed!")
+        LOGGER.exception("Unleash Client feature fetch failed due to exception: %s", Exception)
 
     return {}

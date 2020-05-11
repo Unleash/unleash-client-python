@@ -12,6 +12,7 @@ FULL_FEATURE_URL = URL + FEATURES_URL
 @responses.activate
 @mark.parametrize("response,status,expected", (
     param(MOCK_FEATURE_RESPONSE, 200, lambda result: result["version"] == 1, id="success"),
+    param(MOCK_FEATURE_RESPONSE, 202, lambda result: not result, id="failure"),
     param({}, 500, lambda result: not result, id="failure"),
 ))
 def test_get_feature_toggle(response, status, expected):

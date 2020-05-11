@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timezone
 import requests
 from UnleashClient.constants import SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
-from UnleashClient.utils import LOGGER
+from UnleashClient.utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
@@ -48,13 +48,14 @@ def register_client(url: str,
                              timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 202:
-            LOGGER.warning("unleash client registration failed.")
+            log_resp_info(resp)
+            LOGGER.warning("Unleash Client registration failed due to unexpected HTTP status code.")
             return False
 
-        LOGGER.info("unleash client successfully registered!")
+        LOGGER.info("Unleash Client successfully registered!")
 
         return True
     except Exception:
-        LOGGER.exception("unleash client registration failed.")
+        LOGGER.exception("Unleash Client registration failed due to exception: %s", Exception)
 
     return False
