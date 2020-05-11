@@ -11,7 +11,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION
 from .utils import LOGGER
-from .deprecation_warnings import strategy_v2xx_deprecation_check
+from .deprecation_warnings import strategy_v2xx_deprecation_check, default_value_warning
 
 
 # pylint: disable=dangerous-default-value
@@ -162,11 +162,11 @@ class UnleashClient():
         self.cache.delete()
 
     @staticmethod
-    def _get_fallback_value(default_value: bool, fallback_function: Callable, feature_name: str, context: dict) -> bool:
+    def _get_fallback_value(fallback_function: Callable, feature_name: str, context: dict) -> bool:
         if fallback_function:
-            fallback_value = default_value or fallback_function(feature_name, context)
+            fallback_value = fallback_function(feature_name, context)
         else:
-            fallback_value = default_value
+            fallback_value = False
 
         return fallback_value
 
@@ -184,11 +184,14 @@ class UnleashClient():
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
-        :param default_value: Allows override of default value.
+        :param default_value: Allows override of default value. (DEPRECIATED, used fallback_function instead!)
         :param fallback_function: Allows users to provide a custom function to set default value.
         :return: True/False
         """
         context.update(self.unleash_static_context)
+
+        if default_value:
+            default_value_warning()
 
         if self.is_initialized:
             try:
@@ -196,11 +199,11 @@ class UnleashClient():
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
-                return self._get_fallback_value(default_value, fallback_function, feature_name, context)
+                return self._get_fallback_value(fallback_function, feature_name, context)
         else:
             LOGGER.warning("Returning default value for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
-            return self._get_fallback_value(default_value, fallback_function, feature_name, context)
+            return self._get_fallback_value(fallback_function, feature_name, context)
 
 
     # pylint: disable=broad-except

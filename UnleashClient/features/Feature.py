@@ -50,15 +50,15 @@ class Feature:
 
     def is_enabled(self,
                    context: dict = None,
-                   default_value: bool = False) -> bool:
+                   default_value: bool = False) -> bool:  # pylint: disable=W0613
         """
         Checks if feature is enabled.
 
         :param context: Context information
-        :param default_value: Optional, but allows for override.
+        :param default_value: Depreciated!  Users should use the fallback_function on the main is_enabled() method.
         :return:
         """
-        flag_value = default_value
+        flag_value = False
 
         if self.enabled:
             try:
@@ -68,7 +68,7 @@ class Feature:
                     # If no strategies are present, should default to true.  This isn't possible via UI.
                     strategy_result = True
 
-                flag_value = flag_value or strategy_result
+                flag_value = strategy_result
             except Exception as strategy_except:
                 LOGGER.warning("Error checking feature flag: %s", strategy_except)
 

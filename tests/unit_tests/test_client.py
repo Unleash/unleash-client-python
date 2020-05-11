@@ -161,7 +161,7 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     fallback_spy.reset_mock()
 
     # Non-existent feature flag, default value, fallback_function
-    assert unleash_client.is_enabled("notFoundTestFlag", default_value=True, fallback_function=bad_fallback)
+    assert not unleash_client.is_enabled("notFoundTestFlag", fallback_function=bad_fallback)
     assert fallback_spy.call_count == 0
 
     # Existent feature flag, fallback_function
@@ -220,14 +220,14 @@ def test_uc_is_enabled_error_states(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
-    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", default_value=True)
+    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", fallback_function=lambda x, y: True)
 
 
 @responses.activate
 def test_uc_not_initialized_isenabled():
     unleash_client = UnleashClient(URL, APP_NAME)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
-    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", default_value=True)
+    assert unleash_client.is_enabled("ThisFlagDoesn'tExist", fallback_function=lambda x, y: True)
 
 
 @responses.activate

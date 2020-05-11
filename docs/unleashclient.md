@@ -53,7 +53,8 @@ Argument | Description | Required? |  Type |  Default Value|
 ---------|-------------|-----------|-------|---------------|
 feature_name | Name of feature | Y | String | N/A |
 context | Custom information for strategies | N | Dictionary | {} |
-default_value | Default value of feature. | N | Boolean | F |
+default_value | Deprecated, use Fallback Function. | N | Boolean | F |
+fallback_function | A function that takes two arguments (feature name, context) and returns a boolean.  Used if exception occurs when checking a feature flag. | N | Callable | None |
 
 ### Notes
 
