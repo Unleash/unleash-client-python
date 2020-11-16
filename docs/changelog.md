@@ -1,10 +1,12 @@
-## Next version
+## Next Version
+
+## v4.0.0
 
 **General**
 * (Major) Stop using the `default_value` argument in the `is_enabled()` method (as it can cause counter-intuitive behavior) and add deprecation warning.  This argument will be removed in the next major version upgrade!  
     * We recommend using the `fallback_function` argument instead.  If you need a blanket True in case of an exception, you can pass in a lambda like: `lambda x, y: True`. 
 * (Minor) Add better logging for API errors.
-
+* (Minor) Bump requests version.
 
 ## v3.4.1, v3.4.2
 
