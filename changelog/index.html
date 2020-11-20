@@ -73,6 +73,12 @@
     <a class="current" href="./">Changelog</a>
     <ul class="subnav">
             
+    <li class="toctree-l2"><a href="#next-version">Next version</a></li>
+    
+
+    <li class="toctree-l2"><a href="#v350">v3.5.0</a></li>
+    
+
     <li class="toctree-l2"><a href="#v341-v342">v3.4.1, v3.4.2</a></li>
     
 
@@ -184,7 +190,17 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="v341-v342">v3.4.1, v3.4.2</h2>
+                <h2 id="next-version">Next version</h2>
+<h2 id="v350">v3.5.0</h2>
+<ul>
+<li>(Major) Stop using the <code>default_value</code> argument in the <code>is_enabled()</code> method (as it can cause counter-intuitive behavior) and add deprecation warning.  This argument will be removed in the next major version upgrade!  <ul>
+<li>We recommend using the <code>fallback_function</code> argument instead.  If you need a blanket True in case of an exception, you can pass in a lambda like: <code>lambda x, y: True</code>. </li>
+</ul>
+</li>
+<li>(Minor) Add better logging for API errors.</li>
+<li>(Minor) Update requests version to v2.25.0.</li>
+</ul>
+<h2 id="v341-v342">v3.4.1, v3.4.2</h2>
 <p><strong>General</strong>
 * (Minor) Move CI to Github Actions, add auto-publishing.</p>
 <h2 id="v340">v3.4.0</h2>
