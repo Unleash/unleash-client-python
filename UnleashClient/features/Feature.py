@@ -11,7 +11,7 @@ class Feature:
                  strategies: list,
                  variants: Variants = None) -> None:
         """
-        An representation of a fewature object
+        An representation of a feature object
 
         :param name: Name of the feature.
         :param enabled: Whether feature is enabled.
@@ -55,7 +55,7 @@ class Feature:
         Checks if feature is enabled.
 
         :param context: Context information
-        :param default_value: Depreciated!  Users should use the fallback_function on the main is_enabled() method.
+        :param default_value: Deprecated!  Users should use the fallback_function on the main is_enabled() method.
         :return:
         """
         flag_value = False
