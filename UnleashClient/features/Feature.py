@@ -11,7 +11,7 @@ class Feature:
                  strategies: list,
                  variants: Variants = None) -> None:
         """
-        An representation of a feature object
+        A representation of a feature object
 
         :param name: Name of the feature.
         :param enabled: Whether feature is enabled.
@@ -50,7 +50,7 @@ class Feature:
 
     def is_enabled(self,
                    context: dict = None,
-                   default_value: bool = False) -> bool:  # pylint: disable=W0613
+                   default_value: bool = False) -> bool:  # pylint: disable=unused-argument
         """
         Checks if feature is enabled.
 
@@ -65,7 +65,7 @@ class Feature:
                 if self.strategies:
                     strategy_result = any([x.execute(context) for x in self.strategies])
                 else:
-                    # If no strategies are present, should default to true.  This isn't possible via UI.
+                    # If no strategies are present, should default to true. This isn't possible via UI.
                     strategy_result = True
 
                 flag_value = strategy_result
@@ -86,6 +86,7 @@ class Feature:
         :param context: Context information
         :return:
         """
+        variant = DISABLED_VARIATION
         is_feature_enabled = self.is_enabled(context)
 
         if is_feature_enabled and self.variations is not None:
@@ -94,7 +95,5 @@ class Feature:
                 variant['enabled'] = is_feature_enabled
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
-        else:
-            variant = DISABLED_VARIATION
 
         return variant

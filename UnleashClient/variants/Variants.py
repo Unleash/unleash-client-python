@@ -5,7 +5,7 @@ from UnleashClient import utils
 from UnleashClient.constants import DISABLED_VARIATION
 
 
-class Variants():
+class Variants:
     def __init__(self, variants_list: list, feature_name: str) -> None:
         """
         Represents an A/B test
@@ -35,9 +35,7 @@ class Variants():
 
     @staticmethod
     def _get_seed(context: dict) -> str:
-        """
-        Grabs seed value from context.
-        """
+        """Grabs seed value from context."""
         seed = str(random.random() * 10000)
 
         if 'userId' in context:

@@ -16,9 +16,7 @@ def send_metrics(url: str,
     * If unsuccessful (i.e. not HTTP status code 200), message will be logged
 
     :param url:
-    :param app_name:
-    :param instance_id:
-    :param metrics_interval:
+    :param request_body:
     :param custom_headers:
     :param custom_options:
     :return: true if registration successful, false if registration unsuccessful or exception.
@@ -40,7 +38,7 @@ def send_metrics(url: str,
         LOGGER.info("Unleash Client metrics successfully sent!")
 
         return True
-    except Exception:
-        LOGGER.exception("Unleash Client metrics submission failed dye to exception: %s", Exception)
+    except requests.RequestException as exc:
+        LOGGER.exception("Unleash Client metrics submission failed due to exception: %s", exc)
 
     return False
