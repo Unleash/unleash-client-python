@@ -22,9 +22,11 @@ def _create_strategies(provisioning: dict,
             else:
                 constraint_provisioning = {}
 
-            feature_strategies.append(strategy_mapping[strategy['name']](constraints=constraint_provisioning, parameters=strategy_provisioning))
+            feature_strategies.append(strategy_mapping[strategy['name']](
+                constraints=constraint_provisioning, parameters=strategy_provisioning
+            ))
         except Exception as excep:
-            LOGGER.warning("Failed to load strategy.  This may be a problem with a custom strategy.  Exception: %s",
+            LOGGER.warning("Failed to load strategy. This may be a problem with a custom strategy. Exception: %s",
                            excep)
 
     return feature_strategies
@@ -57,6 +59,7 @@ def load_features(cache: FileCache,
 
     :param cache: Should be the cache class variable from UnleashClient
     :param feature_toggles: Should be the features class variable from UnleashClient
+    :param strategy_mapping:
     :return:
     """
     # Pull raw provisioning from cache.
@@ -98,4 +101,5 @@ def load_features(cache: FileCache,
             feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping)
     except KeyError as cache_exception:
         LOGGER.warning("Cache Exception: %s", cache_exception)
-        LOGGER.warning("Unleash client does not have cached features.  Please make sure client can communicate with Unleash server!")
+        LOGGER.warning("Unleash client does not have cached features. "
+                       "Please make sure client can communicate with Unleash server!")

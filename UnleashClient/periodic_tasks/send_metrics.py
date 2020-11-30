@@ -1,6 +1,6 @@
 from collections import ChainMap
 from datetime import datetime, timezone
-import fcache
+from fcache.cache import FileCache
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 
@@ -11,7 +11,7 @@ def aggregate_and_send_metrics(url: str,
                                custom_headers: dict,
                                custom_options: dict,
                                features: dict,
-                               ondisk_cache: fcache.cache
+                               ondisk_cache: FileCache
                                ) -> None:
     feature_stats_list = []
 

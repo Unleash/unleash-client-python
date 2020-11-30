@@ -4,6 +4,7 @@ from requests import Response
 
 LOGGER = logging.getLogger(__name__)
 
+
 def normalized_hash(identifier: str,
                     activation_group: str,
                     normalizer: int = 100) -> int:

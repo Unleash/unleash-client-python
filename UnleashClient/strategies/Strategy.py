@@ -50,7 +50,7 @@ class Strategy:
 
         return flag_state
 
-    def load_constraints(self, constraints_list: list) -> list:  #pylint: disable=R0201
+    def load_constraints(self, constraints_list: list) -> list:  # pylint: disable=no-self-use
         """
         Loads constraints from provisioning.
 
@@ -63,8 +63,7 @@ class Strategy:
 
         return parsed_constraints_list
 
-    # pylint: disable=no-self-use
-    def load_provisioning(self) -> list:
+    def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """
         Method to load data on object initialization, if desired.
 
@@ -72,7 +71,7 @@ class Strategy:
         """
         return []
 
-    def apply(self, context: dict = None) -> bool:  #pylint: disable=W0613,R0201
+    def apply(self, context: dict = None) -> bool:  # pylint: disable=unused-argument,no-self-use
         """
         Strategy implementation goes here.
 

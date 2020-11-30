@@ -15,11 +15,8 @@ from .deprecation_warnings import strategy_v2xx_deprecation_check, default_value
 
 
 # pylint: disable=dangerous-default-value
-class UnleashClient():
-    """
-    Client implementation.
-
-    """
+class UnleashClient:
+    """Client implementation."""
     def __init__(self,
                  url: str,
                  app_name: str,
@@ -38,7 +35,7 @@ class UnleashClient():
 
         :param url: URL of the unleash server, required.
         :param app_name: Name of the application using the unleash client, required.
-        :param environment: Name of the environment using the unleash client, optinal & defaults to "default".
+        :param environment: Name of the environment using the unleash client, optional & defaults to "default".
         :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
         :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
@@ -204,7 +201,6 @@ class UnleashClient():
             LOGGER.warning("Returning default value for feature: %s", feature_name)
             LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
             return self._get_fallback_value(fallback_function, feature_name, context)
-
 
     # pylint: disable=broad-except
     def get_variant(self,
