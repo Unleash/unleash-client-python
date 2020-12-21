@@ -1,5 +1,8 @@
 ## Next version
 
+## v3.5.1
+* (Minor) Better error handling and typo fixes.  Thanks @vgerak!
+* (Minor) Update requests version to 2.25.1.
 
 ## v3.5.0
 * (Major) Stop using the `default_value` argument in the `is_enabled()` method (as it can cause counter-intuitive behavior) and add deprecation warning.  This argument will be removed in the next major version upgrade!  
