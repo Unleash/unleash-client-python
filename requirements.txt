@@ -1,5 +1,5 @@
 # App packages
-requests==2.25.0
+requests==2.25.1
 fcache==0.4.7
 mmh3==2.5.1
 APScheduler==3.6.3
