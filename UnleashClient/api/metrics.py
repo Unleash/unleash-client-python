@@ -39,6 +39,6 @@ def send_metrics(url: str,
 
         return True
     except requests.RequestException as exc:
-        LOGGER.exception("Unleash Client metrics submission failed due to exception: %s", exc)
+        LOGGER.warning("Unleash Client metrics submission failed due to exception: %s", exc)
 
     return False
