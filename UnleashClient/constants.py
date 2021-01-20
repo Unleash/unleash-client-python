@@ -15,3 +15,6 @@ DISABLED_VARIATION = {
 REGISTER_URL = "/client/register"
 FEATURES_URL = "/client/features"
 METRICS_URL = "/client/metrics"
+
+# Cache keys
+FAILED_STRATEGIES = 'failed_strategies'
