@@ -1,4 +1,6 @@
 ## Next version
+* (Minor) Errors submitting metrics will be logged as warnings and not exceptions.
+* (Minor) Update apscheduler version to 3.7.0
 
 ## v3.5.1
 * (Minor) Better error handling and typo fixes.  Thanks @vgerak!
