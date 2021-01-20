@@ -1,4 +1,8 @@
 ## Next version
+
+## v3.6.0
+* (Minor) Add Python 3.9 support.
+* (Minor) Only log errors generated when strategy loading fails once.
 * (Minor) Errors submitting metrics will be logged as warnings and not exceptions.
 * (Minor) Update apscheduler version to 3.7.0
 
