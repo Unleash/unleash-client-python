@@ -197,6 +197,18 @@ MOCK_ALL_FEATURES = \
           }
       ],
       "createdAt": "2019-10-25T13:22:02.035Z"
-  }
+  },
+  {
+    "name": "Garbage",
+    "description": "Invalid strategy",
+    "enabled": True,
+    "strategies": [
+      {
+        "name": "blargwatisdis",
+        "parameters": {}
+      }
+    ],
+    "createdAt": "2018-10-09T06:04:05.667Z"
+  },
   ]
 }

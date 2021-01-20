@@ -3,7 +3,7 @@ from UnleashClient.loader import load_features
 from UnleashClient.features import Feature
 from UnleashClient.strategies import GradualRolloutUserId, FlexibleRollout, UserWithId
 from UnleashClient.variants import Variants
-from UnleashClient.constants import FEATURES_URL
+from UnleashClient.constants import FEATURES_URL, FAILED_STRATEGIES
 from tests.utilities.mocks import MOCK_ALL_FEATURES
 from tests.utilities.testing_constants import DEFAULT_STRATEGY_MAPPING
 from tests.utilities.decorators import cache_full, cache_custom  # noqa: F401
@@ -23,6 +23,9 @@ def test_loader_initialization(cache_full):  # noqa: F811
     assert isinstance(in_memory_features["GradualRolloutUserID"].strategies[0], GradualRolloutUserId)
 
     for feature_name in in_memory_features.keys():
+        if feature_name == 'Garbage':  # Don't check purposely invalid strategy.
+            break
+
         feature = in_memory_features[feature_name]
         assert len(feature.strategies) > 0
         strategy = feature.strategies[0]
@@ -52,6 +55,7 @@ def test_loader_refresh(cache_full):  # noqa: F811
     load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
 
     assert in_memory_features["GradualRolloutUserID"].strategies[0].parameters["percentage"] == 60
+    assert len(temp_cache[FAILED_STRATEGIES]) == 1
 
 
 def test_loader_initialization_failure(cache_custom):  # noqa: F811
