@@ -95,7 +95,7 @@ def load_features(cache: FileCache,
                 feature_for_update.strategies = parsed_strategies
 
             if 'variants' in parsed_features[feature]:
-                feature_for_update.variants = Variants(
+                feature_for_update.variations = Variants(
                     parsed_features[feature]['variants'],
                     parsed_features[feature]['name']
                 )

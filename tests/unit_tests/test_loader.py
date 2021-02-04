@@ -8,9 +8,6 @@ from tests.utilities.mocks import MOCK_ALL_FEATURES
 from tests.utilities.testing_constants import DEFAULT_STRATEGY_MAPPING
 from tests.utilities.decorators import cache_full, cache_custom  # noqa: F401
 
-MOCK_UPDATED = copy.deepcopy(MOCK_ALL_FEATURES)
-MOCK_UPDATED["features"][4]["strategies"][0]["parameters"]["percentage"] = 60
-
 
 def test_loader_initialization(cache_full):  # noqa: F811
     # Set up variables
@@ -41,7 +38,7 @@ def test_loader_initialization(cache_full):  # noqa: F811
             assert strategy.variants
 
 
-def test_loader_refresh(cache_full):  # noqa: F811
+def test_loader_refresh_strategies(cache_full):  # noqa: F811
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_full
@@ -49,13 +46,33 @@ def test_loader_refresh(cache_full):  # noqa: F811
     load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
 
     # Simulate update mutation
-    temp_cache[FEATURES_URL] = MOCK_UPDATED
+    mock_updated = copy.deepcopy(MOCK_ALL_FEATURES)
+    mock_updated["features"][4]["strategies"][0]["parameters"]["percentage"] = 60
+    temp_cache[FEATURES_URL] = mock_updated
     temp_cache.sync()
 
     load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
 
     assert in_memory_features["GradualRolloutUserID"].strategies[0].parameters["percentage"] == 60
     assert len(temp_cache[FAILED_STRATEGIES]) == 1
+
+
+def test_loader_refresh_variants(cache_full):  # noqa: F811
+    # Set up variables
+    in_memory_features = {}
+    temp_cache = cache_full
+
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+
+    # Simulate update mutation
+    mock_updated = copy.deepcopy(MOCK_ALL_FEATURES)
+    mock_updated["features"][8]["variants"][0]["name"] = "VariantA"
+    temp_cache[FEATURES_URL] = mock_updated
+    temp_cache.sync()
+
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+
+    assert in_memory_features["Variations"].variations.variants[0]["name"] == "VariantA"
 
 
 def test_loader_initialization_failure(cache_custom):  # noqa: F811
