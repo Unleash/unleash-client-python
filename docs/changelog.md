@@ -1,5 +1,8 @@
 ## Next version
 
+## v3.6.1
+* (Major) Fix bug where loader didn't properly refresh variants.
+
 ## v3.6.0
 * (Minor) Add Python 3.9 support.
 * (Minor) Only log errors generated when strategy loading fails once.
