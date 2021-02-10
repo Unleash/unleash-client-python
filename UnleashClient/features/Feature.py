@@ -21,7 +21,7 @@ class Feature:
         self.name = name
         self.enabled = enabled
         self.strategies = strategies
-        self.variations = variants
+        self.variants = variants
 
         # Stats tracking
         self.yes_count = 0
@@ -89,9 +89,9 @@ class Feature:
         variant = DISABLED_VARIATION
         is_feature_enabled = self.is_enabled(context)
 
-        if is_feature_enabled and self.variations is not None:
+        if is_feature_enabled and self.variants is not None:
             try:
-                variant = self.variations.get_variant(context)
+                variant = self.variants.get_variant(context)
                 variant['enabled'] = is_feature_enabled
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)

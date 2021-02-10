@@ -72,7 +72,7 @@ def test_loader_refresh_variants(cache_full):  # noqa: F811
 
     load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
 
-    assert in_memory_features["Variations"].variations.variants[0]["name"] == "VariantA"
+    assert in_memory_features["Variations"].variants.variants[0]["name"] == "VariantA"
 
 
 def test_loader_initialization_failure(cache_custom):  # noqa: F811

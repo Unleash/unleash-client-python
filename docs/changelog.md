@@ -1,4 +1,5 @@
 ## Next version
+* (Minor) Remove dangling `variations` reference in favor of `variatns` verbiage.
 
 ## v3.6.1
 * (Major) Fix bug where loader didn't properly refresh variants.
