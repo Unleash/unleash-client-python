@@ -102,4 +102,4 @@ print(variant)
 > }
 ```
 
-For more information about variants, see the [Beta feature documentation](https://unleash.github.io/docs/beta_features).
+For more information about variants, see the [Variant documentation](https://unleash.github.io/docs/toggle_variants).
