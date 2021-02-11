@@ -1,4 +1,6 @@
 ## Next version
+
+## v3.6.2
 * (Minor) Only send metrics to API if feature toggle is in-use (i.e. has been resolved to True/False).  Thanks @fwpheckel!
 * (Minor) Remove dangling `variations` reference in favor of `variants` verbiage.
 
