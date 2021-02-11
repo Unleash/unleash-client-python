@@ -29,6 +29,10 @@ def test_aggregate_and_send_metrics():
     my_feature2.yes_count = 2
     my_feature2.no_count = 2
 
+    my_feature3 = Feature("My Feature3", True, strategies)
+    my_feature3.yes_count = 0
+    my_feature3.no_count = 0
+
     features = {"My Feature1": my_feature1, "My Feature 2": my_feature2}
 
     aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache)
@@ -39,4 +43,5 @@ def test_aggregate_and_send_metrics():
     assert len(request['bucket']["toggles"].keys()) == 2
     assert request['bucket']["toggles"]["My Feature1"]["yes"] == 1
     assert request['bucket']["toggles"]["My Feature1"]["no"] == 1
+    assert "My Feature3" not in request['bucket']["toggles"].keys()
     assert cache[METRIC_LAST_SENT_TIME] > start_time

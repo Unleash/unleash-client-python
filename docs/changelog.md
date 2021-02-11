@@ -1,8 +1,9 @@
 ## Next version
+* (Minor) Only send metrics to API if feature toggle is in-use (i.e. has been resolved to True/False).  Thanks @fwpheckel!
 * (Minor) Remove dangling `variations` reference in favor of `variants` verbiage.
 
 ## v3.6.1
-* (Major) Fix bug where loader didn't properly refresh variants.
+* (Major) Fix bug where loader didn't properly refresh variants. Thanks @simenaasland!
 
 ## v3.6.0
 * (Minor) Add Python 3.9 support.

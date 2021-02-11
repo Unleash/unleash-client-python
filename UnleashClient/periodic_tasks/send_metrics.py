@@ -16,6 +16,9 @@ def aggregate_and_send_metrics(url: str,
     feature_stats_list = []
 
     for feature_name in features.keys():
+        if not (features[feature_name].yes_count or features[feature_name].no_count):
+            continue
+
         feature_stats = {
             features[feature_name].name: {
                 "yes": features[feature_name].yes_count,
