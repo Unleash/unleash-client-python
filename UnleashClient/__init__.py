@@ -11,7 +11,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION
 from .utils import LOGGER
-from .deprecation_warnings import strategy_v2xx_deprecation_check, default_value_warning
+from .deprecation_warnings import strategy_v2xx_deprecation_check
 
 
 # pylint: disable=dangerous-default-value
@@ -175,7 +175,6 @@ class UnleashClient:
     def is_enabled(self,
                    feature_name: str,
                    context: Optional[dict] = None,
-                   default_value: bool = False,
                    fallback_function: Callable = None) -> bool:
         """
         Checks if a feature toggle is enabled.
@@ -192,12 +191,9 @@ class UnleashClient:
         context = context or {}
         context.update(self.unleash_static_context)
 
-        if default_value:
-            default_value_warning()
-
         if self.is_initialized:
             try:
-                return self.features[feature_name].is_enabled(context, default_value)
+                return self.features[feature_name].is_enabled(context)
             except Exception as excep:
                 LOGGER.warning("Returning default value for feature: %s", feature_name)
                 LOGGER.warning("Error checking feature flag: %s", excep)
