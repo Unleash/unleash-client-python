@@ -1,6 +1,5 @@
 import time
 from UnleashClient import UnleashClient
-from UnleashClient.strategies import Strategy
 
 
 # ---
