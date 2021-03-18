@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, Optional
 import copy
 from fcache.cache import FileCache
 from apscheduler.job import Job
@@ -26,9 +26,9 @@ class UnleashClient:
                  metrics_interval: int = 60,
                  disable_metrics: bool = False,
                  disable_registration: bool = False,
-                 custom_headers: dict = {},
-                 custom_options: dict = {},
-                 custom_strategies: dict = {},
+                 custom_headers: Optional[dict] = None,
+                 custom_options: Optional[dict] = None,
+                 custom_strategies: Optional[dict] = None,
                  cache_directory: str = None) -> None:
         """
         A client for the Unleash feature toggle system.
@@ -45,6 +45,10 @@ class UnleashClient:
         :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
         :param cache_directory: Location of the cache directory. When unset, FCache will determine the location
         """
+        custom_headers = custom_headers or {}
+        custom_options = custom_options or {}
+        custom_strategies = custom_strategies or {}
+
         # Configuration
         self.unleash_url = url.rstrip('\\')
         self.unleash_app_name = app_name
@@ -170,7 +174,7 @@ class UnleashClient:
     # pylint: disable=broad-except
     def is_enabled(self,
                    feature_name: str,
-                   context: dict = {},
+                   context: Optional[dict] = None,
                    default_value: bool = False,
                    fallback_function: Callable = None) -> bool:
         """
@@ -185,6 +189,7 @@ class UnleashClient:
         :param fallback_function: Allows users to provide a custom function to set default value.
         :return: True/False
         """
+        context = context or {}
         context.update(self.unleash_static_context)
 
         if default_value:
@@ -205,7 +210,7 @@ class UnleashClient:
     # pylint: disable=broad-except
     def get_variant(self,
                     feature_name: str,
-                    context: dict = {}) -> dict:
+                    context: Optional[dict] = None) -> dict:
         """
         Checks if a feature toggle is enabled.  If so, return variant.
 
@@ -216,6 +221,7 @@ class UnleashClient:
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :return: Dict with variant and feature flag status.
         """
+        context = context or {}
         context.update(self.unleash_static_context)
 
         if self.is_initialized:
