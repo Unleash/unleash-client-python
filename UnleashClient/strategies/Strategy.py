@@ -45,7 +45,7 @@ class Strategy:
         """
         flag_state = False
 
-        if all([constraint.apply(context) for constraint in self.parsed_constraints]):
+        if all(constraint.apply(context) for constraint in self.parsed_constraints):
             flag_state = self.apply(context)
 
         return flag_state

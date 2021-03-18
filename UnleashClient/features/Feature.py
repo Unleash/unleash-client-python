@@ -63,7 +63,7 @@ class Feature:
         if self.enabled:
             try:
                 if self.strategies:
-                    strategy_result = any([x.execute(context) for x in self.strategies])
+                    strategy_result = any(x.execute(context) for x in self.strategies)
                 else:
                     # If no strategies are present, should default to true. This isn't possible via UI.
                     strategy_result = True
