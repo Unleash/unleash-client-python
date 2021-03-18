@@ -67,10 +67,10 @@ class UnleashClient:
 
         # Class objects
         self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
-        self.features = {}  # type: Dict
+        self.features: dict = {}
         self.scheduler = BackgroundScheduler()
-        self.fl_job = None  # type: Job
-        self.metric_job = None  # type: Job
+        self.fl_job: Job = None
+        self.metric_job: Job = None
         self.cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
         self.cache.sync()
 
