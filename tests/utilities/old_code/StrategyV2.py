@@ -1,4 +1,4 @@
-#Old Strategy object from unleash-client-python version 1.x.x and 2.x.x
+# Old Strategy object from unleash-client-python version 1.x.x and 2.x.x
 
 # pylint: disable=dangerous-default-value
 class StrategyOldV2():

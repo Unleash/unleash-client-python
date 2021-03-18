@@ -1,6 +1,10 @@
+import logging
+import sys
 import time
+
 from UnleashClient import UnleashClient
 from UnleashClient.strategies import Strategy
+
 
 # ---
 class DogTest(Strategy):
@@ -22,8 +26,6 @@ class DogTest(Strategy):
 
 
 # ---
-import logging
-import sys
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
@@ -36,8 +38,8 @@ root.addHandler(handler)
 # ---
 
 custom_strategies_dict = {
-        "amIADog": DogTest
-    }
+    "amIADog": DogTest,
+}
 
 my_client = UnleashClient(
     url="https://app.unleash-hosted.com/demo/api",
