@@ -1,8 +1,8 @@
 # App packages
-requests==2.25.1
-fcache==0.4.7
-mmh3==2.5.1
-APScheduler==3.7.0
+requests
+fcache
+mmh3
+APScheduler
 
 # Development packages
 bumpversion
