@@ -1,7 +1,8 @@
 ## Next version
 
 * (Major) Drop Python 3.5 support.
-* (Minor) Remove dependencies versions constraints.
+* (Minor) Remove dependencies versions constraints.  Thanks @wbolster and @isra17!
+* (Bugfix) Don't use mutable defaults.  Thanks @aviau!
 
 ## v3.6.2
 * (Minor) Only send metrics to API if feature toggle is in-use (i.e. has been resolved to True/False).  Thanks @fwpheckel!
