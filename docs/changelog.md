@@ -1,5 +1,6 @@
 ## Next version
 
+* (Major) Drop Python 3.5 support.
 * (Minor) Remove dependencies versions constraints.
 
 ## v3.6.2
