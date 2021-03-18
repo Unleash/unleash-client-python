@@ -7,7 +7,7 @@ APScheduler
 # Development packages
 bumpversion
 coveralls
-mimesis==2.1.0
+mimesis
 mkdocs
 mypy
 pur
@@ -15,7 +15,7 @@ pylint
 pytest
 pytest-cov
 pytest-flake8
-pytest-html==1.22.0
+pytest-html
 pytest-mock
 pytest-rerunfailures
 pytest-runner
