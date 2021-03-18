@@ -17,10 +17,3 @@ def strategy_v2xx_deprecation_check(strategies: list) -> None:
         except AttributeError:
             # Ignore if not.
             pass
-
-
-def default_value_warning() -> None:
-    warnings.warn(
-        "The default_value argument for the is_enabled() function is being deprecated in next major version.  Please use fallback_function argument instead.",
-        DeprecationWarning
-    )
