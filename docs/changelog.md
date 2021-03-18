@@ -1,4 +1,6 @@
 ## Next version
+
+## v4.0.0
 * (Major) Deprecate the `default_value` argument in the `is_enabled()` method.
 * (Major) Drop Python 3.5 support.
 * (Minor) Remove dependencies versions constraints.  Thanks @wbolster and @isra17!
