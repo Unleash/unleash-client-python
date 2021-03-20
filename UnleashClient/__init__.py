@@ -29,7 +29,8 @@ class UnleashClient:
                  custom_headers: Optional[dict] = None,
                  custom_options: Optional[dict] = None,
                  custom_strategies: Optional[dict] = None,
-                 cache_directory: str = None) -> None:
+                 cache_directory: str = None,
+                 project_name: str = None) -> None:
         """
         A client for the Unleash feature toggle system.
 
@@ -64,6 +65,7 @@ class UnleashClient:
             "appName": self.unleash_app_name,
             "environment": self.unleash_environment
         }
+        self.unleash_project_name = project_name
 
         # Class objects
         self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
@@ -114,7 +116,8 @@ class UnleashClient:
             "custom_options": self.unleash_custom_options,
             "cache": self.cache,
             "features": self.features,
-            "strategy_mapping": self.strategy_mapping
+            "strategy_mapping": self.strategy_mapping,
+            "project": self.unleash_project_name
         }
 
         metrics_args = {

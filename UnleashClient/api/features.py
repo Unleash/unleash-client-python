@@ -1,3 +1,4 @@
+from urllib.parse import quote_plus
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
 from UnleashClient.utils import LOGGER, log_resp_info
@@ -8,7 +9,8 @@ def get_feature_toggles(url: str,
                         app_name: str,
                         instance_id: str,
                         custom_headers: dict,
-                        custom_options: dict) -> dict:
+                        custom_options: dict,
+                        project: str = None) -> dict:
     """
     Retrieves feature flags from unleash central server.
 
@@ -21,6 +23,7 @@ def get_feature_toggles(url: str,
     :param instance_id:
     :param custom_headers:
     :param custom_options:
+    :param project:
     :return: Feature flags if successful, empty dict if not.
     """
     try:
@@ -31,7 +34,12 @@ def get_feature_toggles(url: str,
             "UNLEASH-INSTANCEID": instance_id
         }
 
-        resp = requests.get(url + FEATURES_URL,
+        base_url = f"{url}{FEATURES_URL}"
+
+        if project:
+            base_url = f"{base_url}?project={quote_plus(project)}"
+
+        resp = requests.get(base_url,
                             headers={**custom_headers, **headers},
                             timeout=REQUEST_TIMEOUT, **custom_options)
 

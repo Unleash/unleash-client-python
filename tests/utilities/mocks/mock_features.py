@@ -92,3 +92,26 @@ MOCK_FEATURE_RESPONSE = {
       }
     ]
 }
+
+MOCK_FEATURE_RESPONSE_PROJECT = {
+   "version":1,
+   "features":[
+      {
+         "name":"ivan-project",
+         "type":"release",
+         "enabled": True,
+         "stale": False,
+         "strategies":[
+            {
+               "name":"default",
+               "parameters":{
+                  
+               }
+            }
+         ],
+         "variants":[
+            
+         ]
+      }
+   ]
+}
