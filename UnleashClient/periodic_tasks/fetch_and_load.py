@@ -12,8 +12,9 @@ def fetch_and_load_features(url: str,
                             custom_options: dict,
                             cache: FileCache,
                             features: dict,
-                            strategy_mapping: dict) -> None:
-    feature_provisioning = get_feature_toggles(url, app_name, instance_id, custom_headers, custom_options)
+                            strategy_mapping: dict,
+                            project: str = None) -> None:
+    feature_provisioning = get_feature_toggles(url, app_name, instance_id, custom_headers, custom_options, project)
 
     if feature_provisioning:
         cache[FEATURES_URL] = feature_provisioning

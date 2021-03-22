@@ -52,6 +52,8 @@ disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F 
 disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {} |
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
+cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset | 
+project_name | Unleash project Id to load feature flags from | N | Str | "" |
 
 ### Checking if a feature is enabled
 

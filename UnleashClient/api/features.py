@@ -8,7 +8,8 @@ def get_feature_toggles(url: str,
                         app_name: str,
                         instance_id: str,
                         custom_headers: dict,
-                        custom_options: dict) -> dict:
+                        custom_options: dict,
+                        project: str = None) -> dict:
     """
     Retrieves feature flags from unleash central server.
 
@@ -21,6 +22,7 @@ def get_feature_toggles(url: str,
     :param instance_id:
     :param custom_headers:
     :param custom_options:
+    :param project:
     :return: Feature flags if successful, empty dict if not.
     """
     try:
@@ -31,8 +33,15 @@ def get_feature_toggles(url: str,
             "UNLEASH-INSTANCEID": instance_id
         }
 
-        resp = requests.get(url + FEATURES_URL,
+        base_url = f"{url}{FEATURES_URL}"
+        base_params = {}
+
+        if project:
+            base_params = {'project': project}
+
+        resp = requests.get(base_url,
                             headers={**custom_headers, **headers},
+                            params=base_params,
                             timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 200:

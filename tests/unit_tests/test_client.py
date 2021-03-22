@@ -5,8 +5,8 @@ import responses
 from UnleashClient import UnleashClient
 from UnleashClient.strategies import Strategy
 from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
-    METRICS_INTERVAL, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS
-from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
+    METRICS_INTERVAL, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME, PROJECT_URL
+from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
 
@@ -37,6 +37,20 @@ def unleash_client(tmpdir):
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         cache_directory=tmpdir.dirname
+    )
+    yield unleash_client
+    unleash_client.destroy()
+
+
+@pytest.fixture()
+def unleash_client_project(tmpdir):
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache_directory=tmpdir.dirname,
+        project_name=PROJECT_NAME
     )
     yield unleash_client
     unleash_client.destroy()
@@ -133,6 +147,21 @@ def test_uc_is_enabled(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
+
+
+@responses.activate
+def test_uc_project(unleash_client_project):
+    unleash_client = unleash_client_project
+
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_enabled("ivan-project")
 
 
 @responses.activate

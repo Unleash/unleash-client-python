@@ -28,6 +28,11 @@ If having trouble installing mmh3 on OSX, try:
 CFLAGS="-mmacosx-version-min=10.13" pip install mmh3
 ```
 
+## Running tests
+1. Linting (pylint, mypy) can be run using `make lint`.
+1. Tests can be run by using `make pytest`.
+1. Both can be run by `make test`. 
+
 ## Release
 1. Land all your PRs on `master`. :)
 1. Update changelog.md and other sundry documentation.

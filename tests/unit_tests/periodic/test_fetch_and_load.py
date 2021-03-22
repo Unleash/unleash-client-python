@@ -2,8 +2,8 @@ import responses
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.periodic_tasks import fetch_and_load_features
 from UnleashClient.features import Feature
-from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, DEFAULT_STRATEGY_MAPPING
+from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, DEFAULT_STRATEGY_MAPPING, PROJECT_URL, PROJECT_NAME
 from tests.utilities.decorators import cache_empty  # noqa: F401
 
 
@@ -27,6 +27,27 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
                             DEFAULT_STRATEGY_MAPPING)
 
     assert isinstance(in_memory_features["testFlag"], Feature)
+
+
+@responses.activate
+def test_fetch_and_load_project(cache_empty):  # noqa: F811
+    # Set up for tests
+    in_memory_features = {}
+    responses.add(responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200)
+    temp_cache = cache_empty
+
+    fetch_and_load_features(URL,
+                            APP_NAME,
+                            INSTANCE_ID,
+                            CUSTOM_HEADERS,
+                            CUSTOM_OPTIONS,
+                            temp_cache,
+                            in_memory_features,
+                            DEFAULT_STRATEGY_MAPPING,
+                            PROJECT_NAME)
+
+    assert len(in_memory_features.keys()) == 1
+    assert isinstance(in_memory_features["ivan-project"], Feature)
 
 
 @responses.activate
