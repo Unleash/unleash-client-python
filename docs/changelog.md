@@ -1,7 +1,7 @@
 ## Next version
 
 ## Next version
-* (Major) Support project-based feature flag loading.
+* (Minor) Support project-based feature flag loading.
 
 ## v4.0.0
 * (Major) Deprecate the `default_value` argument in the `is_enabled()` method.
