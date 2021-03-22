@@ -28,6 +28,7 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
 
     assert isinstance(in_memory_features["testFlag"], Feature)
 
+
 @responses.activate
 def test_fetch_and_load_project(cache_empty):  # noqa: F811
     # Set up for tests
@@ -47,6 +48,7 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
 
     assert len(in_memory_features.keys()) == 1
     assert isinstance(in_memory_features["ivan-project"], Feature)
+
 
 @responses.activate
 def test_fetch_and_load_failure(cache_empty):  # noqa: F811

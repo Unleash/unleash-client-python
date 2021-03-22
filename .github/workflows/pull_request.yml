@@ -23,7 +23,7 @@ jobs:
           pylint UnleashClient
       - name: Unit tests
         run: |
-          py.test --html=pytest/results.html --junitxml=pytest/results.xml --self-contained-html --cov=UnleashClient tests/unit_tests
+          py.test --flake8 --html=pytest/results.html --junitxml=pytest/results.xml --self-contained-html --cov=UnleashClient tests/unit_tests
       - name: Specification tests
         run: |
           py.test tests/specification_tests
