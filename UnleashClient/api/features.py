@@ -1,4 +1,3 @@
-from urllib.parse import quote_plus
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
 from UnleashClient.utils import LOGGER, log_resp_info
@@ -35,12 +34,14 @@ def get_feature_toggles(url: str,
         }
 
         base_url = f"{url}{FEATURES_URL}"
+        base_params = {}
 
         if project:
-            base_url = f"{base_url}?project={quote_plus(project)}"
+            base_params = {'project': project}
 
         resp = requests.get(base_url,
                             headers={**custom_headers, **headers},
+                            params=base_params,
                             timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code != 200:
