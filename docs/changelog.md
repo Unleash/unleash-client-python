@@ -1,6 +1,6 @@
 ## Next version
 
-## Next version
+## v4.1.0
 * (Minor) Support project-based feature flag loading.
 
 ## v4.0.0
