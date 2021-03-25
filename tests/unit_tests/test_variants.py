@@ -1,11 +1,16 @@
 import pytest
 from UnleashClient.variants import Variants
-from tests.utilities.mocks.mock_variants import VARIANTS
+from tests.utilities.mocks.mock_variants import VARIANTS, VARIANTS_WITH_STICKINESS
 
 
 @pytest.fixture()
 def variations():
     yield Variants(VARIANTS, "TestFeature")
+
+
+@pytest.fixture()
+def variations_with_stickiness():
+    yield Variants(VARIANTS_WITH_STICKINESS, "TestFeature")
 
 
 def test_variations_override_match(variations):
@@ -37,8 +42,28 @@ def test_variations_seed(variations):
     assert context['remoteAddress'] == variations._get_seed(context)
 
 
+def test_variations_seed_override(variations):
+    # UserId, SessionId, and remoteAddress
+    context = {
+        'userId': '1',
+        'sessionId': '1',
+        'remoteAddress': '1.1.1.1',
+        'customField': "ActuallyAmAHamster"
+    }
+
+    assert context['customField'] == variations._get_seed(context, 'customField')
+
+
 def test_variation_selectvariation_happypath(variations):
     variant = variations.get_variant({'userId': '2'})
+    assert variant
+    assert 'payload' in variant
+    assert variant['name'] == 'VarC'
+
+
+def test_variation_customvariation(variations_with_stickiness):
+    variations = variations_with_stickiness
+    variant = variations.get_variant({'customField': 'ActuallyAmAHamster1234'})
     assert variant
     assert 'payload' in variant
     assert variant['name'] == 'VarC'

@@ -34,16 +34,19 @@ class Variants:
         return override_variant
 
     @staticmethod
-    def _get_seed(context: dict) -> str:
+    def _get_seed(context: dict, stickiness_selector: str = "default") -> str:
         """Grabs seed value from context."""
         seed = str(random.random() * 10000)
 
-        if 'userId' in context:
-            seed = context['userId']
-        elif 'sessionId' in context:
-            seed = context['sessionId']
-        elif 'remoteAddress' in context:
-            seed = context['remoteAddress']
+        if stickiness_selector == "default":
+            if 'userId' in context:
+                seed = context['userId']
+            elif 'sessionId' in context:
+                seed = context['sessionId']
+            elif 'remoteAddress' in context:
+                seed = context['remoteAddress']
+        elif stickiness_selector in context.keys():
+            seed = context[stickiness_selector]
 
         return seed
 
@@ -73,7 +76,9 @@ class Variants:
             if total_weight <= 0:
                 return fallback_variant
 
-            target = utils.normalized_hash(self._get_seed(context), self.feature_name, total_weight)
+            stickiness_selector = self.variants[0]['stickiness'] if 'stickiness' in self.variants[0].keys() else "default"
+
+            target = utils.normalized_hash(self._get_seed(context, stickiness_selector), self.feature_name, total_weight)
             counter = 0
             for variation in self.variants:
                 counter += variation['weight']
