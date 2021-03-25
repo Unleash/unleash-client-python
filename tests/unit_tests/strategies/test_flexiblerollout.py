@@ -92,6 +92,15 @@ def test_flexiblerollout_random(strategy):
     assert strategy.execute(base_context) in [True, False]
 
 
+def test_flexiblerollout_customfield(strategy):
+    BASE_FLEXIBLE_ROLLOUT_DICT['parameters']['stickiness'] = 'customField'
+    base_context = dict(appName='test', environment='prod', userId="9")
+    base_context['customField'] = "122"
+    assert strategy.execute(base_context)
+    base_context['customField'] = "155"
+    assert not strategy.execute(base_context)
+
+
 def test_flexiblerollout_default():
     BASE_FLEXIBLE_ROLLOUT_DICT['parameters']['stickiness'] = 'default'
     BASE_FLEXIBLE_ROLLOUT_DICT['constraints'] = [x for x in BASE_FLEXIBLE_ROLLOUT_DICT['constraints'] if x['contextName'] != 'userId']
