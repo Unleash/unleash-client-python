@@ -5,7 +5,7 @@ PROJECT_NAME = UnleashClient
 #-----------------------------------------------------------------------
 # Rules of Rules : Grouped rules that _doathing_
 #-----------------------------------------------------------------------
-test: lint pytest
+test: lint pytest specification-test
 
 precommit: clean generate-requirements
 
@@ -31,6 +31,10 @@ lint:
 pytest:
 	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
 	py.test --flake8 --cov ${PROJECT_NAME} tests/unit_tests
+
+specification-test:
+	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
+	py.test tests/specification_tests
 
 tox-osx:
 	tox -c tox-osx.ini --parallel auto
