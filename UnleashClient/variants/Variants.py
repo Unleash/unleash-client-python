@@ -56,6 +56,8 @@ class Variants:
         del formatted_variation['weight']
         if 'overrides' in formatted_variation:
             del formatted_variation['overrides']
+        if 'stickiness' in formatted_variation:
+            del formatted_variation['stickiness']
         return formatted_variation
 
     def get_variant(self, context: dict) -> dict:
