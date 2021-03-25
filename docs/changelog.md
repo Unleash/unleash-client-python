@@ -1,5 +1,8 @@
 ## Next version
 
+## Next
+* (Minor) Support custom stickiness for FlexibleRollout strategy and varients.
+
 ## v4.1.0
 * (Minor) Support project-based feature flag loading.
 
