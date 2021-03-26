@@ -1,6 +1,6 @@
 ## Next version
 
-## Next
+## v4.2.0
 * (Minor) Support custom stickiness for FlexibleRollout strategy and varients.
 
 ## v4.1.0
