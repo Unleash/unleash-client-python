@@ -36,7 +36,7 @@ class Variants:
     @staticmethod
     def _get_seed(context: dict, stickiness_selector: str = "default") -> str:
         """Grabs seed value from context."""
-        seed = str(random.random() * 10000)
+        seed = ""
 
         if stickiness_selector == "default":
             if 'userId' in context:
@@ -45,7 +45,11 @@ class Variants:
                 seed = context['sessionId']
             elif 'remoteAddress' in context:
                 seed = context['remoteAddress']
-        elif stickiness_selector in context.keys():
+            else:
+                seed = str(random.random() * 10000)
+        elif stickiness_selector == 'random':
+            seed = str(random.random() * 10000)
+        else:
             seed = context[stickiness_selector]
 
         return seed

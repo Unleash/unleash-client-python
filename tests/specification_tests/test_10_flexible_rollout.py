@@ -197,7 +197,7 @@ def test_feature_55sessionid_disabled(unleash_client):
 @responses.activate
 def test_feature_55_nouserdisabled(unleash_client):
     """
-    Feature.flexibleRollout.userId.55 should be disabled
+    Feature.flexibleRollout.userId.55 should be disabled if no userId in context
     """
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
