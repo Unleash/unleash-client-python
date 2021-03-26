@@ -16,7 +16,7 @@ class FlexibleRollout(Strategy):
         """
         percentage = int(self.parameters['rollout'])
         activation_group = self.parameters['groupId']
-        stickiness = self.parameters['stickiness']
+        stickiness = self.parameters['stickiness'] if "stickiness" in self.parameters else "default"
 
         if stickiness == 'default':
             if 'userId' in context.keys():
@@ -25,10 +25,9 @@ class FlexibleRollout(Strategy):
                 calculated_percentage = normalized_hash(context['sessionId'], activation_group)
             else:
                 calculated_percentage = self.random_hash()
-        elif stickiness in context.keys():
-            calculated_percentage = normalized_hash(context[stickiness], activation_group)
-        else:
-            # This also handles the stickiness == random scenario.
+        elif stickiness == "random":
             calculated_percentage = self.random_hash()
+        else:
+            calculated_percentage = normalized_hash(context[stickiness], activation_group)
 
         return percentage > 0 and calculated_percentage <= percentage
