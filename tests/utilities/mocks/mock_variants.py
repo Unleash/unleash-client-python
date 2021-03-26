@@ -65,7 +65,7 @@ VARIANTS_WITH_STICKINESS = \
         {
             "name": "VarC",
             "weight": 33,
-"stickiness": "customField",
+            "stickiness": "customField",
             "payload": {
                 "type": "string",
                 "value": "Test 3"
