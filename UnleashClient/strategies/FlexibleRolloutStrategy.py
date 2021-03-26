@@ -16,7 +16,7 @@ class FlexibleRollout(Strategy):
         """
         percentage = int(self.parameters['rollout'])
         activation_group = self.parameters['groupId']
-        stickiness = self.parameters['stickiness'] if "stickiness" in self.parameters else "default"
+        stickiness = self.parameters['stickiness']
 
         if stickiness == 'default':
             if 'userId' in context.keys():
