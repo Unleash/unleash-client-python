@@ -6,7 +6,7 @@
 This is the Python client for [Unleash](https://github.com/unleash/unleash).  It implements [Client Specifications 1.0](https://github.com/Unleash/unleash/blob/master/docs/client-specification.md) and checks compliance based on spec in [unleash/client-specifications](https://github.com/Unleash/client-specification)
 
 What it supports:
-* Default activation strategies using 32-bit [Murmerhash3](https://en.wikipedia.org/wiki/MurmurHash)
+* Default activation strategies using 32-bit [Murmurhash3](https://en.wikipedia.org/wiki/MurmurHash)
 * Custom strategies
 * Full client lifecycle:
     * Client registers with Unleash server
