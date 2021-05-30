@@ -1,5 +1,8 @@
 ## Next version
 
+## Upcoming
+* (Minor) Allow users to specify log-level for when `is_enabled()` or `get_varients()` calls fail.
+
 ## v4.2.0
 * (Minor) Support custom stickiness for FlexibleRollout strategy and variants.
 

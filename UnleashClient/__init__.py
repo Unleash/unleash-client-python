@@ -30,7 +30,8 @@ class UnleashClient:
                  custom_options: Optional[dict] = None,
                  custom_strategies: Optional[dict] = None,
                  cache_directory: str = None,
-                 project_name: str = None) -> None:
+                 project_name: str = None,
+                 caution_log_level: int = 30) -> None:
         """
         A client for the Unleash feature toggle system.
 
@@ -45,6 +46,7 @@ class UnleashClient:
         :param custom_options: Default requests parameters, optional & defaults to empty.
         :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
         :param cache_directory: Location of the cache directory. When unset, FCache will determine the location
+        :param caution_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
         """
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
@@ -66,6 +68,7 @@ class UnleashClient:
             "environment": self.unleash_environment
         }
         self.unleash_project_name = project_name
+        self.unleash_caution_log_level = caution_log_level
 
         # Class objects
         self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
@@ -198,12 +201,12 @@ class UnleashClient:
             try:
                 return self.features[feature_name].is_enabled(context)
             except Exception as excep:
-                LOGGER.warning("Returning default value for feature: %s", feature_name)
-                LOGGER.warning("Error checking feature flag: %s", excep)
+                LOGGER.log(self.unleash_caution_log_level, "Returning default value for feature: %s", feature_name)
+                LOGGER.log(self.unleash_caution_log_level, "Error checking feature flag: %s", excep)
                 return self._get_fallback_value(fallback_function, feature_name, context)
         else:
-            LOGGER.warning("Returning default value for feature: %s", feature_name)
-            LOGGER.warning("Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
+            LOGGER.log(self.unleash_caution_log_level, "Returning default value for feature: %s", feature_name)
+            LOGGER.log(self.unleash_caution_log_level, "Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
             return self._get_fallback_value(fallback_function, feature_name, context)
 
     # pylint: disable=broad-except
@@ -227,10 +230,10 @@ class UnleashClient:
             try:
                 return self.features[feature_name].get_variant(context)
             except Exception as excep:
-                LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
-                LOGGER.warning("Error checking feature flag variant: %s", excep)
+                LOGGER.log(self.unleash_caution_log_level, "Returning default flag/variation for feature: %s", feature_name)
+                LOGGER.log(self.unleash_caution_log_level, "Error checking feature flag variant: %s", excep)
                 return DISABLED_VARIATION
         else:
-            LOGGER.warning("Returning default flag/variation for feature: %s", feature_name)
-            LOGGER.warning("Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
+            LOGGER.log(self.unleash_caution_log_level, "Returning default flag/variation for feature: %s", feature_name)
+            LOGGER.log(self.unleash_caution_log_level, "Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
             return DISABLED_VARIATION
