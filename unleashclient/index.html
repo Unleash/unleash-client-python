@@ -219,6 +219,13 @@
 <td>Str</td>
 <td>""</td>
 </tr>
+<tr>
+<td>verbose_log_level</td>
+<td>Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.</td>
+<td>N</td>
+<td>Integer</td>
+<td>30 (Warning)</td>
+</tr>
 </tbody>
 </table>
 <h3 id="initialize_client"><code>initialize_client()</code></h3>
@@ -227,6 +234,7 @@
 * Client registration
 * Provisioning poll
 * Stats poll</p>
+<p>This will raise an exception on registration if the URL is invalid.</p>
 <h3 id="destroy"><code>destroy()</code></h3>
 <p>Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.</p>
 <p>You shouldn't need this too much!</p>
