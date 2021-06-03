@@ -46,7 +46,8 @@ my_client = UnleashClient(
     environment="staging",
     app_name="pyIvan",
     custom_headers={'Authorization': '56907a2fa53c1d16101d509a10b78e36190b0f918d9f122d'},
-    custom_strategies=custom_strategies_dict
+    custom_strategies=custom_strategies_dict,
+    verbose_log_level=10
 )
 
 my_client.initialize_client()
