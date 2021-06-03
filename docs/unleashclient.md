@@ -33,6 +33,8 @@ This kicks off:
 * Provisioning poll
 * Stats poll
 
+This will raise an exception on registration if the URL is invalid.
+
 ### `destroy()`
 Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.
 
