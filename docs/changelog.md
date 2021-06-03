@@ -1,6 +1,6 @@
 ## Next version
 
-## Upcoming
+## v4.3.0
 * (Minor) `initialize_client()` will raise exception if UnleashClient is configured with an invalid URL.
 * (Minor) Exclude test package from dist & wheel.  Thanks @ameyajoshi99!
 * (Minor) Allow users to specify log-level for when `is_enabled()` or `get_varients()` calls fail.
