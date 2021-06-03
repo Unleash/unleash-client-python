@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timezone
 import requests
+from requests.exceptions import MissingSchema, InvalidSchema, InvalidURL, InvalidHeader
 from UnleashClient.constants import SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
 from UnleashClient.utils import LOGGER, log_resp_info
 
@@ -55,7 +56,7 @@ def register_client(url: str,
         LOGGER.info("Unleash Client successfully registered!")
 
         return True
-    except ValueError as exc:
+    except (MissingSchema, InvalidSchema, InvalidHeader, InvalidURL) as exc:
         LOGGER.exception("Unleash Client registration failed fatally due to exception: %s", exc)
         raise exc
     except requests.RequestException as exc:
