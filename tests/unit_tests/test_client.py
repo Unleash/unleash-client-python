@@ -362,3 +362,17 @@ def test_uc_server_error_recovery(unleash_client):
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
     time.sleep(20)
     assert unleash_client.is_enabled("testFlag")
+
+
+def test_uc_with_invalid_url():
+    unleash_client = UnleashClient("thisisnotavalidurl", APP_NAME)
+
+    with pytest.raises(ValueError):
+        unleash_client.initialize_client()
+
+
+def test_uc_with_network_error():
+    unleash_client = UnleashClient("https://thisisavalidurl.com", APP_NAME)
+    unleash_client.initialize_client()
+
+    assert unleash_client.is_enabled

@@ -55,6 +55,9 @@ def register_client(url: str,
         LOGGER.info("Unleash Client successfully registered!")
 
         return True
+    except ValueError as exc:
+        LOGGER.exception("Unleash Client registration failed fatally due to exception: %s", exc)
+        raise exc
     except requests.RequestException as exc:
         LOGGER.exception("Unleash Client registration failed due to exception: %s", exc)
 
