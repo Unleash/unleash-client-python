@@ -1,5 +1,8 @@
 ## Next version
 
+## v4.4.0
+* (Minor) Support running Unleash client as a context manager.  Thanks @Piojo !
+
 ## v4.3.0
 * (Minor) `initialize_client()` will raise exception if UnleashClient is configured with an invalid URL.
 * (Minor) Exclude test package from dist & wheel.  Thanks @ameyajoshi99!
