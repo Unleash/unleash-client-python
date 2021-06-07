@@ -13,7 +13,6 @@ from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 
-
 # pylint: disable=dangerous-default-value
 class UnleashClient:
     """Client implementation."""
@@ -237,3 +236,11 @@ class UnleashClient:
             LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
             LOGGER.log(self.unleash_verbose_log_level, "Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
             return DISABLED_VARIATION
+
+    def __enter__(self) -> "UnleashClient":
+        self.initialize_client()
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self.destroy()
+        return False

@@ -33,7 +33,17 @@ This kicks off:
 * Provisioning poll
 * Stats poll
 
-This will raise an exception on registration if the URL is invalid.
+This will raise an exception on registration if the URL is invalid. It
+is done automatically if called inside a context manager as in:
+
+``` python
+with UnleashClient(
+    url="https://foo.bar",
+    app_name="myClient1",
+    instance_id="myinstanceid"
+    ) as client:
+    pass
+```
 
 ### `destroy()`
 Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.
