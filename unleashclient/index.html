@@ -234,7 +234,15 @@
 * Client registration
 * Provisioning poll
 * Stats poll</p>
-<p>This will raise an exception on registration if the URL is invalid.</p>
+<p>This will raise an exception on registration if the URL is invalid. It
+is done automatically if called inside a context manager as in:</p>
+<pre><code class="language-python">with UnleashClient(
+    url=&quot;https://foo.bar&quot;,
+    app_name=&quot;myClient1&quot;,
+    instance_id=&quot;myinstanceid&quot;
+    ) as client:
+    pass
+</code></pre>
 <h3 id="destroy"><code>destroy()</code></h3>
 <p>Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.</p>
 <p>You shouldn't need this too much!</p>
