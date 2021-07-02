@@ -36,7 +36,7 @@ class UnleashClient:
 
         :param url: URL of the unleash server, required.
         :param app_name: Name of the application using the unleash client, required.
-        :param environment: Name of the environment using the unleash client, optional & defaults to "default".
+        :paramgit  environment: Name of the environment using the unleash client, optional & defaults to "default".
         :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
         :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
@@ -52,7 +52,7 @@ class UnleashClient:
         custom_strategies = custom_strategies or {}
 
         # Configuration
-        self.unleash_url = url.rstrip('\\')
+        self.unleash_url = url.rstrip('/')
         self.unleash_app_name = app_name
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id

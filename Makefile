@@ -44,7 +44,8 @@ tox-osx:
 #-----------------------------------------------------------------------
 clean:
 	rm -rf build; \
-	rm -rf dist;
+	rm -rf dist; \
+	rm -rf UnleashClient.egg-info;
 
 build-package:
 	python setup.py sdist bdist_wheel

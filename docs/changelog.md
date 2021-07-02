@@ -1,5 +1,9 @@
 ## Next version
 
+## v4.4.1
+* (Minor) Include py.typed to mark package as type-friendly!  Thanks @wbolster!
+* (Minor) Fix API url sanitization.  Thanks @romulorosa!
+
 ## v4.4.0
 * (Minor) Support running Unleash client as a context manager.  Thanks @Piojo !
 
