@@ -17,3 +17,4 @@ responses
 tox
 tox-conda
 twine
+wheel
