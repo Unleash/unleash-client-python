@@ -22,6 +22,7 @@ class UnleashClient:
                  environment: str = "default",
                  instance_id: str = "unleash-client-python",
                  refresh_interval: int = 15,
+                 refresh_jitter: Optional[int] = None,
                  metrics_interval: int = 60,
                  disable_metrics: bool = False,
                  disable_registration: bool = False,
@@ -39,6 +40,7 @@ class UnleashClient:
         :paramgit  environment: Name of the environment using the unleash client, optional & defaults to "default".
         :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
         :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
+        :param refresh_jitter: Provisioning refresh interval jitter in s, optional & defaults to None
         :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
         :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
         :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
@@ -57,6 +59,9 @@ class UnleashClient:
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval
+        self.unleash_refresh_jitter = (
+            int(refresh_jitter) if refresh_jitter is not None else None
+        )
         self.unleash_metrics_interval = metrics_interval
         self.unleash_disable_metrics = disable_metrics
         self.unleash_disable_registration = disable_registration
@@ -143,7 +148,10 @@ class UnleashClient:
         # Start periodic jobs
         self.scheduler.start()
         self.fl_job = self.scheduler.add_job(fetch_and_load_features,
-                                             trigger=IntervalTrigger(seconds=int(self.unleash_refresh_interval)),
+                                             trigger=IntervalTrigger(
+                                                 seconds=int(self.unleash_refresh_interval),
+                                                 jitter=self.unleash_refresh_jitter,
+                                             ),
                                              kwargs=fl_args)
 
         if not self.unleash_disable_metrics:

@@ -4,7 +4,7 @@ import pytest
 import responses
 from UnleashClient import UnleashClient
 from UnleashClient.strategies import Strategy
-from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, \
+from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, REFRESH_JITTER, \
     METRICS_INTERVAL, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME, PROJECT_URL
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
@@ -96,6 +96,7 @@ def test_UC_initialize_full():
                            ENVIRONMENT,
                            INSTANCE_ID,
                            REFRESH_INTERVAL,
+                           REFRESH_JITTER,
                            METRICS_INTERVAL,
                            DISABLE_METRICS,
                            DISABLE_REGISTRATION,
@@ -103,6 +104,7 @@ def test_UC_initialize_full():
                            CUSTOM_OPTIONS)
     assert client.unleash_instance_id == INSTANCE_ID
     assert client.unleash_refresh_interval == REFRESH_INTERVAL
+    assert client.unleash_refresh_jitter == REFRESH_JITTER
     assert client.unleash_metrics_interval == METRICS_INTERVAL
     assert client.unleash_disable_metrics == DISABLE_METRICS
     assert client.unleash_disable_registration == DISABLE_REGISTRATION
