@@ -46,6 +46,7 @@ def test_aggregate_and_send_metrics():
     assert "My Feature3" not in request['bucket']["toggles"].keys()
     assert cache[METRIC_LAST_SENT_TIME] > start_time
 
+
 @responses.activate
 def test_no_metrics():
     responses.add(responses.POST, FULL_METRICS_URL, json={}, status=200)
