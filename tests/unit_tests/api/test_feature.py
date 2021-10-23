@@ -1,13 +1,12 @@
 import responses
 from pytest import mark, param
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_URL, PROJECT_NAME
+from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_URL, PROJECT_NAME, ETAG_VALUE
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.api import get_feature_toggles
 
 
 FULL_FEATURE_URL = URL + FEATURES_URL
-ETAG_VALUE = 'W/"730-v0ozrE11zfZK13j7rQ5PxkXfjYQ"'
 
 
 @responses.activate
