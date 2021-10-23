@@ -33,7 +33,7 @@ def register_client(url: str,
     registation_request = {
         "appName": app_name,
         "instanceId": instance_id,
-        "sdkVersion": "{}:{}".format(SDK_NAME, SDK_VERSION),
+        "sdkVersion": f"{SDK_NAME}:{SDK_VERSION}",
         "strategies": [*supported_strategies],
         "started": datetime.now(timezone.utc).isoformat(),
         "interval": metrics_interval
