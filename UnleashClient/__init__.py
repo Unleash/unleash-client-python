@@ -9,7 +9,7 @@ from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
-from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION
+from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 
@@ -82,6 +82,7 @@ class UnleashClient:
         self.fl_job: Job = None
         self.metric_job: Job = None
         self.cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
+        self.cache[ETAG] = ''
         self.cache.sync()
 
         # Mappings
