@@ -10,7 +10,8 @@ def get_feature_toggles(url: str,
                         instance_id: str,
                         custom_headers: dict,
                         custom_options: dict,
-                        project: str = None) -> Tuple[dict, str]:
+                        project: str = None,
+                        cached_etag: str = '') -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
 
@@ -24,7 +25,8 @@ def get_feature_toggles(url: str,
     :param custom_headers:
     :param custom_options:
     :param project:
-    :return: Feature flags if successful, empty dict if not.
+    :param cached_etag:
+    :return: (Feature flags, etag) if successful, ({},'') if not
     """
     try:
         LOGGER.info("Getting feature flag.")
@@ -33,6 +35,9 @@ def get_feature_toggles(url: str,
             "UNLEASH-APPNAME": app_name,
             "UNLEASH-INSTANCEID": instance_id
         }
+
+        if cached_etag:
+            headers['If-None-Match'] = cached_etag
 
         base_url = f"{url}{FEATURES_URL}"
         base_params = {}

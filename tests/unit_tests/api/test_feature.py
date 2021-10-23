@@ -19,10 +19,10 @@ def test_get_feature_toggle(response, status, expected):
     responses.add(responses.GET, FULL_FEATURE_URL, json=response, status=status, headers={'etag': ETAG_VALUE})
 
     (result, etag) = get_feature_toggles(URL,
-                                 APP_NAME,
-                                 INSTANCE_ID,
-                                 CUSTOM_HEADERS,
-                                 CUSTOM_OPTIONS)
+                                         APP_NAME,
+                                         INSTANCE_ID,
+                                         CUSTOM_HEADERS,
+                                         CUSTOM_OPTIONS)
 
     assert len(responses.calls) == 1
     assert expected(result)
@@ -33,11 +33,11 @@ def test_get_feature_toggle_project():
     responses.add(responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200, headers={'etag': ETAG_VALUE})
 
     (result, etag) = get_feature_toggles(URL,
-                                 APP_NAME,
-                                 INSTANCE_ID,
-                                 CUSTOM_HEADERS,
-                                 CUSTOM_OPTIONS,
-                                 PROJECT_NAME)
+                                         APP_NAME,
+                                         INSTANCE_ID,
+                                         CUSTOM_HEADERS,
+                                         CUSTOM_OPTIONS,
+                                         PROJECT_NAME)
 
     assert len(responses.calls) == 1
     assert len(result["features"]) == 1
@@ -49,11 +49,29 @@ def test_get_feature_toggle_failed_etag():
     responses.add(responses.GET, PROJECT_URL, json={}, status=500, headers={'etag': ETAG_VALUE})
 
     (result, etag) = get_feature_toggles(URL,
-                                 APP_NAME,
-                                 INSTANCE_ID,
-                                 CUSTOM_HEADERS,
-                                 CUSTOM_OPTIONS,
-                                 PROJECT_NAME)
+                                         APP_NAME,
+                                         INSTANCE_ID,
+                                         CUSTOM_HEADERS,
+                                         CUSTOM_OPTIONS,
+                                         PROJECT_NAME)
 
     assert len(responses.calls) == 1
     assert etag == ''
+
+
+@responses.activate
+def test_get_feature_toggle_etag_present():
+    responses.add(responses.GET, PROJECT_URL, json={}, status=304, headers={'etag': ETAG_VALUE})
+
+    (result, etag) = get_feature_toggles(URL,
+                                         APP_NAME,
+                                         INSTANCE_ID,
+                                         CUSTOM_HEADERS,
+                                         CUSTOM_OPTIONS,
+                                         PROJECT_NAME,
+                                         ETAG_VALUE)
+
+    assert len(responses.calls) == 1
+    assert not result
+    assert responses.calls[0].request.headers['If-None-Match'] == ETAG_VALUE
+    assert etag == ETAG_VALUE
