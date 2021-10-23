@@ -52,7 +52,9 @@ app_name | Name of your program | Y | String | N/A |
 environment | Name of current environment | N | String | default |
 instance_id | Unique ID for your program | N | String | unleash-client-python |
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
+refresh_jitter | Maximum delay added to refresh interval value. | N | Integer |  None |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
+metrics_jitter | Maximum delay added to sending metrics to server interval. | N | Integer | None |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
 disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {} |

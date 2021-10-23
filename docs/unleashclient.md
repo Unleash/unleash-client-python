@@ -4,7 +4,7 @@
 A client for the Unleash feature toggle system.
 
 `
-UnleashClient.__init__(url, app_name, instance_id, refresh_interval, metrics_interval, disable_metrics, disable_registration, custom_headers)
+UnleashClient.__init__(url, app_name, instance_id, refresh_interval, refresh_jitter, metrics_interval, disable_metrics, disable_registration, custom_headers)
 `
 
 **Arguments**
@@ -15,7 +15,9 @@ url      | Unleash server URL | Y | String | N/A |
 app_name | Name of your program | Y | String | N/A |
 instance_id | Unique ID for your program | N | String | unleash-client-python | 
 refresh_interval | How often the unleash client should check for configuration changes. | N | Integer |  15 |
+refresh_jitter | Maximum delay added to refresh interval value. | N | Integer |  None |
 metrics_interval | How often the unleash client should send metrics to server. | N | Integer | 60 |
+metrics_jitter | Maximum delay added to sending metrics to server interval. | N | Integer | None |
 disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F |
 disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {}
