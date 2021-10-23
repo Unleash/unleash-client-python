@@ -26,14 +26,14 @@ install-clean:
 #-----------------------------------------------------------------------
 lint:
 	pylint ${PROJECT_NAME} && \
-	mypy ${PROJECT_NAME};
+	mypy ${PROJECT_NAME} --install-types --non-interactive;
 
 pytest:
-	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
+	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
 	py.test --flake8 --cov ${PROJECT_NAME} tests/unit_tests
 
 specification-test:
-	export PYTHONPATH=${ROOT_DIR}: $$PYTHONPATH && \
+	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
 	py.test tests/specification_tests
 
 tox-osx:
