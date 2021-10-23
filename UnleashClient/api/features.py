@@ -1,3 +1,4 @@
+from typing import Tuple
 import requests
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
 from UnleashClient.utils import LOGGER, log_resp_info
@@ -9,7 +10,7 @@ def get_feature_toggles(url: str,
                         instance_id: str,
                         custom_headers: dict,
                         custom_options: dict,
-                        project: str = None) -> dict:
+                        project: str = None) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
 
@@ -44,13 +45,17 @@ def get_feature_toggles(url: str,
                             params=base_params,
                             timeout=REQUEST_TIMEOUT, **custom_options)
 
-        if resp.status_code != 200:
+        if resp.status_code not in [200, 304]:
             log_resp_info(resp)
             LOGGER.warning("Unleash Client feature fetch failed due to unexpected HTTP status code.")
             raise Exception("Unleash Client feature fetch failed!")
 
-        return resp.json()
+        etag = ''
+        if 'etag' in resp.headers.keys():
+            etag = resp.headers['etag']
+
+        return resp.json(), etag
     except Exception as exc:
         LOGGER.exception("Unleash Client feature fetch failed due to exception: %s", exc)
 
-    return {}
+    return {}, ''

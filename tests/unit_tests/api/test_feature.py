@@ -7,6 +7,7 @@ from UnleashClient.api import get_feature_toggles
 
 
 FULL_FEATURE_URL = URL + FEATURES_URL
+ETAG_VALUE = 'W/"730-v0ozrE11zfZK13j7rQ5PxkXfjYQ"'
 
 
 @responses.activate
@@ -16,9 +17,9 @@ FULL_FEATURE_URL = URL + FEATURES_URL
     param({}, 500, lambda result: not result, id="failure"),
 ))
 def test_get_feature_toggle(response, status, expected):
-    responses.add(responses.GET, FULL_FEATURE_URL, json=response, status=status)
+    responses.add(responses.GET, FULL_FEATURE_URL, json=response, status=status, headers={'etag': ETAG_VALUE})
 
-    result = get_feature_toggles(URL,
+    (result, etag) = get_feature_toggles(URL,
                                  APP_NAME,
                                  INSTANCE_ID,
                                  CUSTOM_HEADERS,
@@ -30,9 +31,9 @@ def test_get_feature_toggle(response, status, expected):
 
 @responses.activate
 def test_get_feature_toggle_project():
-    responses.add(responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200)
+    responses.add(responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200, headers={'etag': ETAG_VALUE})
 
-    result = get_feature_toggles(URL,
+    (result, etag) = get_feature_toggles(URL,
                                  APP_NAME,
                                  INSTANCE_ID,
                                  CUSTOM_HEADERS,
@@ -41,3 +42,19 @@ def test_get_feature_toggle_project():
 
     assert len(responses.calls) == 1
     assert len(result["features"]) == 1
+    assert etag == ETAG_VALUE
+
+
+@responses.activate
+def test_get_feature_toggle_failed_etag():
+    responses.add(responses.GET, PROJECT_URL, json={}, status=500, headers={'etag': ETAG_VALUE})
+
+    (result, etag) = get_feature_toggles(URL,
+                                 APP_NAME,
+                                 INSTANCE_ID,
+                                 CUSTOM_HEADERS,
+                                 CUSTOM_OPTIONS,
+                                 PROJECT_NAME)
+
+    assert len(responses.calls) == 1
+    assert etag == ''
