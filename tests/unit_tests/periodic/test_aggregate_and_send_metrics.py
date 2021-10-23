@@ -45,3 +45,22 @@ def test_aggregate_and_send_metrics():
     assert request['bucket']["toggles"]["My Feature1"]["no"] == 1
     assert "My Feature3" not in request['bucket']["toggles"].keys()
     assert cache[METRIC_LAST_SENT_TIME] > start_time
+
+@responses.activate
+def test_no_metrics():
+    responses.add(responses.POST, FULL_METRICS_URL, json={}, status=200)
+
+    start_time = datetime.now(timezone.utc) - timedelta(seconds=60)
+    cache = FileCache("TestCache")
+    cache[METRIC_LAST_SENT_TIME] = start_time
+    strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), Default()]
+
+    my_feature1 = Feature("My Feature1", True, strategies)
+    my_feature1.yes_count = 0
+    my_feature1.no_count = 0
+
+    features = {"My Feature1": my_feature1}
+
+    aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache)
+
+    assert len(responses.calls) == 0
