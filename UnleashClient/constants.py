@@ -18,3 +18,4 @@ METRICS_URL = "/client/metrics"
 
 # Cache keys
 FAILED_STRATEGIES = 'failed_strategies'
+ETAG = 'etag'

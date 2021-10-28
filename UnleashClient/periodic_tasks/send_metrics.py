@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from fcache.cache import FileCache
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
+from UnleashClient.utils import LOGGER
 
 
 def aggregate_and_send_metrics(url: str,
@@ -39,6 +40,9 @@ def aggregate_and_send_metrics(url: str,
         }
     }
 
-    send_metrics(url, metrics_request, custom_headers, custom_options)
-    ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
-    ondisk_cache.sync()
+    if feature_stats_list:
+        send_metrics(url, metrics_request, custom_headers, custom_options)
+        ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
+        ondisk_cache.sync()
+    else:
+        LOGGER.debug("No feature flags with metrics, skipping metrics submission.")
