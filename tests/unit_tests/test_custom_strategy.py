@@ -67,8 +67,8 @@ def test_uc_customstrategy_happypath(recwarn):
     assert not unleash_client.is_enabled("CustomToggle", {"sound": "bark"})
 
     # Check warning on deprecated strategy.
-    assert len(recwarn) == 1
-    assert recwarn.pop(DeprecationWarning)
+    assert len(recwarn) >= 1
+    assert any([x.category == DeprecationWarning for x in recwarn])
 
 
 @responses.activate
