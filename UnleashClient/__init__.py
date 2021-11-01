@@ -119,55 +119,61 @@ class UnleashClient:
         """
         # Only perform initialization steps if client is not initialized.
         if not self.is_initialized:
-            # Setup
-            fl_args = {
-                "url": self.unleash_url,
-                "app_name": self.unleash_app_name,
-                "instance_id": self.unleash_instance_id,
-                "custom_headers": self.unleash_custom_headers,
-                "custom_options": self.unleash_custom_options,
-                "cache": self.cache,
-                "features": self.features,
-                "strategy_mapping": self.strategy_mapping,
-                "project": self.unleash_project_name
-            }
+            try:
+                # Setup
+                fl_args = {
+                    "url": self.unleash_url,
+                    "app_name": self.unleash_app_name,
+                    "instance_id": self.unleash_instance_id,
+                    "custom_headers": self.unleash_custom_headers,
+                    "custom_options": self.unleash_custom_options,
+                    "cache": self.cache,
+                    "features": self.features,
+                    "strategy_mapping": self.strategy_mapping,
+                    "project": self.unleash_project_name
+                }
 
-            metrics_args = {
-                "url": self.unleash_url,
-                "app_name": self.unleash_app_name,
-                "instance_id": self.unleash_instance_id,
-                "custom_headers": self.unleash_custom_headers,
-                "custom_options": self.unleash_custom_options,
-                "features": self.features,
-                "ondisk_cache": self.cache
-            }
+                metrics_args = {
+                    "url": self.unleash_url,
+                    "app_name": self.unleash_app_name,
+                    "instance_id": self.unleash_instance_id,
+                    "custom_headers": self.unleash_custom_headers,
+                    "custom_options": self.unleash_custom_options,
+                    "features": self.features,
+                    "ondisk_cache": self.cache
+                }
 
-            # Register app
-            if not self.unleash_disable_registration:
-                register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
-                                self.unleash_metrics_interval, self.unleash_custom_headers,
-                                self.unleash_custom_options, self.strategy_mapping)
+                # Register app
+                if not self.unleash_disable_registration:
+                    register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
+                                    self.unleash_metrics_interval, self.unleash_custom_headers,
+                                    self.unleash_custom_options, self.strategy_mapping)
 
-            fetch_and_load_features(**fl_args)
+                fetch_and_load_features(**fl_args)
 
-            # Start periodic jobs
-            self.scheduler.start()
-            self.fl_job = self.scheduler.add_job(fetch_and_load_features,
-                                                 trigger=IntervalTrigger(
-                                                     seconds=int(self.unleash_refresh_interval),
-                                                     jitter=self.unleash_refresh_jitter,
-                                                 ),
-                                                 kwargs=fl_args)
+                # Start periodic jobs
+                self.scheduler.start()
+                self.fl_job = self.scheduler.add_job(fetch_and_load_features,
+                                                     trigger=IntervalTrigger(
+                                                         seconds=int(self.unleash_refresh_interval),
+                                                         jitter=self.unleash_refresh_jitter,
+                                                     ),
+                                                     kwargs=fl_args)
 
-            if not self.unleash_disable_metrics:
-                self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
-                                                         trigger=IntervalTrigger(
-                                                             seconds=int(self.unleash_metrics_interval),
-                                                             jitter=self.unleash_metrics_jitter,
-                                                         ),
-                                                         kwargs=metrics_args)
-
-            self.is_initialized = True
+                if not self.unleash_disable_metrics:
+                    self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
+                                                             trigger=IntervalTrigger(
+                                                                 seconds=int(self.unleash_metrics_interval),
+                                                                 jitter=self.unleash_metrics_jitter,
+                                                             ),
+                                                             kwargs=metrics_args)
+            except Exception as excep:
+                # Log exceptions during initialization.  is_initialized will remain false.
+                LOGGER.warning("Exception during UnleashClient initialization: %s", excep)
+                raise excep
+            else:
+                # Set is_iniialized to true if no exception is encountered.
+                self.is_initialized = True
         else:
             warnings.warn("Attempted to initialize an Unleash Client instance that has already been initialized.")
 
