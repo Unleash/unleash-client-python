@@ -1,3 +1,4 @@
+import uuid
 import warnings
 from datetime import datetime, timezone
 from typing import Dict, Callable, Any, Optional
@@ -77,7 +78,18 @@ class UnleashClient:
         self.unleash_verbose_log_level = verbose_log_level
 
         # Class objects
-        self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
+        self.cache_id: str = None
+        self.supercache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
+        for (key, value) in self.supercache.items():
+            if not value:
+                self.cache_id = key
+
+        if not self.cache_id:
+            self.cache_id = str(uuid.uuid4())
+            self.supercache[self.cache_id] = True
+            self.supercache.sync()
+
+        self.cache = FileCache(f"{self.unleash_instance_id}.{self.cache_id}", app_cache_dir=cache_directory)
         self.features: dict = {}
         self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
@@ -189,7 +201,7 @@ class UnleashClient:
         if self.metric_job:
             self.metric_job.remove()
         self.scheduler.shutdown()
-        self.cache.delete()
+        self.supercache[self.cache_id] = False
 
     @staticmethod
     def _get_fallback_value(fallback_function: Callable, feature_name: str, context: dict) -> bool:
