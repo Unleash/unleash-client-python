@@ -59,7 +59,7 @@ disable_metrics | Disables sending metrics to Unleash server. | N | Boolean | F 
 disable_registration | Disables registration with Unleash server. | N | Boolean | F |
 custom_headers | Custom headers to send to Unleash. | N | Dictionary | {} |
 custom_strategies | Custom strategies you'd like UnleashClient to support. | N | Dictionary | {} |
-cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset | 
+cache_directory | Location of the cache directory. When unset, FCache will determine the location | N | Str | Unset |
 project_name | Unleash project Id to load feature flags from | N | Str | "" |
 verbose_log_level | Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails. | N | Integer | 30 (Warning) |
 
@@ -118,7 +118,7 @@ For more information about variants, see the [Variant documentation](https://unl
 ### Running in a WSGI Context
 
 
-WSGI is a faily common way of running webserver applications for both Flask and Django, if you're running in WSGI there are a few caveats that you should be aware of:
+WSGI is a fairly common way of running webserver applications for both Flask and Django, if you're running in WSGI there are a few caveats that you should be aware of:
 
 * By default WSGI removes the GIL and disables threading, this SDK requires threads to work for the background updates of feature toggles, without it, your application will run but will not reflect updates to state of feature toggles when changed. To get around this, you'll need to enable threading, you can do this by setting enable-threads in your WSGI configuration
 
