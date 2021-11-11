@@ -114,7 +114,7 @@ print(variant)
 > }
 ```
 
-For more information about variants, see the [Variant documentation](https://unleash.github.io/docs/toggle_variants).
+For more information about variants, see the [Variant documentation](https://docs.getunleash.io/advanced/toggle_variants).
 
 
 ### Running in a WSGI Context
