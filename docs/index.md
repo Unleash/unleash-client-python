@@ -23,6 +23,8 @@ To clean up gracefully:
 client.destroy()
 ```
 
+If the client is already initialized, calling `initialize_client()` again will raise a warning.  This is not recommended client usage as it results in unneccessary calls to the Unleash server.
+
 ## Checking if a feature is enabled
 
 A check of a simple toggle:

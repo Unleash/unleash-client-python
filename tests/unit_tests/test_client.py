@@ -1,5 +1,7 @@
 import time
 import json
+import warnings
+
 import pytest
 import responses
 from UnleashClient import UnleashClient
@@ -395,3 +397,24 @@ def test_uc_with_network_error():
     unleash_client.initialize_client()
 
     assert unleash_client.is_enabled
+
+
+@responses.activate
+def test_uc_multiple_initializations(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200, headers={'etag': ETAG_VALUE})
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_initialized
+    assert len(unleash_client.features) >= 4
+
+    with warnings.catch_warnings(record=True) as w:
+        # Try and initialize client again.
+        unleash_client.initialize_client()
+
+    assert len(w) == 1
+    assert "initialize" in str(w[0].message)
