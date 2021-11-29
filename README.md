@@ -28,12 +28,14 @@ pip install UnleashClient
 
 ### Initialization
 
-```
+```Python
 from UnleashClient import UnleashClient
+
 client = UnleashClient(
     url="https://unleash.herokuapp.com",
     app_name="my-python-app",
     custom_headers={'Authorization': '<API token>'})
+    
 client.initialize_client()
 ```
 
