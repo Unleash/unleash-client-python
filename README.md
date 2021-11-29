@@ -42,7 +42,7 @@ client.initialize_client()
 If you're running Unleash in a Docker container or self hosting, your URL should look like `http://localhost:4242/api` (with the `/api` suffix).
 
 To clean up gracefully:
-```
+```Python
 client.destroy()
 ```
 
