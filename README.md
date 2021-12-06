@@ -26,7 +26,7 @@ pip install UnleashClient
 
 ## Related Work
 
-If you're looking into running Unleash from Flask, you might want to take a look at the [Unleash Flask SDK](https://github.com/Unleash/Flask-Unleash), which uses this project but handles some of the boilerplate code for you.
+If you're looking into running Unleash from Flask, you might want to take a look at [_Flask-Unleash_, the Unleash Flask extension](https://github.com/Unleash/Flask-Unleash). The extension builds upon this SDK to reduce the amount of boilerplate code you need to write to integrate with Flask. Of course, if you'd rather use this package directly, that will work too.
 
 ## Usage
 
