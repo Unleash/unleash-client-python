@@ -24,6 +24,10 @@ Check out the package on [Pypi](https://pypi.org/project/UnleashClient/)!
 pip install UnleashClient
 ```
 
+## For Flask Users
+
+If you're looking into running Unleash from Flask, you might want to take a look at [_Flask-Unleash_, the Unleash Flask extension](https://github.com/Unleash/Flask-Unleash). The extension builds upon this SDK to reduce the amount of boilerplate code you need to write to integrate with Flask. Of course, if you'd rather use this package directly, that will work too.
+
 ## Usage
 
 ### Initialization
@@ -35,7 +39,7 @@ client = UnleashClient(
     url="https://unleash.herokuapp.com",
     app_name="my-python-app",
     custom_headers={'Authorization': '<API token>'})
-    
+
 client.initialize_client()
 ```
 
