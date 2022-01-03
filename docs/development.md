@@ -34,7 +34,7 @@ CFLAGS="-mmacosx-version-min=10.13" pip install mmh3
 1. Both can be run by `make test`. 
 
 ## Release
-1. Land all your PRs on `master`. :)
+1. Land all your PRs on `main`. :)
 1. Update changelog.md and other sundry documentation.
 1. Deploy documents by running `mkdocs gh-deploy`
 1. Run `bumpversion [major/minor/patch]` to generate new version & tag.
