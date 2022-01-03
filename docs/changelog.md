@@ -1,5 +1,13 @@
 ## Next version
 
+## v5.0.0
+* (Breaking) Modify client initialization to allow jitter configuration on refresh/background refresh intervals.  May break code when parameters to UnleashClient are not used as keyword arguments.  Thanks @dryobates and @jstolarski!
+* (Major) If client is already initialized, calling `initialize_client()` again won't re-run initialization.
+* (Minor) Support HTTP 304 on `/client/feature` endpoint.
+* (Minor) Rename `master` to `main`.
+* (Documentation) Document running UnleashClient in uWSGI.  Thanks @sighphyre!
+* (Documentation) Fix links and formatting.  Thanks @thomasheartman & @sighphyre!
+
 ## v4.4.1
 * (Minor) Include py.typed to mark package as type-friendly!  Thanks @wbolster!
 * (Minor) Fix API url sanitization.  Thanks @romulorosa!
