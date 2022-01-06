@@ -59,6 +59,9 @@ def get_feature_toggles(url: str,
         if 'etag' in resp.headers.keys():
             etag = resp.headers['etag']
 
+        if resp.status_code == 304:
+            return None, etag
+            
         return resp.json(), etag
     except Exception as exc:
         LOGGER.exception("Unleash Client feature fetch failed due to exception: %s", exc)
