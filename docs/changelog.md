@@ -1,4 +1,6 @@
 ## Next version
+## v5.0.1
+* (Bugfix) Fix HTTP 304 handling on `/client/feature` for Gitlab.  Thanks @janLo!
 
 ## v5.0.0
 * (Breaking) Modify client initialization to allow jitter configuration on refresh/background refresh intervals.  May break code when parameters to UnleashClient are not used as keyword arguments.  Thanks @dryobates and @jstolarski!
