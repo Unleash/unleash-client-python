@@ -17,9 +17,9 @@ root.addHandler(handler)
 
 
 my_client = UnleashClient(
-    url="https://gitlab.com/api/v4/feature_flags/unleash/12139921",
+    url="https://gitlab.com/api/v4/feature_flags/unleash/32635317",
     app_name="pyIvan",
-    instance_id="Mr1vcvCx4QijfauYz_fg",
+    instance_id="Sc5fv9aCyFPB4XcEFk-E",
     disable_metrics=True,
     disable_registration=True
 )
