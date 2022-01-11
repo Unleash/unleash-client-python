@@ -1,4 +1,5 @@
 # App packages
+importlib_metadata
 requests
 fcache
 mmh3

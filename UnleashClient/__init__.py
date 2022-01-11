@@ -112,6 +112,7 @@ class UnleashClient:
         Initializes client and starts communication with central unleash server(s).
 
         This kicks off:
+
         * Client registration
         * Provisioning poll
         * Stats poll
@@ -210,6 +211,7 @@ class UnleashClient:
         Checks if a feature toggle is enabled.
 
         Notes:
+
         * If client hasn't been initialized yet or an error occurs, flat will default to false.
 
         :param feature_name: Name of the feature
@@ -241,6 +243,7 @@ class UnleashClient:
         Checks if a feature toggle is enabled.  If so, return variant.
 
         Notes:
+
         * If client hasn't been initialized yet or an error occurs, flat will default to false.
 
         :param feature_name: Name of the feature

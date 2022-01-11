@@ -26,8 +26,8 @@ author = 'Ivan Lee'
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosectionlabel",
-    "sphinx.ext.autosummary",
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.viewcode',
     "sphinx.ext.githubpages",
 ]
 

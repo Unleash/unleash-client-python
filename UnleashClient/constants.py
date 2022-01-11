@@ -1,4 +1,4 @@
-from importlib.metadata import version
+from importlib_metadata import version
 
 # Library
 SDK_NAME = "unleash-client-python"
