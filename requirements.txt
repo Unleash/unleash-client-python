@@ -22,6 +22,7 @@ pytest-runner
 pytest-xdist
 responses
 setuptools_scm
+sphinx
 tox
 types-requests
 twine
