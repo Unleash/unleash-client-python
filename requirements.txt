@@ -24,6 +24,7 @@ pytest-xdist
 responses
 setuptools_scm
 sphinx
+sphinx-rtd-theme
 tox
 types-requests
 twine

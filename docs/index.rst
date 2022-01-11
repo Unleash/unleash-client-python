@@ -1,30 +1,29 @@
-Welcome to unleash-client-python's documentation!
-=================================================
+****************************************
+Unleash Python Client Documentation
+****************************************
+
+Documentation for Unleash's Python client.  See the sidebar for more topics!
+
+.. Hidden TOCs
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :caption: Basic Usage
+    :maxdepth: 2
+    :hidden:
 
+    installation
+    usage
 
+.. toctree::
+    :caption: Advanced
+    :maxdepth: 2
+    :hidden:
 
-Indices and tables
-==================
+    customstrategies
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+    :caption: API Documentation
+    :maxdepth: 2
+    :hidden:
 
-API
----
-
-.. automodule:: UnleashClient
-
-.. autoclass:: UnleashClient
-
-	.. automethod:: initialize_client
-
-	.. automethod:: destroy
-
-	.. automethod:: is_enabled
-
-	.. automethod:: get_variant
+    UnleashClient <api>
