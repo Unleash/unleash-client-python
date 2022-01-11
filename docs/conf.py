@@ -29,6 +29,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
+    "m2r2"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -39,6 +40,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+source_suffix = ['.rst', '.md']
 
 # -- Options for HTML output -------------------------------------------------
 

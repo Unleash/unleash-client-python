@@ -1,5 +1,6 @@
-API
-===
+****************************************
+UnleashClient
+****************************************
 
 .. automodule:: UnleashClient
 
@@ -12,3 +13,4 @@ API
 	.. automethod:: is_enabled
 
 	.. automethod:: get_variant
+

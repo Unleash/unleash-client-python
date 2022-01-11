@@ -20,10 +20,19 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
     :hidden:
 
     customstrategies
+    development
 
 .. toctree::
     :caption: API Documentation
     :maxdepth: 2
     :hidden:
 
-    UnleashClient <api>
+    unleashclient
+    strategy
+
+.. toctree::
+    :caption: Changelog
+    :maxdepth: 2
+    :hidden:
+
+    changelog

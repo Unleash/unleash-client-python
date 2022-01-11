@@ -25,6 +25,7 @@ responses
 setuptools_scm
 sphinx
 sphinx-rtd-theme
+m2r2
 tox
 types-requests
 twine
