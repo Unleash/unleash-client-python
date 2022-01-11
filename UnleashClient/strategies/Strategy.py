@@ -1,4 +1,4 @@
-# pylint: disable=dangerous-default-value
+# pylint: disable=invalid-name,dangerous-default-value
 import warnings
 from UnleashClient.constraints import Constraint
 

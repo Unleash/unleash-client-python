@@ -1,0 +1,31 @@
+[tool.mypy]
+strict_optional = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts= """
+    --cov UnleashClient \
+    --cov-report term \
+    --cov-report html:test_results/cov_html \
+    --cov-report xml:test_results/cov.xml \
+    --html=test_results/results.html \
+    --self-contained-html \
+    --junitxml=test_results/results.xml \
+    --disable-warnings
+"""
+log_file_level="INFO"
+
+[tool.pylint.messages_control]
+disable = [
+    "line-too-long",
+    "missing-class-docstring",
+    "missing-module-docstring",
+    "missing-function-docstring"
+]
+max-attributes = 25
+max-args = 25
+max-locals = 20
+extension-pkg-allow-list = ["mmh3"]
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm>=6.2"]

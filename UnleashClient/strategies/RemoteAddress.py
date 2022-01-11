@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 import ipaddress
 from UnleashClient.strategies.Strategy import Strategy
 from UnleashClient.utils import LOGGER

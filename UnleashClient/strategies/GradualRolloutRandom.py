@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 import random
 from UnleashClient.strategies.Strategy import Strategy
 

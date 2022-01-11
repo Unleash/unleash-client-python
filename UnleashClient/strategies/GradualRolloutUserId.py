@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 from UnleashClient.utils import normalized_hash
 from UnleashClient.strategies.Strategy import Strategy
 

@@ -17,9 +17,9 @@ build-local: clean build-package
 # Install
 #-----------------------------------------------------------------------
 
-install-clean:
-	pip install -U -r requirements-dev.txt && \
-	pip install -U -r requirements-package.txt
+install:
+	pip install -U -r requirements.txt && \
+	python setup.py install
 
 #-----------------------------------------------------------------------
 # Testing & Linting

@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name, too-few-public-methods
 from UnleashClient.utils import LOGGER, get_identifier
 
 
