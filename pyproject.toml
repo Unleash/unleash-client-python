@@ -27,5 +27,7 @@ max-args = 25
 max-locals = 20
 extension-pkg-allow-list = ["mmh3"]
 
+[tool.setuptools_scm]
+
 [build-system]
 requires = ["setuptools", "wheel", "setuptools_scm>=6.2"]

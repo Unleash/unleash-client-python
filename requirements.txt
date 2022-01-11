@@ -21,6 +21,7 @@ pytest-rerunfailures
 pytest-runner
 pytest-xdist
 responses
+setuptools_scm
 tox
 types-requests
 twine

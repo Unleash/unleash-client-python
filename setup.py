@@ -10,7 +10,6 @@ def readme():
 
 setup(
     name='UnleashClient',
-    version='5.0.1',
     author='Ivan Lee',
     author_email='ivanklee86@gmail.com',
     description='Python client for the Unleash feature toggle system!',
@@ -21,6 +20,7 @@ setup(
     package_data={"UnleashClient": ["py.typed"]},
     install_requires=["requests", "fcache", "mmh3", "apscheduler"],
     tests_require=['pytest', "mimesis", "responses", 'pytest-mock'],
+    setup_requires=['setuptools_scm'],
     zip_safe=False,
     include_package_data=True,
     classifiers=[

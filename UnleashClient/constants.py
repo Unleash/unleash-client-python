@@ -1,6 +1,8 @@
+from importlib.metadata import version
+
 # Library
 SDK_NAME = "unleash-client-python"
-SDK_VERSION = "5.0.1"
+SDK_VERSION = version("UnleashClient")
 REQUEST_TIMEOUT = 30
 METRIC_LAST_SENT_TIME = "mlst"
 

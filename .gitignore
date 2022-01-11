@@ -103,4 +103,4 @@ ENV/
 assets
 results*
 site
-tesst_results
+test_results
