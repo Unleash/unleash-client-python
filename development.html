@@ -30,7 +30,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.0.3.dev1+g1368769
+                5.0.3.dev2+g7471490
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,6 +52,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tooling">Tooling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-tox-locally">Running Tox locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#release">Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#snippets">Snippets</a></li>
 </ul>
@@ -106,6 +107,16 @@
 <ol class="arabic simple">
 <li><p>Activate your virtualenv solution (e.g. <cite>source activate YOUR_VIRTUALENV</cite>).</p></li>
 <li><p>Run linting &amp; tests: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code></p></li>
+</ol>
+</section>
+<section id="running-tox-locally">
+<h2>Running Tox locally<a class="headerlink" href="#running-tox-locally" title="Permalink to this headline"></a></h2>
+<ol class="arabic simple">
+<li><p>Install Python versions for each supported version.</p></li>
+<li><p>Deactivate your local virtualenv (if it’s activated).</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">pyenv</span> <span class="pre">local</span> <span class="pre">3.10.X</span> <span class="pre">3.9.Y</span> <span class="pre">3.8.Z</span> <span class="pre">3.7.12</span> <span class="pre">3.6.15</span></code> (inserting appropriate patch versions).</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> to get latest local dependencies.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">tox</span></code> to run tox.</p></li>
 </ol>
 </section>
 <section id="release">
