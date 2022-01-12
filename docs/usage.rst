@@ -112,3 +112,19 @@ To see what's going on when PoCing code, you can use the following:
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     root.addHandler(handler)
+
+Using ``UnleashClient`` with Gitlab
+#######################################
+
+`Gitlab's feature flags <https://docs.gitlab.com/ee/user/project/operations/feature_flags.html>`_ only supports the features URL.  (API calls to the registration URL and metrics URL will fail with HTTP Error code 401.)
+
+If using `unleash-client-python` with Gitlab's feature flages, we recommend initializing the client with `disable_metrics` = True and `disable_registration` = True.
+
+.. code-block:: python
+
+    my_client = UnleashClient(
+        url="https://gitlab.com/api/v4/feature_flags/someproject/someid",
+        app_name="myClient1",
+        instance_id="myinstanceid",
+        disable_metrics=True,
+        disable_registration=True
