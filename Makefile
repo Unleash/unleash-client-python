@@ -36,8 +36,8 @@ specification-test:
 	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
 	py.test --no-cov tests/specification_tests
 
-tox-osx:
-	tox -c tox-osx.ini --parallel auto
+tox:
+	tox --parallel auto
 
 #-----------------------------------------------------------------------
 # Rules
