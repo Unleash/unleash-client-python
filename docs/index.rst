@@ -20,6 +20,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
     :hidden:
 
     customstrategies
+    wsgi
     development
 
 .. toctree::

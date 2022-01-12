@@ -8,21 +8,17 @@ class Strategy:
     The parent class for default and custom strategies.
 
     In general, default & custom classes should only need to override:
-    * __init__() - Depending on the parameters your feature needs
-    * apply() - Your feature provisioning
+
+    - ``__init__()`` - Depending on the parameters your feature needs
+    - ``apply()`` - Your feature provisioning
+
+    :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
+    :param parameters: The 'parameter' objects from the strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     """
     def __init__(self,
                  constraints: list = [],
                  parameters: dict = {},
                  ) -> None:
-        """
-        A generic strategy objects.
-
-        :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of
-        /api/clients/features response
-        :param parameters: The 'parameter' objects from the strategy section (...from feature section) of
-        /api/clients/features response
-        """
         self.parameters = parameters
         self.constraints = constraints
         self.parsed_constraints = self.load_constraints(constraints)
@@ -37,11 +33,14 @@ class Strategy:
     def execute(self, context: dict = None) -> bool:
         """
         Executes the strategies by:
+
         - Checking constraints
         - Applying the strategy
 
-        :param context: Context information
-        :return:
+        This is what UnleashClient calls when you run ``is_enabled()``
+
+        :param context: Feature flag context.
+        :return: Feature flag result.
         """
         flag_state = False
 
@@ -53,8 +52,6 @@ class Strategy:
     def load_constraints(self, constraints_list: list) -> list:  # pylint: disable=no-self-use
         """
         Loads constraints from provisioning.
-
-        :return:
         """
         parsed_constraints_list = []
 
@@ -65,17 +62,17 @@ class Strategy:
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """
-        Method to load data on object initialization, if desired.
+        Loads strategy provisioning from Unleash feature flag configuration.
 
-        This should parse the raw values in self.parameters into format Python can comprehend.
+        This should parse the raw values in ``self.parameters`` into format Python can comprehend.
         """
         return []
 
     def apply(self, context: dict = None) -> bool:  # pylint: disable=unused-argument,no-self-use
         """
-        Strategy implementation goes here.
+        Strategy implementation.
 
-        :param context:
-        :return:
+        :param context: Feature flag context
+        :return: Feature flag result
         """
         return False
