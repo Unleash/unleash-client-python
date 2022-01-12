@@ -2,7 +2,7 @@ name: Release docs
 
 on:
   push:
-    branches: ["il/modernize_ucp"]
+    branches: ["main"]
 
 jobs:
   Build:
@@ -19,11 +19,11 @@ jobs:
           pip install -r requirements.txt
           pip install wheel
           python setup.py install
-      - name: Build documents
+      - name: Build docs
         run: |
           cd docs
           make html
-      - name: Deploy
+      - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

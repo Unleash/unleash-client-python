@@ -11,12 +11,14 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 import UnleashClient
+from importlib_metadata import version
 
 # -- Project information -----------------------------------------------------
 
 project = 'unleash-client-python'
-copyright = '2022, Ivan Lee'
+copyright = '2022 Unleash'
 author = 'Ivan Lee'
+version = version("UnleashClient")
 
 
 # -- General configuration ---------------------------------------------------
@@ -55,3 +57,10 @@ html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_context = {
+  'display_github': True,
+  'github_user': 'unleash',
+  'github_repo': 'unleash-client-python',
+  'github_version': 'main/docs/',
+}

@@ -18,6 +18,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install wheel
+          python setup.py install
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
@@ -27,6 +28,15 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.pypi_username }}
           TWINE_PASSWORD: ${{ secrets.pypi_password }}
+      - name: Build docs
+        run: |
+          cd docs
+          make html
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
       - name: Notify Slack of pipeline completion
         uses: 8398a7/action-slack@v2
         with:
