@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 import warnings
 from datetime import datetime, timezone
 from typing import Dict, Callable, Any, Optional
@@ -16,7 +17,24 @@ from .deprecation_warnings import strategy_v2xx_deprecation_check
 
 # pylint: disable=dangerous-default-value
 class UnleashClient:
-    """Client implementation."""
+    """
+    A client for the Unleash feature toggle system.
+
+    :param url: URL of the unleash server, required.
+    :param app_name: Name of the application using the unleash client, required.
+    :param  environment: Name of the environment using the unleash client, optional & defaults to "default".
+    :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
+    :param refresh_interval: Provisioning refresh interval in seconds, optional & defaults to 15 seconds
+    :param refresh_jitter: Provisioning refresh interval jitter in seconds, optional & defaults to None
+    :param metrics_interval: Metrics refresh interval in seconds, optional & defaults to 60 seconds
+    :param metrics_jitter: Metrics refresh interval jitter in seconds, optional & defaults to None
+    :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
+    :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
+    :param custom_options: Default requests parameters, optional & defaults to empty.  Can be used to skip SSL verification.
+    :param custom_strategies: Dictionary of custom strategy names : custom strategy objects.
+    :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
+    :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
+    """
     def __init__(self,
                  url: str,
                  app_name: str,
@@ -34,24 +52,6 @@ class UnleashClient:
                  cache_directory: str = None,
                  project_name: str = None,
                  verbose_log_level: int = 30) -> None:
-        """
-        A client for the Unleash feature toggle system.
-
-        :param url: URL of the unleash server, required.
-        :param app_name: Name of the application using the unleash client, required.
-        :paramgit  environment: Name of the environment using the unleash client, optional & defaults to "default".
-        :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
-        :param refresh_interval: Provisioning refresh interval in ms, optional & defaults to 15 seconds
-        :param refresh_jitter: Provisioning refresh interval jitter in s, optional & defaults to None
-        :param metrics_interval: Metrics refresh interval in ms, optional & defaults to 60 seconds
-        :param metrics_jitter: Metrics refresh interval jitter in s, optional & defaults to None
-        :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
-        :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
-        :param custom_options: Default requests parameters, optional & defaults to empty.
-        :param custom_strategies: Dictionary of custom strategy names : custom strategy objects
-        :param cache_directory: Location of the cache directory. When unset, FCache will determine the location
-        :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
-        """
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -111,11 +111,21 @@ class UnleashClient:
         Initializes client and starts communication with central unleash server(s).
 
         This kicks off:
+
         * Client registration
         * Provisioning poll
         * Stats poll
 
-        :return:
+        This will raise an exception on registration if the URL is invalid. It is done automatically if called inside a context manager as in:
+
+        .. code-block:: python
+
+            with UnleashClient(
+                url="https://foo.bar",
+                app_name="myClient1",
+                instance_id="myinstanceid"
+                ) as client:
+                pass
         """
         # Only perform initialization steps if client is not initialized.
         if not self.is_initialized:
@@ -177,13 +187,11 @@ class UnleashClient:
         else:
             warnings.warn("Attempted to initialize an Unleash Client instance that has already been initialized.")
 
-    def destroy(self):
+    def destroy(self) -> None:
         """
         Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.
 
         You shouldn't need this too much!
-
-        :return:
         """
         self.fl_job.remove()
         if self.metric_job:
@@ -209,13 +217,14 @@ class UnleashClient:
         Checks if a feature toggle is enabled.
 
         Notes:
+
         * If client hasn't been initialized yet or an error occurs, flat will default to false.
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :param default_value: Allows override of default value. (DEPRECIATED, used fallback_function instead!)
         :param fallback_function: Allows users to provide a custom function to set default value.
-        :return: True/False
+        :return: Feature flag result
         """
         context = context or {}
         context.update(self.unleash_static_context)
@@ -240,11 +249,12 @@ class UnleashClient:
         Checks if a feature toggle is enabled.  If so, return variant.
 
         Notes:
+
         * If client hasn't been initialized yet or an error occurs, flat will default to false.
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
-        :return: Dict with variant and feature flag status.
+        :return: Variant and feature flag status.
         """
         context = context or {}
         context.update(self.unleash_static_context)

@@ -103,3 +103,6 @@ ENV/
 assets
 results*
 site
+test_results
+_static
+_templates

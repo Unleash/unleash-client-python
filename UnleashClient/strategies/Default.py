@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 from UnleashClient.strategies.Strategy import Strategy
 
 

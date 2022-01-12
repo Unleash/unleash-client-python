@@ -1,4 +1,7 @@
 ## Next version
+* (Minor) Refactor `unleash-client-python` to modernize tooling (`setuptools_scm` and centralizing tool config in `pyproject.toml`).
+* (Minor) Migrate documentation to Sphinx.
+
 ## v5.0.1
 * (Bugfix) Fix HTTP 304 handling on `/client/feature` for Gitlab.  Thanks @janLo!
 
