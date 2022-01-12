@@ -19,6 +19,7 @@ build-local: clean build-package
 
 install:
 	pip install -U -r requirements.txt && \
+	pip install -U -r requirements-local.txt && \
 	python setup.py install
 
 #-----------------------------------------------------------------------
@@ -35,6 +36,9 @@ pytest:
 specification-test:
 	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
 	py.test --no-cov tests/specification_tests
+
+tox:
+	tox --parallel auto
 
 tox-osx:
 	tox -c tox-osx.ini --parallel auto
