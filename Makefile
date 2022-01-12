@@ -30,11 +30,11 @@ lint:
 
 pytest:
 	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
-	py.test --flake8 --cov ${PROJECT_NAME} tests/unit_tests
+	py.test tests/unit_tests
 
 specification-test:
 	export PYTHONPATH="${ROOT_DIR}:$$PYTHONPATH" && \
-	py.test tests/specification_tests
+	py.test --no-cov tests/specification_tests
 
 tox-osx:
 	tox -c tox-osx.ini --parallel auto

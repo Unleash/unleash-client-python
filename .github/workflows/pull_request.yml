@@ -27,7 +27,7 @@ jobs:
           py.test tests/unit_tests
       - name: Specification tests
         run: |
-          py.test tests/specification_tests
+          py.test --no-cov tests/specification_tests
       - name: Send coverage to Coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
