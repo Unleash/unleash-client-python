@@ -29,6 +29,9 @@
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
+              <div class="version">
+                5.0.3.dev1+g1368769
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -47,8 +50,10 @@
 <li class="toctree-l1"><a class="reference internal" href="customstrategies.html">Custom Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsgi.html">Running with WSGI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tooling">Tooling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#release">Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#snippets">Snippets</a></li>
 </ul>
 </li>
 </ul>
@@ -78,7 +83,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Development</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/development.rst.txt" rel="nofollow"> View page source</a>
+              <a href="https://github.com/unleash/unleash-client-python/blob/main/docs/development.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -90,23 +95,37 @@
 <h1>Development<a class="headerlink" href="#development" title="Permalink to this headline"></a></h1>
 <p>Contributions welcome!</p>
 <p>Here are some notes about common tools and tasks you’ll run into when working on <cite>unleash-client-python</cite>.</p>
+<section id="tooling">
+<h2>Tooling<a class="headerlink" href="#tooling" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/pyenv/pyenv">Pyenv</a> for managing Python versions.</p></li>
+</ul>
+</section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
-<li><p>Activate your virtualenv solution (e.g. <cite>source activate ucp</cite>).</p></li>
-<li><p>Run linting &amp; tests: <cite>make test</cite></p></li>
+<li><p>Activate your virtualenv solution (e.g. <cite>source activate YOUR_VIRTUALENV</cite>).</p></li>
+<li><p>Run linting &amp; tests: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code></p></li>
 </ol>
 </section>
 <section id="release">
 <h2>Release<a class="headerlink" href="#release" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
-<li><p>Land all your PRs on <cite>main</cite>. :)</p></li>
-<li><p>Update changelog.md and other sundry documentation.</p></li>
-<li><p>Create tag on master branch.</p></li>
-<li><p>Deploy documents by running <cite>mkdocs gh-deploy</cite></p></li>
-<li><p>Create new Release in Github and paste in Changelog.</p></li>
-<li><p>Github Actions workflow will automagically publish to Pypi. ^^</p></li>
+<li><p>Land all your PRs on <cite>main</cite>!</p></li>
+<li><p>If new configuration is added, update <a class="reference external" href="https://github.com/Unleash/Flask-Unleash">Flask-Unleash</a> config.</p></li>
+<li><p>Update changelog.md and other documentation.</p></li>
+<li><p>Create tag on <cite>main</cite> branch.</p></li>
+<li><p>Create new Release in Github and paste in changelog.</p></li>
+<li><p>Github Actions workflow will automagically publish to Pypi and build documentation.</p></li>
+<li><p>Publish new Flask-Unleash package (if necessary).</p></li>
 </ol>
+</section>
+<section id="snippets">
+<h2>Snippets<a class="headerlink" href="#snippets" title="Permalink to this headline"></a></h2>
+<p>Serving docs from WSL!</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker run -d --name unleash-docs --rm -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/_build/html:/web -p <span class="m">8080</span>:8080 halverneus/static-file-server:latest
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -121,7 +140,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Ivan Lee.</p>
+    <p>&#169; Copyright 2022 Unleash.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
