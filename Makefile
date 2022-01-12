@@ -19,7 +19,6 @@ build-local: clean build-package
 
 install:
 	pip install -U -r requirements.txt && \
-	pip install -U -r requirements-local.txt && \
 	python setup.py install
 
 #-----------------------------------------------------------------------
@@ -39,9 +38,6 @@ specification-test:
 
 tox:
 	tox --parallel auto
-
-tox-osx:
-	tox -c tox-osx.ini --parallel auto
 
 #-----------------------------------------------------------------------
 # Rules
