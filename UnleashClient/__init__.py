@@ -119,7 +119,7 @@ class UnleashClient:
         This will raise an exception on registration if the URL is invalid. It is done automatically if called inside a context manager as in:
 
         .. code-block:: python
-        
+
             with UnleashClient(
                 url="https://foo.bar",
                 app_name="myClient1",
