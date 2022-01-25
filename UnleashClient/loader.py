@@ -72,6 +72,9 @@ def load_features(cache: FileCache,
     try:
         feature_provisioning = cache[FEATURES_URL]
 
+        if not feature_provisioning.get("features"):
+            feature_provisioning['features'] = feature_provisioning.get('toggles')
+
         # Parse provisioning
         parsed_features = {}
         feature_names = [d["name"] for d in feature_provisioning["features"]]
@@ -87,7 +90,9 @@ def load_features(cache: FileCache,
         # Update existing objects
         for feature in feature_toggles.keys():
             feature_for_update = feature_toggles[feature]
-            strategies = parsed_features[feature]["strategies"]
+            strategies = parsed_features[feature].get("strategies")
+            if not strategies:
+                parsed_features[feature]["strategies"] = {}
 
             feature_for_update.enabled = parsed_features[feature]["enabled"]
             if strategies:
