@@ -73,7 +73,7 @@ def load_features(cache: FileCache,
         feature_provisioning = cache[FEATURES_URL]
 
         if not feature_provisioning.get("features"):
-            feature_provisioning['features'] = feature_provisioning.get('toggles')
+            feature_provisioning['features'] = feature_provisioning.get('toggles', {})
 
         # Parse provisioning
         parsed_features = {}
