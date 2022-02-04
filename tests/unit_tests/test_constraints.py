@@ -98,3 +98,43 @@ def test_constraint_STR_STARTS_WITH():
     assert constraint_not_ci.apply({'customField': "dogb"})
     assert not constraint_not_ci.apply({'customField': "parrotb"})
     assert not constraint_not_ci.apply({'customField': "hamsterb"})
+
+
+def test_constraints_NUM_EQ():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_EQ)
+
+    assert not constraint.apply({'customField': 4})
+    assert constraint.apply({'customField': 5})
+    assert not constraint.apply({'customField': 6})
+
+
+def test_constraints_NUM_GT():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_GT)
+
+    assert not constraint.apply({'customField': 4})
+    assert not constraint.apply({'customField': 5})
+    assert constraint.apply({'customField': 6})
+
+
+def test_constraints_NUM_GTE():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_GTE)
+
+    assert not constraint.apply({'customField': 4})
+    assert constraint.apply({'customField': 5})
+    assert constraint.apply({'customField': 6})
+
+
+def test_constraints_NUM_LT():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_LT)
+
+    assert constraint.apply({'customField': 4})
+    assert not constraint.apply({'customField': 5})
+    assert not constraint.apply({'customField': 6})
+
+
+def test_constraints_NUM_LTE():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_LTE)
+
+    assert constraint.apply({'customField': 4})
+    assert constraint.apply({'customField': 5})
+    assert not constraint.apply({'customField': 6})

@@ -86,3 +86,48 @@ CONSTRAINT_DICT_STR_STARTS_WITH_NOT_CI = \
         "caseInsensitive": False,
         "inverted": False
     }
+
+
+CONSTRAINT_NUM_EQ = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_EQ",
+        "value": 5,
+        "inverted": False
+    }
+
+
+CONSTRAINT_NUM_GT = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_GT",
+        "value": 5,
+        "inverted": False
+    }
+
+
+CONSTRAINT_NUM_GTE = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_GTE",
+        "value": 5,
+        "inverted": False
+    }
+
+
+CONSTRAINT_NUM_LT = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_LT",
+        "value": 5,
+        "inverted": False
+    }
+
+
+CONSTRAINT_NUM_LTE = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_LTE",
+        "value": 5,
+        "inverted": False
+    }

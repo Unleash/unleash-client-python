@@ -4,11 +4,21 @@ from UnleashClient.utils import LOGGER, get_identifier
 
 
 class ConstraintOperators(Enum):
+    # Logical operators
     IN = "IN"
     NOT_IN = "NOT_IN"
+
+    # String operators
     STR_ENDS_WITH = "STR_ENDS_WITH"
     STR_STARTS_WITH = "STR_STARTS_WITH"
     STR_CONTAINS = "STR_CONTAINS"
+
+    # Numeric oeprators
+    NUM_EQ = "NUM_EQ"
+    NUM_GT = "NUM_GT"
+    NUM_GTE = "NUM_GTE"
+    NUM_LT = "NUM_LT"
+    NUM_LTE = "NUM_LTE"
 
 class Constraint:
     def __init__(self, constraint_dict: dict) -> None:
@@ -56,6 +66,22 @@ class Constraint:
 
         return return_value
 
+    def check_numeric_operators(self, context_value: int) -> bool:
+        return_value = False
+
+        if self.operator == ConstraintOperators.NUM_EQ:
+            return_value = context_value == self.value
+        elif self.operator == ConstraintOperators.NUM_GT:
+            return_value = context_value > self.value
+        elif self.operator == ConstraintOperators.NUM_GTE:
+            return_value = context_value >= self.value
+        elif self.operator == ConstraintOperators.NUM_LT:
+            return_value = context_value < self.value
+        elif self.operator == ConstraintOperators.NUM_LTE:
+            return_value = context_value <= self.value
+
+        return return_value
+
     def apply(self, context: dict = None) -> bool:
         """
         Returns true/false depending on constraint provisioning and context.
@@ -73,6 +99,8 @@ class Constraint:
                     constraint_check = self.check_list_operators(context_value=context_value)
                 if self.operator in [ConstraintOperators.STR_CONTAINS, ConstraintOperators.STR_ENDS_WITH, ConstraintOperators.STR_STARTS_WITH]:
                     constraint_check = self.check_string_operators(context_value=context_value)
+                if self.operator in [ConstraintOperators.NUM_EQ, ConstraintOperators.NUM_GT, ConstraintOperators.NUM_GTE, ConstraintOperators.NUM_LT, ConstraintOperators.NUM_LTE]:
+                    constraint_check = self.check_numeric_operators(context_value=context_value)
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
 
