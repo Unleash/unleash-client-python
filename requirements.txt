@@ -5,6 +5,7 @@ fcache
 mmh3
 APScheduler
 python-dateutil
+semver
 
 # Development packages
 bumpversion

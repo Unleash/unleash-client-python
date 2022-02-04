@@ -2,6 +2,7 @@
 from datetime import datetime
 from enum import Enum
 from dateutil.parser import parse, ParserError
+import semver
 from UnleashClient.utils import LOGGER, get_identifier
 
 
@@ -25,6 +26,12 @@ class ConstraintOperators(Enum):
     # Date operators
     DATE_AFTER = "DATE_AFTER"
     DATE_BEFORE = "DATE_BEFORE"
+
+    # Semver operators
+    SEMVER_EQ = "SEMVER_EQ"
+    SEMVER_GT = "SEMVER_GT"
+    SEMVER_LT = "SEMVER_LT"
+
 
 class Constraint:
     def __init__(self, constraint_dict: dict) -> None:
@@ -91,16 +98,46 @@ class Constraint:
 
     def check_date_operators(self, context_value: datetime) -> bool:
         return_value = False
+        parsing_exception = False
 
         try:
             parsed_date = parse(self.value, ignoretz=True)
         except ParserError:
             LOGGER.error(f"Unable to parse date: {self.value}")
+            parsing_exception = True
 
-        if self.operator == ConstraintOperators.DATE_AFTER:
-            return_value = context_value >= parsed_date
-        elif self.operator == ConstraintOperators.DATE_BEFORE:
-            return_value = context_value <= parsed_date
+        if not parsing_exception:
+            if self.operator == ConstraintOperators.DATE_AFTER:
+                return_value = context_value >= parsed_date
+            elif self.operator == ConstraintOperators.DATE_BEFORE:
+                return_value = context_value <= parsed_date
+
+        return return_value
+
+
+    def check_semver_operators(self, context_value: str) -> bool:
+        return_value = False
+        parsing_exception = False
+
+        try:
+            target_version = semver.VersionInfo.parse(self.value)
+        except ValueError:
+            LOGGER.error(f"Unable to parse server semver: {self.value}")
+            parsing_exception = True
+
+        try:
+            context_version = semver.VersionInfo.parse(context_value)
+        except ValueError:
+            LOGGER.error(f"Unable to parse context semver: {context_value}")
+            parsing_exception = True
+
+        if not parsing_exception:
+            if self.operator == ConstraintOperators.SEMVER_EQ:
+                return_value = context_version == target_version
+            elif self.operator == ConstraintOperators.SEMVER_GT:
+                return_value = context_version > target_version
+            elif self.operator == ConstraintOperators.SEMVER_LT:
+                return_value = context_version < target_version
 
         return return_value
 
@@ -126,6 +163,8 @@ class Constraint:
                     constraint_check = self.check_numeric_operators(context_value=context_value)
                 elif self.operator in [ConstraintOperators.DATE_AFTER, ConstraintOperators.DATE_BEFORE]:
                     constraint_check = self.check_date_operators(context_value=context_value)
+                elif self.operator in [ConstraintOperators.SEMVER_EQ, ConstraintOperators.SEMVER_GT, ConstraintOperators.SEMVER_LT]:
+                    constraint_check = self.check_semver_operators(context_value=context_value)
 
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)

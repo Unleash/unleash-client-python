@@ -24,7 +24,8 @@ setup(
         "mmh3", 
         "apscheduler", 
         "importlib_metadata",
-        "python-dateutil"
+        "python-dateutil",
+        "semver < 3.0.0"
     ],
     setup_requires=['setuptools_scm'],
     zip_safe=False,

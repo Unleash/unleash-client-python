@@ -158,3 +158,30 @@ CONSTRAINT_DATE_ERROR = \
         "value": "abcd",
         "inverted": False
     }
+
+
+CONSTRAINT_SEMVER_EQ = \
+    {
+        "contextName": "customField",
+        "operator": "SEMVER_EQ",
+        "value": "1.2.2",
+        "inverted": False
+    }
+
+
+CONSTRAINT_SEMVER_GT = \
+    {
+        "contextName": "customField",
+        "operator": "SEMVER_GT",
+        "value": "1.2.2",
+        "inverted": False
+    }
+
+
+CONSTRAINT_SEMVER_LT = \
+    {
+        "contextName": "customField",
+        "operator": "SEMVER_LT",
+        "value": "1.2.2",
+        "inverted": False
+    }

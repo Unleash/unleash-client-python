@@ -161,3 +161,33 @@ def test_constraints_DATE_BEFORE():
 def test_constraints_date_error():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_ERROR)
     assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})
+
+
+def test_constraints_SEMVER_EQ():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_SEMVER_EQ)
+
+    assert not constraint.apply({'customField': '1.2.1'})
+    assert constraint.apply({'customField': '1.2.2'})
+    assert not constraint.apply({'customField': '1.2.3'})
+
+
+def test_constraints_SEMVER_GT():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_SEMVER_GT)
+
+    assert not constraint.apply({'customField': '1.2.1'})
+    assert not constraint.apply({'customField': '1.2.2'})
+    assert constraint.apply({'customField': '1.2.3'})
+
+
+def test_constraints_SEMVER_LT():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_SEMVER_LT)
+
+    assert constraint.apply({'customField': '1.2.1'})
+    assert not constraint.apply({'customField': '1.2.2'})
+    assert not constraint.apply({'customField': '1.2.3'})
+
+
+def test_constraints_semverexception():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_SEMVER_EQ)
+
+    assert not constraint.apply({'customField': 'hamstershamsterhamsters'})
