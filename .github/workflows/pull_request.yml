@@ -20,7 +20,7 @@ jobs:
           python setup.py install
       - name: Linting
         run: |
-          mypy UnleashClient
+          mypy UnleashClient --install-types --non-interactive
           pylint UnleashClient
       - name: Unit tests
         run: |
