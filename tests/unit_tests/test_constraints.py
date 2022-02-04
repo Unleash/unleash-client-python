@@ -1,3 +1,5 @@
+from datetime import datetime
+from sqlite3 import Date
 import pytest
 from UnleashClient.constraints import Constraint
 from tests.utilities.mocks import mock_constraints
@@ -138,3 +140,24 @@ def test_constraints_NUM_LTE():
     assert constraint.apply({'customField': 4})
     assert constraint.apply({'customField': 5})
     assert not constraint.apply({'customField': 6})
+
+
+def test_constraints_DATE_AFTER():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_AFTER)
+
+    assert constraint.apply({'currentTime': datetime(2022, 1, 23)})
+    assert constraint.apply({'currentTime': datetime(2022, 1, 22)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 21)})
+
+
+def test_constraints_DATE_BEFORE():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_BEFORE)
+
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})
+    assert constraint.apply({'currentTime': datetime(2022, 1, 22)})
+    assert constraint.apply({'currentTime': datetime(2022, 1, 21)})
+
+
+def test_constraints_date_error():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_ERROR)
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})

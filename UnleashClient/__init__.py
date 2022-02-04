@@ -1,8 +1,7 @@
 # pylint: disable=invalid-name
 import warnings
 from datetime import datetime, timezone
-from typing import Dict, Callable, Any, Optional
-import copy
+from typing import Callable, Optional
 from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -227,7 +226,13 @@ class UnleashClient:
         :return: Feature flag result
         """
         context = context or {}
+
+        # Update context with static values
         context.update(self.unleash_static_context)
+
+        # Update context with optional values
+        if 'currentTime' not in context.keys():
+            context.update({'currentTime': datetime.now()})
 
         if self.is_initialized:
             try:

@@ -4,6 +4,7 @@ requests
 fcache
 mmh3
 APScheduler
+python-dateutil
 
 # Development packages
 bumpversion

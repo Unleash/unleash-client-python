@@ -131,3 +131,30 @@ CONSTRAINT_NUM_LTE = \
         "value": 5,
         "inverted": False
     }
+
+
+CONSTRAINT_DATE_AFTER = \
+    {
+        "contextName": "currentTime",
+        "operator": "DATE_AFTER",
+        "value": "2022-01-22T00:00:00.000Z",
+        "inverted": False
+    }
+
+
+CONSTRAINT_DATE_BEFORE = \
+    {
+        "contextName": "currentTime",
+        "operator": "DATE_BEFORE",
+        "value": "2022-01-22T00:00:00.000Z",
+        "inverted": False
+    }
+
+
+CONSTRAINT_DATE_ERROR = \
+    {
+        "contextName": "currentTime",
+        "operator": "DATE_AFTER",
+        "value": "abcd",
+        "inverted": False
+    }

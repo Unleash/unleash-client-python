@@ -20,7 +20,8 @@ disable = [
     "line-too-long",
     "missing-class-docstring",
     "missing-module-docstring",
-    "missing-function-docstring"
+    "missing-function-docstring",
+    "logging-fstring-interpolation"
 ]
 max-attributes = 25
 max-args = 25

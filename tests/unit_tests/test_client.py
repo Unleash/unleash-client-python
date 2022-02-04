@@ -1,6 +1,7 @@
 import time
 import json
 import warnings
+from datetime import datetime
 
 import pytest
 import responses
@@ -158,6 +159,10 @@ def test_uc_is_enabled(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
+
+    # Test default context values.
+    assert not unleash_client.is_enabled("testConstraintFlag")
+    assert unleash_client.is_enabled("testConstraintFlag", context={"currentTime": datetime(2022, 1, 21)})
 
 
 @responses.activate

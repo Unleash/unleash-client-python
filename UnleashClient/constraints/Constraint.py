@@ -1,5 +1,7 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
+from datetime import datetime
 from enum import Enum
+from dateutil.parser import parse, ParserError
 from UnleashClient.utils import LOGGER, get_identifier
 
 
@@ -19,6 +21,10 @@ class ConstraintOperators(Enum):
     NUM_GTE = "NUM_GTE"
     NUM_LT = "NUM_LT"
     NUM_LTE = "NUM_LTE"
+
+    # Date operators
+    DATE_AFTER = "DATE_AFTER"
+    DATE_BEFORE = "DATE_BEFORE"
 
 class Constraint:
     def __init__(self, constraint_dict: dict) -> None:
@@ -82,6 +88,23 @@ class Constraint:
 
         return return_value
 
+
+    def check_date_operators(self, context_value: datetime) -> bool:
+        return_value = False
+
+        try:
+            parsed_date = parse(self.value, ignoretz=True)
+        except ParserError:
+            LOGGER.error(f"Unable to parse date: {self.value}")
+
+        if self.operator == ConstraintOperators.DATE_AFTER:
+            return_value = context_value >= parsed_date
+        elif self.operator == ConstraintOperators.DATE_BEFORE:
+            return_value = context_value <= parsed_date
+
+        return return_value
+
+
     def apply(self, context: dict = None) -> bool:
         """
         Returns true/false depending on constraint provisioning and context.
@@ -97,10 +120,13 @@ class Constraint:
             if context_value:
                 if self.operator in [ConstraintOperators.IN, ConstraintOperators.NOT_IN]:
                     constraint_check = self.check_list_operators(context_value=context_value)
-                if self.operator in [ConstraintOperators.STR_CONTAINS, ConstraintOperators.STR_ENDS_WITH, ConstraintOperators.STR_STARTS_WITH]:
+                elif self.operator in [ConstraintOperators.STR_CONTAINS, ConstraintOperators.STR_ENDS_WITH, ConstraintOperators.STR_STARTS_WITH]:
                     constraint_check = self.check_string_operators(context_value=context_value)
-                if self.operator in [ConstraintOperators.NUM_EQ, ConstraintOperators.NUM_GT, ConstraintOperators.NUM_GTE, ConstraintOperators.NUM_LT, ConstraintOperators.NUM_LTE]:
+                elif self.operator in [ConstraintOperators.NUM_EQ, ConstraintOperators.NUM_GT, ConstraintOperators.NUM_GTE, ConstraintOperators.NUM_LT, ConstraintOperators.NUM_LTE]:
                     constraint_check = self.check_numeric_operators(context_value=context_value)
+                elif self.operator in [ConstraintOperators.DATE_AFTER, ConstraintOperators.DATE_BEFORE]:
+                    constraint_check = self.check_date_operators(context_value=context_value)
+
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
 

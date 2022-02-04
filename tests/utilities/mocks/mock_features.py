@@ -42,6 +42,26 @@ MOCK_FEATURE_RESPONSE = {
             "createdAt": "2018-10-04T01:27:28.477Z"
         },
         {
+            "name": "testConstraintFlag",
+            "description": "This is a flag with a constraint!",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "constraints": [
+                        {
+                            "contextName": "currentTime",
+                            "operator": "DATE_BEFORE",
+                            "value": "2022-01-22T00:00:00.000Z",
+                            "inverted": False
+                        }
+                    ],
+                },
+            ],
+            "createdAt": "2018-10-04T01:27:28.477Z"
+        },
+        {
           "name": "testVariations",
           "description": "Test variation",
           "enabled": True,

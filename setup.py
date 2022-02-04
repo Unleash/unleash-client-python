@@ -18,7 +18,14 @@ setup(
     url='https://github.com/Unleash/unleash-client-python',
     packages=find_packages(exclude=["tests*"]),
     package_data={"UnleashClient": ["py.typed"]},
-    install_requires=["requests", "fcache", "mmh3", "apscheduler", "importlib_metadata"],
+    install_requires=[
+        "requests", 
+        "fcache", 
+        "mmh3", 
+        "apscheduler", 
+        "importlib_metadata",
+        "python-dateutil"
+    ],
     setup_requires=['setuptools_scm'],
     zip_safe=False,
     include_package_data=True,
