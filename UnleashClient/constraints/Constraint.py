@@ -154,7 +154,7 @@ class Constraint:
         try:
             context_value = get_identifier(self.context_name, context)
 
-            if context_value:
+            if context_value is not None:
                 if self.operator in [ConstraintOperators.IN, ConstraintOperators.NOT_IN]:
                     constraint_check = self.check_list_operators(context_value=context_value)
                 elif self.operator in [ConstraintOperators.STR_CONTAINS, ConstraintOperators.STR_ENDS_WITH, ConstraintOperators.STR_STARTS_WITH]:
