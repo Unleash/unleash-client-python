@@ -9,9 +9,14 @@ class Constraint:
 
         :param constraint_dict: From the strategy document.
         """
-        self.context_name = constraint_dict['contextName']
-        self.operator = constraint_dict['operator']
-        self.values = constraint_dict['values']
+        self.context_name: str = constraint_dict['contextName']
+        self.operator: str = constraint_dict['operator']
+        self.values = constraint_dict['values'] if 'values' in constraint_dict.keys() else []
+        self.value = constraint_dict['value'] if 'value' in constraint_dict.keys() else []
+
+        self.case_insensitive = constraint_dict['caseInsensitive'] if 'caseInsensitive' in constraint_dict.keys() else False
+        self.inverted = constraint_dict['inverted'] if 'inverted' in constraint_dict.keys() else False
+
 
     def apply(self, context: dict = None) -> bool:
         """
