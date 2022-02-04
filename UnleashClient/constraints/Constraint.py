@@ -1,4 +1,5 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
+from typing import Optional
 from datetime import datetime
 from enum import Enum
 from dateutil.parser import parse, ParserError
@@ -118,6 +119,8 @@ class Constraint:
     def check_semver_operators(self, context_value: str) -> bool:
         return_value = False
         parsing_exception = False
+        target_version: Optional[semver.VersionInfo] = None
+        context_version: Optional[semver.VersionInfo] = None
 
         try:
             target_version = semver.VersionInfo.parse(self.value)
