@@ -9,379 +9,335 @@ from tests.utilities.testing_constants import URL, APP_NAME
 
 
 MOCK_JSON = """
- {
+{
   "version": 1,
   "features": [
-    {
-      "name": "F1.startsWith",
-      "description": "startsWith",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "customField",
-              "operator": "STR_STARTS_WITH",
-              "values": [
-                "some-string"
-              ]
-            }
+      {
+          "name": "F1.startsWith",
+          "description": "startsWith",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "customField",
+                          "operator": "STR_STARTS_WITH",
+                          "values": ["some-string"]
+
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F2.startsWith.multiple",
-      "description": "endsWith",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "customField",
-              "operator": "STR_STARTS_WITH",
-              "values": [
-                "e1",
-                "e2"
-              ]
-            }
+      },
+      {
+          "name": "F2.startsWith.multiple",
+          "description": "endsWith",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "customField",
+                          "operator": "STR_STARTS_WITH",
+                          "values": ["e1", "e2"]
+
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F3.endsWith",
-      "description": "endsWith",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "email",
-              "operator": "STR_ENDS_WITH",
-              "values": [
-                "@some-email.com"
-              ]
-            }
+      },
+      {
+          "name": "F3.endsWith",
+          "description": "endsWith",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "email",
+                          "operator": "STR_ENDS_WITH",
+                          "values": ["@some-email.com"]
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F3.endsWith.ignoringCase",
-      "description": "endsWith",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "email",
-              "operator": "STR_ENDS_WITH",
-              "values": [
-                "@some-email.com"
-              ],
-              "caseInsensitive": true
-            }
+      },
+      {
+          "name": "F3.endsWith.ignoringCase",
+          "description": "endsWith",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "email",
+                          "operator": "STR_ENDS_WITH",
+                          "values": ["@some-email.com"],
+                          "caseInsensitive": true
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F4.contains",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "email",
-              "operator": "STR_CONTAINS",
-              "values": [
-                "email"
-              ]
-            }
+      },
+      {
+          "name": "F4.contains",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "email",
+                          "operator": "STR_CONTAINS",
+                          "values": ["email"]
+
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F4.contains.inverted",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "email",
-              "operator": "STR_CONTAINS",
-              "values": [
-                "email"
-              ],
-              "inverted": true
-            }
+      },
+      {
+          "name": "F4.contains.inverted",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "email",
+                          "operator": "STR_CONTAINS",
+                          "values": ["email"],
+                          "inverted": true
+
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numEq",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_EQ",
-              "value": 12
-            }
+      },
+      {
+          "name": "F5.numEq",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_EQ",
+                          "value": "12"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numEq.inverted",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_EQ",
-              "value": 12,
-              "inverted": true
-            }
+      },
+      {
+          "name": "F5.numEq.float",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_EQ",
+                          "value": "12.0"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numGT",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_GT",
-              "value": 12
-            }
+      },
+      {
+          "name": "F5.numEq.inverted",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_EQ",
+                          "value": "12",
+                          "inverted": true
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numGTE",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_GTE",
-              "value": 12
-            }
+      },
+      {
+          "name": "F5.numGT",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_GT",
+                          "value": "12"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numLT",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_LT",
-              "value": 12
-            }
+      },
+      {
+          "name": "F5.numGTE",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_GTE",
+                          "value": "12"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F5.numLTE",
-      "description": "contains",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_LTE",
-              "value": 12
-            }
+      },
+      {
+          "name": "F5.numLT",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_LT",
+                          "value": "12"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F6.number-range",
-      "description": "range of numbers",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "someValue",
-              "operator": "NUM_GT",
-              "value": 12
-            },
-            {
-              "contextName": "someValue",
-              "operator": "NUM_LT",
-              "value": 16
-            }
+      },
+      {
+          "name": "F5.numLTE",
+          "description": "contains",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_LTE",
+                          "value": "12"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F7.dateAfter",
-      "description": "dates",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "currentTime",
-              "operator": "DATE_AFTER",
-              "value": "2022-01-29T13:00:00.000Z"
-            }
+      },
+      {
+          "name": "F6.number-range",
+          "description": "range of numbers",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_GT",
+                          "value": "12"
+                      },
+                      {
+                          "contextName": "someValue",
+                          "operator": "NUM_LT",
+                          "value": "16"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F7.dateBefore",
-      "description": "dates",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "currentTime",
-              "operator": "DATE_BEFORE",
-              "value": "2022-01-29T13:00:00.000Z"
-            }
+      },
+      {
+          "name": "F7.dateAfter",
+          "description": "dates",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "currentTime",
+                          "operator": "DATE_AFTER",
+                          "value": "2022-01-29T13:00:00.000Z"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F7.data-range",
-      "description": "dates",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "currentTime",
-              "operator": "DATE_AFTER",
-              "value": "2022-01-22T13:00:00.000Z"
-            },
-            {
-              "contextName": "currentTime",
-              "operator": "DATE_BEFORE",
-              "value": "2022-01-29T13:00:00.000Z"
-            }
+      },
+      {
+          "name": "F7.dateBefore",
+          "description": "dates",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "currentTime",
+                          "operator": "DATE_BEFORE",
+                          "value": "2022-01-29T13:00:00.000Z"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F8.semverEQ",
-      "description": "semver",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "version",
-              "operator": "SEMVER_EQ",
-              "value": "1.2.2"
-            }
+      },
+      {
+          "name": "F7.date-range",
+          "description": "dates",
+          "enabled": true,
+          "strategies": [
+              {
+                  "name": "default",
+                  "parameters": {},
+                  "constraints": [
+                      {
+                          "contextName": "currentTime",
+                          "operator": "DATE_AFTER",
+                          "value": "2022-01-22T13:00:00.000Z"
+                      },
+                      {
+                          "contextName": "currentTime",
+                          "operator": "DATE_BEFORE",
+                          "value": "2022-01-29T13:00:00.000Z"
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    },
-    {
-      "name": "F8.semverGT",
-      "description": "semver",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "version",
-              "operator": "SEMVER_GT",
-              "value": "1.2.2"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "F8.semverLT",
-      "description": "semver",
-      "enabled": true,
-      "strategies": [
-        {
-          "name": "default",
-          "parameters": {},
-          "constraints": [
-            {
-              "contextName": "version",
-              "operator": "SEMVER_LT",
-              "value": "1.2.2"
-            }
-          ]
-        }
-      ]
-    }
+      }
+
   ]
-}
+  }
 """
 
 
@@ -575,6 +531,21 @@ def test_feature_constraintoperators_numeq_enabled(unleash_client):
 
 
 @responses.activate
+def test_feature_constraintoperators_numeq_enabled_floats(unleash_client):
+    """
+    F5.numEq works for floats
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    assert unleash_client.is_enabled("F5.numEq", {'someValue': 12.0})
+
+
+@responses.activate
 def test_feature_constraintoperators_numeq_inverted(unleash_client):
     """
     F5.numEq.inverted should be true
@@ -587,6 +558,36 @@ def test_feature_constraintoperators_numeq_inverted(unleash_client):
     # Tests
     unleash_client.initialize_client()
     assert not unleash_client.is_enabled("F5.numEq.inverted", {'someValue': 12})
+
+
+@responses.activate
+def test_feature_constraintoperators_numeqfloat_enabled_floats(unleash_client):
+    """
+    F5.numEq.float works for floats
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    assert unleash_client.is_enabled("F5.numEq.float", {'someValue': 12.0})
+
+
+@responses.activate
+def test_feature_constraintoperators_numeqfloat_enabled_int(unleash_client):
+    """
+    F5.numEq.float works for integers
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    assert unleash_client.is_enabled("F5.numEq.float", {'someValue': 12})
 
 
 @responses.activate
@@ -785,6 +786,21 @@ def test_feature_constraintoperators_dateafter_disabled(unleash_client):
 
 
 @responses.activate
+def test_feature_constraintoperators_dateafter_exclusive(unleash_client):
+    """
+    F7.dateAfter should be disabled
+    """
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Tests
+    unleash_client.initialize_client()
+    assert not unleash_client.is_enabled("F7.dateAfter", {'currentTime': datetime(2022, 1, 29, 13)})
+
+
+@responses.activate
 def test_feature_constraintoperators_datebefore_enabled(unleash_client):
     """
     F7.dateBefore should be enabled
@@ -826,95 +842,5 @@ def test_feature_constraintoperators_daterange(unleash_client):
 
     # Tests
     unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("F7.date-range", {'currentTime': datetime(2022, 1, 25, 13)})
-
-
-@responses.activate
-def test_feature_constraintoperators_semvereq_enabled(unleash_client):
-    """
-    F8.semverEQ should be enabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert unleash_client.is_enabled("F8.semverEQ", {'version': '1.2.2'})
-
-
-@responses.activate
-def test_feature_constraintoperators_semvereq_disabled(unleash_client):
-    """
-    F8.semverEQ should be disabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("F8.semverEQ", {'version': '1.2.0'})
-
-
-@responses.activate
-def test_feature_constraintoperators_semvergt_enabled(unleash_client):
-    """
-    F8.semverGT should be enabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert unleash_client.is_enabled("F8.semverGT", {'version': '1.2.3'})
-
-
-@responses.activate
-def test_feature_constraintoperators_semvergt_disabled(unleash_client):
-    """
-    F8.semverGT should be disabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("F8.semverGT", {'version': '1.2.0'})
-
-
-@responses.activate
-def test_feature_constraintoperators_semverlt_enabled(unleash_client):
-    """
-    F8.semverLT should be enabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert unleash_client.is_enabled("F8.semverLT", {'version': '1.2.1'})
-
-
-@responses.activate
-def test_feature_constraintoperators_semverlt_disabled(unleash_client):
-    """
-    F8.semverLT should be disabled
-    """
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(responses.GET, URL + FEATURES_URL, json=json.loads(MOCK_JSON), status=200)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Tests
-    unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("F8.semverLT", {'version': '1.2.3'})
+    assert unleash_client.is_enabled("F7.date-range", {'currentTime': datetime(2022, 1, 25, 13)})
   

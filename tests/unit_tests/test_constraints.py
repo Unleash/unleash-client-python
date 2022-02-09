@@ -142,11 +142,19 @@ def test_constraints_NUM_LTE():
     assert not constraint.apply({'customField': 6})
 
 
+def test_constraints_NUM_FLOAT():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_NUM_FLOAT)
+
+    assert constraint.apply({'customField': 5})
+    assert constraint.apply({'customField': 5.1})
+    assert not constraint.apply({'customField': 5.2})
+
+
 def test_constraints_DATE_AFTER():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_AFTER)
 
     assert constraint.apply({'currentTime': datetime(2022, 1, 23)})
-    assert constraint.apply({'currentTime': datetime(2022, 1, 22)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 22)})
     assert not constraint.apply({'currentTime': datetime(2022, 1, 21)})
 
 
@@ -154,7 +162,7 @@ def test_constraints_DATE_BEFORE():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_BEFORE)
 
     assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})
-    assert constraint.apply({'currentTime': datetime(2022, 1, 22)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 22)})
     assert constraint.apply({'currentTime': datetime(2022, 1, 21)})
 
 

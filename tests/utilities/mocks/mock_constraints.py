@@ -92,7 +92,7 @@ CONSTRAINT_NUM_EQ = \
     {
         "contextName": "customField",
         "operator": "NUM_EQ",
-        "value": 5,
+        "value": "5",
         "inverted": False
     }
 
@@ -101,7 +101,7 @@ CONSTRAINT_NUM_GT = \
     {
         "contextName": "customField",
         "operator": "NUM_GT",
-        "value": 5,
+        "value": "5",
         "inverted": False
     }
 
@@ -119,7 +119,7 @@ CONSTRAINT_NUM_LT = \
     {
         "contextName": "customField",
         "operator": "NUM_LT",
-        "value": 5,
+        "value": "5",
         "inverted": False
     }
 
@@ -128,7 +128,16 @@ CONSTRAINT_NUM_LTE = \
     {
         "contextName": "customField",
         "operator": "NUM_LTE",
-        "value": 5,
+        "value": "5",
+        "inverted": False
+    }
+
+
+CONSTRAINT_NUM_FLOAT = \
+    {
+        "contextName": "customField",
+        "operator": "NUM_LTE",
+        "value": "5.1",
         "inverted": False
     }
 

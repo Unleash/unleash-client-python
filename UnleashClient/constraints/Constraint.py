@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from enum import Enum
 from dateutil.parser import parse, ParserError
@@ -80,19 +80,20 @@ class Constraint:
 
         return return_value
 
-    def check_numeric_operators(self, context_value: int) -> bool:
+    def check_numeric_operators(self, context_value: Union[float, int]) -> bool:
         return_value = False
+        parsed_value = float(self.value)
 
         if self.operator == ConstraintOperators.NUM_EQ:
-            return_value = context_value == self.value
+            return_value = context_value == parsed_value
         elif self.operator == ConstraintOperators.NUM_GT:
-            return_value = context_value > self.value
+            return_value = context_value > parsed_value
         elif self.operator == ConstraintOperators.NUM_GTE:
-            return_value = context_value >= self.value
+            return_value = context_value >= parsed_value
         elif self.operator == ConstraintOperators.NUM_LT:
-            return_value = context_value < self.value
+            return_value = context_value < parsed_value
         elif self.operator == ConstraintOperators.NUM_LTE:
-            return_value = context_value <= self.value
+            return_value = context_value <= parsed_value
 
         return return_value
 
@@ -109,9 +110,9 @@ class Constraint:
 
         if not parsing_exception:
             if self.operator == ConstraintOperators.DATE_AFTER:
-                return_value = context_value >= parsed_date
+                return_value = context_value > parsed_date
             elif self.operator == ConstraintOperators.DATE_BEFORE:
-                return_value = context_value <= parsed_date
+                return_value = context_value < parsed_date
 
         return return_value
 
