@@ -44,7 +44,7 @@ class Constraint:
         self.context_name: str = constraint_dict['contextName']
         self.operator: ConstraintOperators = ConstraintOperators(constraint_dict['operator'].upper())
         self.values = constraint_dict['values'] if 'values' in constraint_dict.keys() else []
-        self.value = constraint_dict['value'] if 'value' in constraint_dict.keys() else []
+        self.value = constraint_dict['value'] if 'value' in constraint_dict.keys() else None
 
         self.case_insensitive = constraint_dict['caseInsensitive'] if 'caseInsensitive' in constraint_dict.keys() else False
         self.inverted = constraint_dict['inverted'] if 'inverted' in constraint_dict.keys() else False
