@@ -1,12 +1,12 @@
 import json
 from datetime import datetime, timezone, timedelta
 import responses
-from fcache.cache import FileCache
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, IP_LIST
 from UnleashClient.constants import METRICS_URL, METRIC_LAST_SENT_TIME
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics
 from UnleashClient.features import Feature
 from UnleashClient.strategies import RemoteAddress, Default
+from UnleashClient.cache import FileCache
 
 
 FULL_METRICS_URL = URL + METRICS_URL
@@ -19,7 +19,7 @@ def test_aggregate_and_send_metrics():
 
     start_time = datetime.now(timezone.utc) - timedelta(seconds=60)
     cache = FileCache("TestCache")
-    cache[METRIC_LAST_SENT_TIME] = start_time
+    cache.set(METRIC_LAST_SENT_TIME, start_time)
     strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), Default()]
     my_feature1 = Feature("My Feature1", True, strategies)
     my_feature1.yes_count = 1
@@ -44,7 +44,7 @@ def test_aggregate_and_send_metrics():
     assert request['bucket']["toggles"]["My Feature1"]["yes"] == 1
     assert request['bucket']["toggles"]["My Feature1"]["no"] == 1
     assert "My Feature3" not in request['bucket']["toggles"].keys()
-    assert cache[METRIC_LAST_SENT_TIME] > start_time
+    assert cache.get(METRIC_LAST_SENT_TIME, start_time)
 
 
 @responses.activate
@@ -53,7 +53,7 @@ def test_no_metrics():
 
     start_time = datetime.now(timezone.utc) - timedelta(seconds=60)
     cache = FileCache("TestCache")
-    cache[METRIC_LAST_SENT_TIME] = start_time
+    cache.set(METRIC_LAST_SENT_TIME, start_time)
     strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), Default()]
 
     my_feature1 = Feature("My Feature1", True, strategies)
