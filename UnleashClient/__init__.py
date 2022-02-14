@@ -50,7 +50,7 @@ class UnleashClient:
                  custom_strategies: Optional[dict] = None,
                  project_name: str = None,
                  verbose_log_level: int = 30,
-                 cache: BaseCache = None) -> None:
+                 cache: Optional[BaseCache] = None) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
