@@ -32,7 +32,6 @@ class UnleashClient:
     :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
     :param custom_options: Default requests parameters, optional & defaults to empty.  Can be used to skip SSL verification.
     :param custom_strategies: Dictionary of custom strategy names : custom strategy objects.
-    :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
     :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
     """
     def __init__(self,
@@ -49,10 +48,9 @@ class UnleashClient:
                  custom_headers: Optional[dict] = None,
                  custom_options: Optional[dict] = None,
                  custom_strategies: Optional[dict] = None,
-                 cache_directory: str = None,
                  project_name: str = None,
-                 cache: BaseCache = None,
-                 verbose_log_level: int = 30) -> None:
+                 verbose_log_level: int = 30,
+                 cache: BaseCache = None) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -83,7 +81,7 @@ class UnleashClient:
         self.fl_job: Job = None
         self.metric_job: Job = None
 
-        self.cache = cache or FileCache(self.unleash_app_name, cache_directory)
+        self.cache = cache or FileCache(self.unleash_app_name)
         self.cache.mset({
             METRIC_LAST_SENT_TIME: datetime.utcnow(),
             ETAG: ''
