@@ -6,7 +6,6 @@ from UnleashClient.variants import Variants
 from UnleashClient.constants import FEATURES_URL, FAILED_STRATEGIES
 from tests.utilities.mocks import MOCK_ALL_FEATURES
 from tests.utilities.testing_constants import DEFAULT_STRATEGY_MAPPING
-from tests.utilities.decorators import cache_full, cache_custom  # noqa: F401
 
 
 def test_loader_initialization(cache_full):  # noqa: F811
