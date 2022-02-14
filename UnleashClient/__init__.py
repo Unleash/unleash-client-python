@@ -153,7 +153,7 @@ class UnleashClient:
                     "custom_headers": self.unleash_custom_headers,
                     "custom_options": self.unleash_custom_options,
                     "features": self.features,
-                    "ondisk_cache": self.cache
+                    "cache": self.cache
                 }
 
                 # Register app

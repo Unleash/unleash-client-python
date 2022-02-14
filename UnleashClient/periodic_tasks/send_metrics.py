@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
-from UnleashClient.cache import FileCache
+from UnleashClient.cache import BaseCache
 
 
 def aggregate_and_send_metrics(url: str,
@@ -12,7 +12,7 @@ def aggregate_and_send_metrics(url: str,
                                custom_headers: dict,
                                custom_options: dict,
                                features: dict,
-                               ondisk_cache: FileCache
+                               cache: BaseCache
                                ) -> None:
     feature_stats_list = []
 
@@ -34,7 +34,7 @@ def aggregate_and_send_metrics(url: str,
         "appName": app_name,
         "instanceId": instance_id,
         "bucket": {
-            "start": ondisk_cache.get(METRIC_LAST_SENT_TIME).isoformat(),
+            "start": cache.get(METRIC_LAST_SENT_TIME).isoformat(),
             "stop": datetime.now(timezone.utc).isoformat(),
             "toggles": dict(ChainMap(*feature_stats_list))
         }
@@ -42,6 +42,6 @@ def aggregate_and_send_metrics(url: str,
 
     if feature_stats_list:
         send_metrics(url, metrics_request, custom_headers, custom_options)
-        ondisk_cache.set(METRIC_LAST_SENT_TIME, datetime.utcnow())
+        cache.set(METRIC_LAST_SENT_TIME, datetime.utcnow())
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")
