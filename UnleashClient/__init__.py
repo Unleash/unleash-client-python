@@ -1,9 +1,8 @@
 # pylint: disable=invalid-name
 import warnings
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Dict, Callable, Any, Optional
 import copy
-from fcache.cache import FileCache
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -14,6 +13,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
+from .cache import BaseCache, FileCache
 
 # pylint: disable=dangerous-default-value
 class UnleashClient:
@@ -51,6 +51,7 @@ class UnleashClient:
                  custom_strategies: Optional[dict] = None,
                  cache_directory: str = None,
                  project_name: str = None,
+                 cache: BaseCache = None,
                  verbose_log_level: int = 30) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
@@ -77,14 +78,16 @@ class UnleashClient:
         self.unleash_verbose_log_level = verbose_log_level
 
         # Class objects
-        self.cache = FileCache(self.unleash_instance_id, app_cache_dir=cache_directory)
         self.features: dict = {}
         self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
         self.metric_job: Job = None
-        self.cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
-        self.cache[ETAG] = ''
-        self.cache.sync()
+
+        self.cache = cache or FileCache(self.unleash_app_name, cache_directory)
+        self.cache.mset({
+            METRIC_LAST_SENT_TIME: datetime.utcnow(),
+            ETAG: ''
+        })
 
         # Mappings
         default_strategy_mapping = {
@@ -197,7 +200,7 @@ class UnleashClient:
         if self.metric_job:
             self.metric_job.remove()
         self.scheduler.shutdown()
-        self.cache.delete()
+        self.cache.destroy()
 
     @staticmethod
     def _get_fallback_value(fallback_function: Callable, feature_name: str, context: dict) -> bool:

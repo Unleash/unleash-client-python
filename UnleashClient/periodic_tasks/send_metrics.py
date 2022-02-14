@@ -1,9 +1,9 @@
 from collections import ChainMap
 from datetime import datetime, timezone
-from fcache.cache import FileCache
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
+from UnleashClient.cache import FileCache
 
 
 def aggregate_and_send_metrics(url: str,
@@ -34,7 +34,7 @@ def aggregate_and_send_metrics(url: str,
         "appName": app_name,
         "instanceId": instance_id,
         "bucket": {
-            "start": ondisk_cache[METRIC_LAST_SENT_TIME].isoformat(),
+            "start": ondisk_cache.get(METRIC_LAST_SENT_TIME).isoformat(),
             "stop": datetime.now(timezone.utc).isoformat(),
             "toggles": dict(ChainMap(*feature_stats_list))
         }
@@ -42,7 +42,6 @@ def aggregate_and_send_metrics(url: str,
 
     if feature_stats_list:
         send_metrics(url, metrics_request, custom_headers, custom_options)
-        ondisk_cache[METRIC_LAST_SENT_TIME] = datetime.now(timezone.utc)
-        ondisk_cache.sync()
+        ondisk_cache.set(METRIC_LAST_SENT_TIME, datetime.utcnow())
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")
