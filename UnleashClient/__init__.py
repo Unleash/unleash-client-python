@@ -1,6 +1,6 @@
 # pylint: disable=invalid-name
 import warnings
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Callable, Any, Optional
 import copy
 from apscheduler.job import Job
@@ -83,7 +83,7 @@ class UnleashClient:
 
         self.cache = cache or FileCache(self.unleash_app_name)
         self.cache.mset({
-            METRIC_LAST_SENT_TIME: datetime.utcnow(),
+            METRIC_LAST_SENT_TIME: datetime.now(timezone.utc),
             ETAG: ''
         })
 

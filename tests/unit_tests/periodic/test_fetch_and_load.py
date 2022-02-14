@@ -26,7 +26,7 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
                             DEFAULT_STRATEGY_MAPPING)
 
     assert isinstance(in_memory_features["testFlag"], Feature)
-    assert temp_cache.get(ETAG, ETAG_VALUE)
+    assert temp_cache.get(ETAG) == ETAG_VALUE
 
 
 @responses.activate

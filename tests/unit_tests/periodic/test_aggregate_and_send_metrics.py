@@ -44,7 +44,7 @@ def test_aggregate_and_send_metrics():
     assert request['bucket']["toggles"]["My Feature1"]["yes"] == 1
     assert request['bucket']["toggles"]["My Feature1"]["no"] == 1
     assert "My Feature3" not in request['bucket']["toggles"].keys()
-    assert cache.get(METRIC_LAST_SENT_TIME, start_time)
+    assert cache.get(METRIC_LAST_SENT_TIME) > start_time
 
 
 @responses.activate
