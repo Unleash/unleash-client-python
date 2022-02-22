@@ -1,8 +1,8 @@
-from fcache.cache import FileCache
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.loader import load_features
 from UnleashClient.constants import FEATURES_URL, ETAG
 from UnleashClient.utils import LOGGER
+from UnleashClient.cache import BaseCache
 
 
 def fetch_and_load_features(url: str,
@@ -10,7 +10,7 @@ def fetch_and_load_features(url: str,
                             instance_id: str,
                             custom_headers: dict,
                             custom_options: dict,
-                            cache: FileCache,
+                            cache: BaseCache,
                             features: dict,
                             strategy_mapping: dict,
                             project: str = None) -> None:
@@ -21,17 +21,15 @@ def fetch_and_load_features(url: str,
         custom_headers,
         custom_options,
         project,
-        cache[ETAG]
+        cache.get(ETAG)
     )
 
     if feature_provisioning:
-        cache[FEATURES_URL] = feature_provisioning
-        cache.sync()
+        cache.set(FEATURES_URL, feature_provisioning)
     else:
         LOGGER.warning("Unable to get feature flag toggles, using cached provisioning.")
 
     if etag:
-        cache[ETAG] = etag
-        cache.sync()
+        cache.set(ETAG, etag)
 
     load_features(cache, features, strategy_mapping)
