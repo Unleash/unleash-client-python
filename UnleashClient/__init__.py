@@ -234,10 +234,6 @@ class UnleashClient:
         # Update context with static values
         context.update(self.unleash_static_context)
 
-        # Update context with optional values
-        if 'currentTime' not in context.keys():
-            context.update({'currentTime': datetime.now()})
-
         if self.is_initialized:
             try:
                 return self.features[feature_name].is_enabled(context)

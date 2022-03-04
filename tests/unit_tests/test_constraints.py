@@ -166,6 +166,12 @@ def test_constraints_DATE_BEFORE():
     assert constraint.apply({'currentTime': datetime(2022, 1, 21)})
 
 
+def test_constraints_default():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_BEFORE)
+
+    assert not constraint.apply({})
+
+
 def test_constraints_date_error():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_ERROR)
     assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})
