@@ -4,7 +4,6 @@ from UnleashClient.periodic_tasks import fetch_and_load_features
 from UnleashClient.features import Feature
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
 from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, DEFAULT_STRATEGY_MAPPING, PROJECT_URL, PROJECT_NAME, ETAG_VALUE
-from tests.utilities.decorators import cache_empty  # noqa: F401
 
 
 FULL_FEATURE_URL = URL + FEATURES_URL
@@ -27,7 +26,7 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
                             DEFAULT_STRATEGY_MAPPING)
 
     assert isinstance(in_memory_features["testFlag"], Feature)
-    assert temp_cache[ETAG] == ETAG_VALUE
+    assert temp_cache.get(ETAG) == ETAG_VALUE
 
 
 @responses.activate

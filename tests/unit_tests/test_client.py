@@ -13,6 +13,7 @@ from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTAN
 from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEATURE_RESPONSE_PROJECT
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
+from UnleashClient.cache import FileCache
 
 
 class EnvironmentStrategy(Strategy):
@@ -33,27 +34,32 @@ class EnvironmentStrategy(Strategy):
         return default_value
 
 
+@pytest.fixture
+def cache(tmpdir):
+    return FileCache(APP_NAME, directory=tmpdir.dirname)
+
+
 @pytest.fixture()
-def unleash_client(tmpdir):
+def unleash_client(cache):
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache_directory=tmpdir.dirname
+        cache=cache
     )
     yield unleash_client
     unleash_client.destroy()
 
 
 @pytest.fixture()
-def unleash_client_project(tmpdir):
+def unleash_client_project(cache):
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache_directory=tmpdir.dirname,
+        cache=cache,
         project_name=PROJECT_NAME
     )
     yield unleash_client
@@ -61,19 +67,19 @@ def unleash_client_project(tmpdir):
 
 
 @pytest.fixture()
-def unleash_client_nodestroy(tmpdir):
+def unleash_client_nodestroy(cache):
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache_directory=tmpdir.dirname
+        cache=cache
     )
     yield unleash_client
 
 
 @pytest.fixture()
-def unleash_client_toggle_only(tmpdir):
+def unleash_client_toggle_only(cache):
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
@@ -81,7 +87,7 @@ def unleash_client_toggle_only(tmpdir):
         metrics_interval=METRICS_INTERVAL,
         disable_registration=True,
         disable_metrics=True,
-        cache_directory=str(tmpdir)
+        cache=cache
     )
     yield unleash_client
     unleash_client.destroy()

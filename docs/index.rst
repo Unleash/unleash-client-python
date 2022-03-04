@@ -20,8 +20,9 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
     :hidden:
 
     customstrategies
-    wsgi
+    customcache
     development
+    wsgi
 
 .. toctree::
     :caption: API Documentation
@@ -30,6 +31,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
 
     unleashclient
     strategy
+    basecache
 
 .. toctree::
     :caption: Changelog
