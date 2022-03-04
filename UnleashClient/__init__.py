@@ -32,7 +32,9 @@ class UnleashClient:
     :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
     :param custom_options: Default requests parameters, optional & defaults to empty.  Can be used to skip SSL verification.
     :param custom_strategies: Dictionary of custom strategy names : custom strategy objects.
+    :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
     :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
+    :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
     """
     def __init__(self,
                  url: str,
@@ -48,6 +50,7 @@ class UnleashClient:
                  custom_headers: Optional[dict] = None,
                  custom_options: Optional[dict] = None,
                  custom_strategies: Optional[dict] = None,
+                 cache_directory: Optional[str] = None,
                  project_name: str = None,
                  verbose_log_level: int = 30,
                  cache: Optional[BaseCache] = None) -> None:
@@ -81,7 +84,7 @@ class UnleashClient:
         self.fl_job: Job = None
         self.metric_job: Job = None
 
-        self.cache = cache or FileCache(self.unleash_app_name)
+        self.cache = cache or FileCache(self.unleash_app_name, directory=cache_directory)
         self.cache.mset({
             METRIC_LAST_SENT_TIME: datetime.now(timezone.utc),
             ETAG: ''
@@ -160,7 +163,7 @@ class UnleashClient:
                                     self.unleash_metrics_interval, self.unleash_custom_headers,
                                     self.unleash_custom_options, self.strategy_mapping)
 
-                fetch_and_load_features(**fl_args)
+                fetch_and_load_features(**fl_args)  # type: ignore
 
                 # Start periodic jobs
                 self.scheduler.start()
