@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 import mmh3  # pylint: disable=import-error
 from requests import Response
 
@@ -14,7 +15,7 @@ def normalized_hash(identifier: str,
     return mmh3.hash(f"{activation_group}:{identifier}", signed=False) % normalizer + 1
 
 
-def get_identifier(context_key_name: str, context: dict) -> str:
+def get_identifier(context_key_name: str, context: dict) -> Any:
     if context_key_name in context.keys():
         value = context[context_key_name]
     elif 'properties' in context.keys() and context_key_name in context['properties'].keys():

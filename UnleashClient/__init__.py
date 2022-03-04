@@ -1,8 +1,7 @@
 # pylint: disable=invalid-name
 import warnings
 from datetime import datetime, timezone
-from typing import Dict, Callable, Any, Optional
-import copy
+from typing import Callable, Optional
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -231,6 +230,8 @@ class UnleashClient:
         :return: Feature flag result
         """
         context = context or {}
+
+        # Update context with static values
         context.update(self.unleash_static_context)
 
         if self.is_initialized:
