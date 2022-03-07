@@ -1,4 +1,4 @@
-## Next version
+## v5.1.0
 * (Major) Support new constraint operators.
 * (Major) Add cache abstraction.  Thanks @walison17!
 * (Minor) Refactor `unleash-client-python` to modernize tooling (`setuptools_scm` and centralizing tool config in `pyproject.toml`).
