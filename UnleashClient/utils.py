@@ -3,11 +3,7 @@ from typing import Any
 import mmh3  # pylint: disable=import-error
 from requests import Response
 
-LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel("CRITICAL")
-
-APSCHEDULER_LOGGER = logging.getLogger("apscheduler.scheduler")
-APSCHEDULER_LOGGER.setLevel("CRITICAL")
+LOGGER = logging.getLogger('UnleashClient')
 
 def normalized_hash(identifier: str,
                     activation_group: str,

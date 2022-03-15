@@ -1,3 +1,7 @@
+## v5.1.1
+* (Minor) Move UnleashClient logging to the `UnleashClient` logger.
+* (Bugfix) Fix logging for UnleashClient.
+
 ## v5.1.0
 * (Major) Support new constraint operators.
 * (Major) Add cache abstraction.  Thanks @walison17!
