@@ -27,7 +27,7 @@ def fetch_and_load_features(url: str,
     if feature_provisioning:
         cache.set(FEATURES_URL, feature_provisioning)
     else:
-        LOGGER.warning("Unable to get feature flag toggles, using cached provisioning.")
+        LOGGER.debug("No feature provisioning returned from server, using cached provisioning.")
 
     if etag:
         cache.set(ETAG, etag)
