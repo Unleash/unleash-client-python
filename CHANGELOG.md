@@ -1,3 +1,6 @@
+## v5.1.2
+* (Bugfix) Clarify logging if Unleash server doesn't return feature provisioning (i.e. HTTP 304).
+
 ## v5.1.1
 * (Minor) Move UnleashClient logging to the `UnleashClient` logger.
 * (Bugfix) Fix logging for UnleashClient.
