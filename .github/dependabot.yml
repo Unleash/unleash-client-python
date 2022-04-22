@@ -1,0 +1,21 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: mimesis
+    versions:
+    - "> 3.1.0"
+  - dependency-name: mimesis
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: mmh3
+    versions:
+    - 3.0.0
+  - dependency-name: pytest-html
+    versions:
+    - 3.1.1
