@@ -1,11 +1,11 @@
 import abc
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import requests
 from fcache.cache import FileCache as _FileCache
-from UnleashClient.constants import FEATURES_URL, ETAG
+from UnleashClient.constants import FEATURES_URL
 
 
 class BaseCache(abc.ABC):
