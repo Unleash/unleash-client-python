@@ -10,6 +10,7 @@ from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
+from UnleashClient.loader import load_features
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
@@ -52,7 +53,8 @@ class UnleashClient:
                  cache_directory: Optional[str] = None,
                  project_name: str = None,
                  verbose_log_level: int = 30,
-                 cache: Optional[BaseCache] = None) -> None:
+                 cache: Optional[BaseCache] = None,
+                 bootstrapped: Optional[bool] = False) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -76,6 +78,7 @@ class UnleashClient:
         }
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
+        self.unleash_bootstrapped = bootstrapped
 
         # Class objects
         self.features: dict = {}
@@ -108,6 +111,10 @@ class UnleashClient:
 
         # Client status
         self.is_initialized = False
+
+        # Bootstrapping
+        if self.unleash_bootstrapped:
+            load_features(cache=self.cache, feature_toggles=self.features, strategy_mapping=self.strategy_mapping)
 
     def initialize_client(self) -> None:
         """
@@ -234,7 +241,7 @@ class UnleashClient:
         # Update context with static values
         context.update(self.unleash_static_context)
 
-        if self.is_initialized:
+        if self.unleash_bootstrapped or self.is_initialized:
             try:
                 return self.features[feature_name].is_enabled(context)
             except Exception as excep:
@@ -264,7 +271,7 @@ class UnleashClient:
         context = context or {}
         context.update(self.unleash_static_context)
 
-        if self.is_initialized:
+        if self.unleash_bootstrapped or self.is_initialized:
             try:
                 return self.features[feature_name].get_variant(context)
             except Exception as excep:

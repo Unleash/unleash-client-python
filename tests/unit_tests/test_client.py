@@ -1,6 +1,7 @@
 import time
 import json
 import warnings
+from pathlib import Path
 
 import pytest
 import responses
@@ -424,3 +425,73 @@ def test_uc_multiple_initializations(unleash_client):
 
     assert len(w) == 1
     assert "initialize" in str(w[0].message)
+
+
+@responses.activate
+def test_uc_cache_bootstrap_dict(cache):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200, headers={'etag': ETAG_VALUE})
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Set up cache
+    cache.bootstrap_from_dict(initial_config=MOCK_FEATURE_RESPONSE_PROJECT)
+
+    # Check bootstrapping
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache=cache,
+        bootstrapped=True
+    )
+    assert len(unleash_client.features) == 1
+    assert unleash_client.is_enabled("ivan-project")
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_initialized
+    assert len(unleash_client.features) >= 4
+    assert unleash_client.is_enabled("testFlag")
+
+
+@responses.activate
+def test_uc_cache_bootstrap_file(cache):
+    # Set up cache
+    test_file = Path(Path(__file__).parent.resolve(), '..', 'utilities', 'mocks', 'mock_bootstrap.json')
+    cache.bootstrap_from_file(initial_config_file=test_file)
+
+    # Check bootstrapping
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache=cache,
+        bootstrapped=True
+    )
+    assert len(unleash_client.features) >= 1
+    assert unleash_client.is_enabled("ivan-project")
+
+
+@responses.activate
+def test_uc_cache_bootstrap_url(cache):
+    # Set up API
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200, headers={'etag': ETAG_VALUE})
+
+    # Set up cache
+    cache.bootstrap_from_url(initial_config_url=URL + FEATURES_URL)
+
+    # Check bootstrapping
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache=cache,
+        bootstrapped=True
+    )
+    assert len(unleash_client.features) >= 4
+    assert unleash_client.is_enabled("testFlag")
