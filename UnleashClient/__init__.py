@@ -117,7 +117,7 @@ class UnleashClient:
         if self.unleash_bootstrapped:
             load_features(cache=self.cache, feature_toggles=self.features, strategy_mapping=self.strategy_mapping)
 
-    def initialize_client(self) -> None:
+    def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
         Initializes client and starts communication with central unleash server(s).
 
@@ -126,6 +126,11 @@ class UnleashClient:
         * Client registration
         * Provisioning poll
         * Stats poll
+
+        If `fetch_toggles` is `False`, feature toggle polling will be turned off
+        and instead the client will only load features from the cache. This is
+        usually used to cater the multi-process setups, e.g. Django, Celery,
+        etc.
 
         This will raise an exception on registration if the URL is invalid. It is done automatically if called inside a context manager as in:
 
@@ -142,18 +147,6 @@ class UnleashClient:
         if not self.is_initialized:
             try:
                 # Setup
-                fl_args = {
-                    "url": self.unleash_url,
-                    "app_name": self.unleash_app_name,
-                    "instance_id": self.unleash_instance_id,
-                    "custom_headers": self.unleash_custom_headers,
-                    "custom_options": self.unleash_custom_options,
-                    "cache": self.cache,
-                    "features": self.features,
-                    "strategy_mapping": self.strategy_mapping,
-                    "project": self.unleash_project_name
-                }
-
                 metrics_args = {
                     "url": self.unleash_url,
                     "app_name": self.unleash_app_name,
@@ -170,16 +163,36 @@ class UnleashClient:
                                     self.unleash_metrics_interval, self.unleash_custom_headers,
                                     self.unleash_custom_options, self.strategy_mapping)
 
-                fetch_and_load_features(**fl_args)  # type: ignore
+                if fetch_toggles:
+                    job_args = {
+                        "url": self.unleash_url,
+                        "app_name": self.unleash_app_name,
+                        "instance_id": self.unleash_instance_id,
+                        "custom_headers": self.unleash_custom_headers,
+                        "custom_options": self.unleash_custom_options,
+                        "cache": self.cache,
+                        "features": self.features,
+                        "strategy_mapping": self.strategy_mapping,
+                        "project": self.unleash_project_name,
+                    }
+                    job_func: Callable = fetch_and_load_features
+                else:
+                    job_args = {
+                        "cache": self.cache,
+                        "feature_toggles": self.features,
+                        "strategy_mapping": self.strategy_mapping,
+                    }
+                    job_func = load_features
 
+                job_func(**job_args)  # type: ignore
                 # Start periodic jobs
                 self.scheduler.start()
-                self.fl_job = self.scheduler.add_job(fetch_and_load_features,
+                self.fl_job = self.scheduler.add_job(job_func,
                                                      trigger=IntervalTrigger(
                                                          seconds=int(self.unleash_refresh_interval),
                                                          jitter=self.unleash_refresh_jitter,
                                                      ),
-                                                     kwargs=fl_args)
+                                                     kwargs=job_args)
 
                 if not self.unleash_disable_metrics:
                     self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
