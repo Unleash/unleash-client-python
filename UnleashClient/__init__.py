@@ -35,6 +35,7 @@ class UnleashClient:
     :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
     :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
     :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
+    :param bootstraped: Whether cache has been boostrapped (i.e. pre-seeded) with Unleash configuration.  When true, UnleashClient will use initial configuration until the client is initialized.  See FileCache object for more information about bootstrapping.
     """
     def __init__(self,
                  url: str,

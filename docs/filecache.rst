@@ -1,8 +1,14 @@
 ****************************************
-BaseCache
+FileCache
 ****************************************
 
-.. autoclass:: UnleashClient.cache.BaseCache
+.. autoclass:: UnleashClient.cache.FileCache
+
+	.. automethod:: bootstrap_from_dict
+
+	.. automethod:: bootstrap_from_file
+	
+	.. automethod:: bootstrap_from_url
 
 	.. automethod:: set
 
