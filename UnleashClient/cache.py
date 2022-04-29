@@ -34,7 +34,7 @@ class FileCache(BaseCache):
     """
     The default cache for UnleashClient.  Uses `fcache <https://pypi.org/project/fcache/>`_ behind the scenes.
 
-    You can boostrap the FileCache with initial configuration to improve resiliancy on startup.  To do so:
+    You can boostrap the FileCache with initial configuration to improve resiliency on startup.  To do so:
 
     - Create a new FileCache instance.
     - Bootstrap the FileCache.
