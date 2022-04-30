@@ -443,8 +443,7 @@ def test_uc_cache_bootstrap_dict(cache):
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache=cache,
-        bootstrapped=True
+        cache=cache
     )
     assert len(unleash_client.features) == 1
     assert unleash_client.is_enabled("ivan-project")
@@ -469,8 +468,7 @@ def test_uc_cache_bootstrap_file(cache):
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache=cache,
-        bootstrapped=True
+        cache=cache
     )
     assert len(unleash_client.features) >= 1
     assert unleash_client.is_enabled("ivan-project")
@@ -490,8 +488,7 @@ def test_uc_cache_bootstrap_url(cache):
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
-        cache=cache,
-        bootstrapped=True
+        cache=cache
     )
     assert len(unleash_client.features) >= 4
     assert unleash_client.is_enabled("testFlag")

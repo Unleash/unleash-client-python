@@ -54,8 +54,7 @@ class UnleashClient:
                  cache_directory: Optional[str] = None,
                  project_name: str = None,
                  verbose_log_level: int = 30,
-                 cache: Optional[BaseCache] = None,
-                 bootstrapped: Optional[bool] = False) -> None:
+                 cache: Optional[BaseCache] = None) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -79,7 +78,6 @@ class UnleashClient:
         }
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
-        self.unleash_bootstrapped = bootstrapped
 
         # Class objects
         self.features: dict = {}
@@ -92,6 +90,7 @@ class UnleashClient:
             METRIC_LAST_SENT_TIME: datetime.now(timezone.utc),
             ETAG: ''
         })
+        self.unleash_bootstrapped = self.cache.bootstrapped
 
         # Mappings
         default_strategy_mapping = {

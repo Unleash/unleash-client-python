@@ -9,6 +9,13 @@ from UnleashClient.constants import FEATURES_URL
 
 
 class BaseCache(abc.ABC):
+    """
+    Abstract base class for caches used for UnleashClient.
+
+    If implementing your own bootstrapping methods, you must set the `bootstrapped` attribute to True after configuration is set.
+    """
+    bootstrapped = False
+
     @abc.abstractmethod
     def set(self, key: str, value: Any):
         pass
@@ -74,6 +81,7 @@ class FileCache(BaseCache):
         :param initial_config: Dictionary that contains initial configuration.
         """
         self.set(FEATURES_URL, initial_config)
+        self.bootstrapped = True
 
     def bootstrap_from_file(self, initial_config_file: Path) -> None:
         """
@@ -85,6 +93,7 @@ class FileCache(BaseCache):
         """
         with open(initial_config_file, "r",  encoding="utf8") as bootstrap_file:
             self.set(FEATURES_URL, json.loads(bootstrap_file.read()))
+            self.bootstrapped = True
 
     def bootstrap_from_url(self, initial_config_url: str, headers: Optional[dict] = None) -> None:
         """
@@ -97,6 +106,7 @@ class FileCache(BaseCache):
         """
         response = requests.get(initial_config_url, headers=headers)
         self.set(FEATURES_URL, response.json())
+        self.bootstrapped = True
 
     def set(self, key: str, value: Any):
         self._cache[key] = value
