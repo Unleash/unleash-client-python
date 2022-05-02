@@ -1,3 +1,6 @@
+## v5.2.0
+* (Minor) Add support for bootstrapping UnleashClient with an initial configuration. 
+
 ## v5.1.2
 * (Bugfix) Clarify logging if Unleash server doesn't return feature provisioning (i.e. HTTP 304).
 

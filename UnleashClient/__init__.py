@@ -35,6 +35,7 @@ class UnleashClient:
     :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
     :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
     :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
+    :param bootstraped: Whether cache has been boostrapped (i.e. pre-seeded) with Unleash configuration.  When true, UnleashClient will use initial configuration until the client is initialized.  See FileCache object for more information about bootstrapping.
     """
     def __init__(self,
                  url: str,
@@ -89,6 +90,7 @@ class UnleashClient:
             METRIC_LAST_SENT_TIME: datetime.now(timezone.utc),
             ETAG: ''
         })
+        self.unleash_bootstrapped = self.cache.bootstrapped
 
         # Mappings
         default_strategy_mapping = {
@@ -109,6 +111,10 @@ class UnleashClient:
 
         # Client status
         self.is_initialized = False
+
+        # Bootstrapping
+        if self.unleash_bootstrapped:
+            load_features(cache=self.cache, feature_toggles=self.features, strategy_mapping=self.strategy_mapping)
 
     def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
@@ -248,7 +254,7 @@ class UnleashClient:
         # Update context with static values
         context.update(self.unleash_static_context)
 
-        if self.is_initialized:
+        if self.unleash_bootstrapped or self.is_initialized:
             try:
                 return self.features[feature_name].is_enabled(context)
             except Exception as excep:
@@ -278,7 +284,7 @@ class UnleashClient:
         context = context or {}
         context.update(self.unleash_static_context)
 
-        if self.is_initialized:
+        if self.unleash_bootstrapped or self.is_initialized:
             try:
                 return self.features[feature_name].get_variant(context)
             except Exception as excep:
