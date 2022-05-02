@@ -31,6 +31,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
 
     unleashclient
     strategy
+    filecache
     basecache
 
 .. toctree::
