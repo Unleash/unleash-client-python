@@ -30,7 +30,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.2.0
+                5.2.1.dev1+g72a1ce4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -117,7 +117,10 @@
 </pre></div>
 </div>
 <p>Specifying a default value:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_fallback</span><span class="p">(</span><span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="n">custom_fallback</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Supplying application context:</p>
@@ -127,7 +130,7 @@
 </div>
 <p>Supplying a fallback function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_fallback</span><span class="p">(</span><span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">True</span>
 
 <span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="n">custom_fallback</span><span class="p">)</span>
 </pre></div>

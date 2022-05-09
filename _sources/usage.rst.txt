@@ -33,7 +33,10 @@ Specifying a default value:
 
 .. code-block:: python
 
-    client.is_enabled("My Toggle", default_value=True)
+    def custom_fallback(feature_name: str, context: dict) -> bool:
+        return True
+        
+    client.is_enabled("My Toggle", fallback_function=custom_fallback)
 
 
 Supplying application context:
@@ -48,7 +51,7 @@ Supplying a fallback function:
 .. code-block:: python
 
     def custom_fallback(feature_name: str, context: dict) -> bool:
-    return True
+        return True
 
     client.is_enabled("My Toggle", fallback_function=custom_fallback)
 
