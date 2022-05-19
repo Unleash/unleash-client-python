@@ -49,18 +49,18 @@ For more information about configuring `UnleashClient`, check out the [docs](htt
 
 A check of a simple toggle:
 ```Python
-client.is_enabled("My Toggle")
+client.is_enabled("my_toggle")
 ```
 
 Specifying a default value:
 ```Python
-client.is_enabled("My Toggle", default_value=True)
+client.is_enabled("my_toggle", default_value=True)
 ```
 
 Supplying application context:
 ```Python
 app_context = {"userId": "test@email.com"}
-client.is_enabled("User ID Toggle", app_context)
+client.is_enabled("user_id_toggle", app_context)
 ```
 
 For more information about usage, see the [Usage documentation](https://docs.getunleash.io/unleash-client-python/usage.html).
@@ -71,7 +71,7 @@ Checking for a variant:
 ```python
 context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
 
-variant = client.get_variant("MyvariantToggle", context)
+variant = client.get_variant("variant_toggle", context)
 
 print(variant)
 > {
