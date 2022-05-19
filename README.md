@@ -52,9 +52,19 @@ A check of a simple toggle:
 client.is_enabled("my_toggle")
 ```
 
-Specifying a default value:
+You can specify a fallback function for cases where the client doesn't recognize the toggle by using the `fallback_function` keyword argument:
+
 ```Python
-client.is_enabled("my_toggle", default_value=True)
+def custom_fallback(feature_name: str, context: dict) -> bool:
+    return True
+
+client.is_enabled("my_toggle", fallback_function=custom_fallback)
+```
+
+You can also use the `fallback_function` argument to replace the obsolete `default_value` by using a lambda that ignores its inputs:
+
+```Python
+client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
 ```
 
 Supplying application context:
