@@ -30,7 +30,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.2.1.dev2+g2489ae9
+                5.2.1.dev3+g52496f7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -113,41 +113,37 @@
 <section id="checking-if-a-feature-is-enabled">
 <h2>Checking if a feature is enabled<a class="headerlink" href="#checking-if-a-feature-is-enabled" title="Permalink to this headline"></a></h2>
 <p>A check of a simple toggle:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Specifying a default value:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_fallback</span><span class="p">(</span><span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="n">custom_fallback</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;my_toggle&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Supplying application context:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app_context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="s2">&quot;test@email.com&quot;</span><span class="p">}</span>
-<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;User ID Toggle&quot;</span><span class="p">,</span> <span class="n">app_context</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;user_id_toggle&quot;</span><span class="p">,</span> <span class="n">app_context</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Supplying a fallback function:</p>
+<p>You can specify a fallback function for cases where the client doesn’t recognize the toggle by using the <code class="docutils literal notranslate"><span class="pre">fallback_function</span></code> keyword argument:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_fallback</span><span class="p">(</span><span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="kc">True</span>
 
-<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;My Toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="n">custom_fallback</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;my_toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="n">custom_fallback</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Notes:</p>
 <ul class="simple">
 <li><p>Must accept the fature name and context as an argument.</p></li>
 <li><p>Client will evaluate the fallback function only if exception occurs when calling the <code class="docutils literal notranslate"><span class="pre">is_enabled()</span></code> method i.e. feature flag not found or other general exception.</p></li>
-<li><p>If both a <code class="docutils literal notranslate"><span class="pre">default_value</span></code> and <code class="docutils literal notranslate"><span class="pre">fallback_function</span></code> are supplied, client will define the default value by <code class="docutils literal notranslate"><span class="pre">OR</span></code> ing the default value and the output of the fallback function.</p></li>
 </ul>
+<p>You can also use the <code class="docutils literal notranslate"><span class="pre">fallback_function</span></code> argument to replace the obsolete <code class="docutils literal notranslate"><span class="pre">default_value</span></code> by using a lambda that ignores its inputs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">(</span><span class="s2">&quot;my_toggle&quot;</span><span class="p">,</span> <span class="n">fallback_function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="getting-a-variant">
 <h2>Getting a variant<a class="headerlink" href="#getting-a-variant" title="Permalink to this headline"></a></h2>
 <p>Checking for a variant:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;userId&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">}</span>  <span class="c1"># Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.</span>
 
-<span class="n">variant</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_variant</span><span class="p">(</span><span class="s2">&quot;MyvariantToggle&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+<span class="n">variant</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_variant</span><span class="p">(</span><span class="s2">&quot;variant_toggle&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">variant</span><span class="p">)</span>
 </pre></div>
