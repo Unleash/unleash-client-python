@@ -26,40 +26,34 @@ A check of a simple toggle:
 
 .. code-block:: python
 
-    client.is_enabled("My Toggle")
-
-
-Specifying a default value:
-
-.. code-block:: python
-
-    def custom_fallback(feature_name: str, context: dict) -> bool:
-        return True
-        
-    client.is_enabled("My Toggle", fallback_function=custom_fallback)
-
+    client.is_enabled("my_toggle")
 
 Supplying application context:
 
 .. code-block:: python
 
     app_context = {"userId": "test@email.com"}
-    client.is_enabled("User ID Toggle", app_context)
+    client.is_enabled("user_id_toggle", app_context)
 
-Supplying a fallback function:
+You can specify a fallback function for cases where the client doesn't recognize the toggle by using the ``fallback_function`` keyword argument:
 
 .. code-block:: python
 
     def custom_fallback(feature_name: str, context: dict) -> bool:
         return True
 
-    client.is_enabled("My Toggle", fallback_function=custom_fallback)
+    client.is_enabled("my_toggle", fallback_function=custom_fallback)
 
 Notes:
 
 - Must accept the fature name and context as an argument.
 - Client will evaluate the fallback function only if exception occurs when calling the ``is_enabled()`` method i.e. feature flag not found or other general exception.
-- If both a ``default_value`` and ``fallback_function`` are supplied, client will define the default value by ``OR`` ing the default value and the output of the fallback function.
+
+You can also use the ``fallback_function`` argument to replace the obsolete ``default_value`` by using a lambda that ignores its inputs:
+
+.. code-block:: python
+
+    client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
 
 
 Getting a variant
@@ -71,7 +65,7 @@ Checking for a variant:
 
     context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
 
-    variant = client.get_variant("MyvariantToggle", context)
+    variant = client.get_variant("variant_toggle", context)
 
     print(variant)
 
