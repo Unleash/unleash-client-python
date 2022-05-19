@@ -35,7 +35,7 @@ Supplying application context:
     app_context = {"userId": "test@email.com"}
     client.is_enabled("user_id_toggle", app_context)
 
-You can specify a fallback function for cases where the client doesn't recognize the toggle by using the `fallback_function` keyword argument:
+You can specify a fallback function for cases where the client doesn't recognize the toggle by using the ``fallback_function`` keyword argument:
 
 .. code-block:: python
 
@@ -49,7 +49,7 @@ Notes:
 - Must accept the fature name and context as an argument.
 - Client will evaluate the fallback function only if exception occurs when calling the ``is_enabled()`` method i.e. feature flag not found or other general exception.
 
-You can also use the `fallback_function` argument to replace the obsolete `default_value` by using a lambda that ignores its inputs:
+You can also use the ``fallback_function`` argument to replace the obsolete ``default_value`` by using a lambda that ignores its inputs:
 
 .. code-block:: python
 
