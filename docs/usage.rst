@@ -17,7 +17,7 @@ To clean up gracefully:
 
     client.destroy()
 
-If the client is already initialized, calling ``initialize_client()`` again will raise a warning.  This is not recommended client usage as it results in unneccessary calls to the Unleash server.
+If the client is already initialized, calling ``initialize_client()`` again will raise a warning.  This is not recommended client usage as it results in unnecessary calls to the Unleash server.
 
 Checking if a feature is enabled
 #######################################
@@ -115,7 +115,7 @@ Using ``UnleashClient`` with Gitlab
 
 `Gitlab's feature flags <https://docs.gitlab.com/ee/user/project/operations/feature_flags.html>`_ only supports the features URL.  (API calls to the registration URL and metrics URL will fail with HTTP Error code 401.)
 
-If using `unleash-client-python` with Gitlab's feature flages, we recommend initializing the client with `disable_metrics` = True and `disable_registration` = True.
+If using `unleash-client-python` with Gitlab's feature flags, we recommend initializing the client with `disable_metrics` = True and `disable_registration` = True.
 
 .. code-block:: python
 
