@@ -6,6 +6,7 @@ To use this client with Celery, call the `initialize_client` method in the `work
 
 .. code-block:: python
 
+    from UnleashClient import UnleashClient
     from celery.signals import worker_process_init
 
     client = UnleashClient(
