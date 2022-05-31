@@ -6,6 +6,8 @@ To use this client with Celery, call the `initialize_client` method in the `work
 
 .. code-block:: python
 
+    from celery.signals import worker_process_init
+
     client = UnleashClient(
         url="http://localhost:4242/api/",
         app_name="test-dev",
