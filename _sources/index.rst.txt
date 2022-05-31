@@ -23,6 +23,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
     customcache
     development
     wsgi
+    celery
 
 .. toctree::
     :caption: API Documentation

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running with WSGI &mdash; unleash-client-python  documentation</title>
+  <title>Running with Celery &mdash; unleash-client-python  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Running with Celery" href="celery.html" />
-    <link rel="prev" title="Development" href="development.html" /> 
+    <link rel="next" title="UnleashClient" href="unleashclient.html" />
+    <link rel="prev" title="Running with WSGI" href="wsgi.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,8 +51,8 @@
 <li class="toctree-l1"><a class="reference internal" href="customstrategies.html">Custom Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customcache.html">Custom Cache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Running with WSGI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="celery.html">Running with Celery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wsgi.html">Running with WSGI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running with Celery</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
@@ -80,9 +80,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Running with WSGI</li>
+      <li>Running with Celery</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/unleash/unleash-client-python/blob/main/docs/wsgi.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/unleash/unleash-client-python/blob/main/docs/celery.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -90,21 +90,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="running-with-wsgi">
-<h1>Running with WSGI<a class="headerlink" href="#running-with-wsgi" title="Permalink to this heading"></a></h1>
-<p>WSGI is a fairly common way of running webserver applications for both Flask and Django, if you’re running in WSGI there are a few caveats that you should be aware of:</p>
-<ul class="simple">
-<li><p>By default WSGI removes the GIL and disables threading, this SDK requires threads to work for the background updates of feature toggles, without it, your application will run but will not reflect updates to state of feature toggles when changed. To get around this, you’ll need to enable threading, you can do this by setting enable-threads in your WSGI configuration</p></li>
-<li><p>If you need to scale out your application with multiple processes by setting the processes flag in your WSGI configuration, note that this can cause issues with updates as well, in order to resolve these, you’ll also need to enable the lazy-apps flag in WSGI, this will cause each process to trigger a clean reload of your application. More information on the rammifcations of this change can be found <a class="reference external" href="https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#preforking-vs-lazy-apps-vs-lazy">here</a>.</p></li>
-</ul>
+  <section id="running-with-celery">
+<h1>Running with Celery<a class="headerlink" href="#running-with-celery" title="Permalink to this heading"></a></h1>
+<p>To use this client with Celery, call the <cite>initialize_client</cite> method in the <cite>worker_process_init</cite> event. If you don’t initialize the client inside the <cite>worker_process_init</cite> event, the client will not poll for updates. As such, the client will not update its feature toggles, even when changes are made server side.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">UnleashClient</span> <span class="kn">import</span> <span class="n">UnleashClient</span>
+<span class="kn">from</span> <span class="nn">celery.signals</span> <span class="kn">import</span> <span class="n">worker_process_init</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">UnleashClient</span><span class="p">(</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:4242/api/&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;test-dev&quot;</span><span class="p">,</span>
+    <span class="n">custom_headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;*:development.bb09e81624d5ad67b2ac29bd0b0fdc35ccbac884e63cfd20c6fefc49&#39;</span><span class="p">})</span>
+
+<span class="nd">@worker_process_init</span><span class="o">.</span><span class="n">connect</span>
+<span class="k">def</span> <span class="nf">configure_workers</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">initialize_client</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="development.html" class="btn btn-neutral float-left" title="Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="celery.html" class="btn btn-neutral float-right" title="Running with Celery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="wsgi.html" class="btn btn-neutral float-left" title="Running with WSGI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="unleashclient.html" class="btn btn-neutral float-right" title="UnleashClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
