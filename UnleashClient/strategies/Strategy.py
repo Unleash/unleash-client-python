@@ -27,7 +27,6 @@ class Strategy:
         self.constraints = constraints
         self.segment_ids = segment_ids or []
         self.global_segments = global_segments or {}
-        self.parsed_constraints = self.load_constraints(constraints)
         self.parsed_provisioning = self.load_provisioning()
 
     def __call__(self, context: dict = None):
@@ -55,11 +54,9 @@ class Strategy:
 
         return flag_state
 
-    def load_constraints(self, constraints_list: list) -> Iterator[Constraint]:  # pylint: disable=no-self-use
-        """
-        Loads constraints from provisioning.
-        """
-        for constraint_dict in constraints_list:
+    @property
+    def parsed_constraints(self) -> Iterator[Constraint]:
+        for constraint_dict in self.constraints:
             yield Constraint(constraint_dict=constraint_dict)
 
         for segment_id in self.segment_ids:
