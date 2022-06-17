@@ -113,6 +113,72 @@ MOCK_FEATURE_RESPONSE = {
     ]
 }
 
+MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
+    "version": 2,
+    "features": [
+        {
+            "strategies": [
+                {
+                    "name": "default",
+                    "constraints": [],
+                    "parameters": {},
+                    "segments": [
+                        1, 2
+                    ]
+                }
+            ],
+            "impressionData": False,
+            "enabled": True,
+            "name": "Test",
+            "description": "",
+            "project": "default",
+            "stale": False,
+            "type": "release",
+            "variants": []
+        }
+    ],
+    "query": {
+        "environment": "development",
+        "inlineSegmentConstraints": False
+    },
+    "segments": [
+        {
+            "id": 1,
+            "name": "TestSegment1",
+            "description": "test",
+            "constraints": [
+                {
+                    "value": "2022-06-14T06:40:17.766Z",
+                    "values": [],
+                    "inverted": False,
+                    "operator": "DATE_BEFORE",
+                    "contextName": "currentTime",
+                    "caseInsensitive": False
+                }
+            ],
+            "createdBy": "admin",
+            "createdAt": "2022-06-14T06:40:25.331Z"
+        },
+        {
+            "id": 2,
+            "name": "TestSegment2",
+            "description": "test",
+            "constraints": [
+                {
+                    "value": "2022-06-14T06:40:17.766Z",
+                    "values": [],
+                    "inverted": False,
+                    "operator": "DATE_AFTER",
+                    "contextName": "currentTime",
+                    "caseInsensitive": False
+                }
+            ],
+            "createdBy": "admin",
+            "createdAt": "2022-06-14T06:40:25.331Z"
+        }
+    ]
+}
+
 MOCK_FEATURE_RESPONSE_PROJECT = {
    "version":1,
    "features":[
@@ -125,12 +191,12 @@ MOCK_FEATURE_RESPONSE_PROJECT = {
             {
                "name":"default",
                "parameters":{
-                  
+
                }
             }
          ],
          "variants":[
-            
+
          ]
       }
    ]

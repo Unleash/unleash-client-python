@@ -31,7 +31,7 @@ def test_loader_initialization(cache_full):  # noqa: F811
             assert len(strategy.parsed_provisioning)
 
         if isinstance(strategy, FlexibleRollout):
-            len(strategy.parsed_constraints) > 0
+            len(list(strategy.parsed_constraints)) > 0
 
         if isinstance(strategy, Variants):
             assert strategy.variants
@@ -80,3 +80,14 @@ def test_loader_initialization_failure(cache_custom):  # noqa: F811
     # Tests
     load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
     assert isinstance(in_memory_features["UserWithId"], Feature)
+
+
+def test_loader_segments(cache_segments):
+    # Set up variables
+    in_memory_features = {}
+    temp_cache = cache_segments
+
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    feature = in_memory_features["Test"]
+    loaded_constraints = list(feature.strategies[0].parsed_constraints)
+    assert(len(loaded_constraints) == 2)

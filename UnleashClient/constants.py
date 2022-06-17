@@ -7,7 +7,7 @@ REQUEST_TIMEOUT = 30
 METRIC_LAST_SENT_TIME = "mlst"
 
 # =Unleash=
-APPLICATION_HEADERS = {"Content-Type": "application/json"}
+APPLICATION_HEADERS = {"Content-Type": "application/json", "Unleash-Client-Spec": "4.2.0"}
 DISABLED_VARIATION = {
     'name': 'disabled',
     'enabled': False

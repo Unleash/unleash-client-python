@@ -1,3 +1,4 @@
+from typing import Optional
 from UnleashClient.features.Feature import Feature
 from UnleashClient.variants.Variants import Variants
 from UnleashClient.constants import FEATURES_URL, FAILED_STRATEGIES
@@ -8,7 +9,8 @@ from UnleashClient.cache import BaseCache
 # pylint: disable=broad-except
 def _create_strategies(provisioning: dict,
                        strategy_mapping: dict,
-                       cache: BaseCache) -> list:
+                       cache: BaseCache,
+                       global_segments: Optional[dict]) -> list:
     feature_strategies = []
 
     for strategy in provisioning["strategies"]:
@@ -23,8 +25,13 @@ def _create_strategies(provisioning: dict,
             else:
                 constraint_provisioning = {}
 
+            if "segments" in strategy.keys():
+                segment_provisioning = strategy['segments']
+            else:
+                segment_provisioning = []
+
             feature_strategies.append(strategy_mapping[strategy['name']](
-                constraints=constraint_provisioning, parameters=strategy_provisioning
+                constraints=constraint_provisioning, parameters=strategy_provisioning, global_segments=global_segments, segment_ids=segment_provisioning
             ))
         except Exception as excep:
             strategies = cache.get(FAILED_STRATEGIES, [])
@@ -40,9 +47,10 @@ def _create_strategies(provisioning: dict,
 
 def _create_feature(provisioning: dict,
                     strategy_mapping: dict,
-                    cache: BaseCache) -> Feature:
+                    cache: BaseCache,
+                    global_segments: Optional[dict]) -> Feature:
     if "strategies" in provisioning.keys():
-        parsed_strategies = _create_strategies(provisioning, strategy_mapping, cache)
+        parsed_strategies = _create_strategies(provisioning, strategy_mapping, cache, global_segments)
     else:
         parsed_strategies = []
 
@@ -60,7 +68,8 @@ def _create_feature(provisioning: dict,
 
 def load_features(cache: BaseCache,
                   feature_toggles: dict,
-                  strategy_mapping: dict) -> None:
+                  strategy_mapping: dict,
+                  global_segments: Optional[dict] = None) -> None:
     """
     Caching
 
@@ -80,6 +89,12 @@ def load_features(cache: BaseCache,
     parsed_features = {}
     feature_names = [d["name"] for d in feature_provisioning["features"]]
 
+    if "segments" in feature_provisioning.keys():
+        segments = feature_provisioning["segments"]
+        global_segments = {segment["id"]: segment for segment in segments}
+    else:
+        global_segments = {}
+
     for provisioning in feature_provisioning["features"]:
         parsed_features[provisioning["name"]] = provisioning
 
@@ -95,7 +110,7 @@ def load_features(cache: BaseCache,
 
         feature_for_update.enabled = parsed_features[feature]["enabled"]
         if strategies:
-            parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping, cache)
+            parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping, cache, global_segments)
             feature_for_update.strategies = parsed_strategies
 
         if 'variants' in parsed_features[feature]:
@@ -108,4 +123,4 @@ def load_features(cache: BaseCache,
     new_features = list(set(feature_names) - set(feature_toggles.keys()))
 
     for feature in new_features:
-        feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping, cache)
+        feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping, cache, global_segments)
