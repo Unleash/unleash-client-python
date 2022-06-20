@@ -15,6 +15,9 @@ addopts= """
 """
 log_file_level="INFO"
 
+[tool.pylint]
+load-plugins="pylint.extensions.no_self_use"
+
 [tool.pylint.messages_control]
 disable = [
     "line-too-long",
