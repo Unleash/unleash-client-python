@@ -79,7 +79,7 @@ class Variants:
             if override_variant:
                 return self._format_variation(override_variant)
 
-            total_weight = sum([x['weight'] for x in self.variants])
+            total_weight = sum(x['weight'] for x in self.variants)
             if total_weight <= 0:
                 return fallback_variant
 

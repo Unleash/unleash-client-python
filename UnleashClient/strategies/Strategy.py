@@ -1,4 +1,5 @@
 # pylint: disable=invalid-name,dangerous-default-value
+from typing import Iterator
 import warnings
 from UnleashClient.constraints import Constraint
 
@@ -15,13 +16,17 @@ class Strategy:
     :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     :param parameters: The 'parameter' objects from the strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     """
+
     def __init__(self,
                  constraints: list = [],
                  parameters: dict = {},
+                 segment_ids: list = None,
+                 global_segments: dict = None
                  ) -> None:
         self.parameters = parameters
         self.constraints = constraints
-        self.parsed_constraints = self.load_constraints(constraints)
+        self.segment_ids = segment_ids or []
+        self.global_segments = global_segments or {}
         self.parsed_provisioning = self.load_provisioning()
 
     def __call__(self, context: dict = None):
@@ -49,16 +54,15 @@ class Strategy:
 
         return flag_state
 
-    def load_constraints(self, constraints_list: list) -> list:  # pylint: disable=no-self-use
-        """
-        Loads constraints from provisioning.
-        """
-        parsed_constraints_list = []
+    @property
+    def parsed_constraints(self) -> Iterator[Constraint]:
+        for constraint_dict in self.constraints:
+            yield Constraint(constraint_dict=constraint_dict)
 
-        for constraint_dict in constraints_list:
-            parsed_constraints_list.append(Constraint(constraint_dict=constraint_dict))
-
-        return parsed_constraints_list
+        for segment_id in self.segment_ids:
+            segment = self.global_segments[segment_id]
+            for constraint in segment["constraints"]:
+                yield Constraint(constraint_dict=constraint)
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """
