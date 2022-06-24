@@ -2,7 +2,7 @@
 Development
 ****************************************
 
-Contributions welcome!  
+Contributions welcome!
 
 Here are some notes about common tools and tasks you'll run into when working on `unleash-client-python`.
 
@@ -21,7 +21,7 @@ Running Tox locally
 #######################################
 1. Install Python versions for each supported version.
 2. Deactivate your local virtualenv (if it's activated).
-3. Run ``pyenv local 3.10.X 3.9.Y 3.8.Z 3.7.12 3.6.15`` (inserting appropriate patch versions).
+3. Run ``pyenv local 3.10.X 3.9.Y 3.8.Z 3.7.12`` (inserting appropriate patch versions).
 4. Run ``make install`` to get latest local dependencies.
 5. Run ``make tox`` to run tox.
 
