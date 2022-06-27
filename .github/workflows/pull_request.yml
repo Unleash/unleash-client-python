@@ -25,10 +25,9 @@ jobs:
         run: |
           mypy UnleashClient --install-types --non-interactive
           pylint UnleashClient
-      - name: Unit tests with YB in non-observation mode
+      - name: Unit tests without YB
         env:
-          YOURBASE_OBSERVATION_MODE: false
-          YOURBASE_DISABLE: false
+         YOURBASE_DISABLE: true
         run: |
-          py.test tests/unit_tests
+         py.test tests/unit_tests
           
