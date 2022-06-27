@@ -25,6 +25,9 @@ jobs:
         run: |
           mypy UnleashClient --install-types --non-interactive
           pylint UnleashClient
+      - name: remove YB cache
+        run: |
+          rm -rf ~/.cache/yourbase
       - name: Unit tests without YB
         env:
          YOURBASE_DISABLE: true
