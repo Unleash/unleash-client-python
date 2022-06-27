@@ -2,6 +2,10 @@ name: CI
 on:
   pull_request:
   push:
+env:
+  YOURBASE_REMOTE_CACHE: ${{ secrets.YOURBASE_REMOTE_CACHE }}
+  YOURBASE_AWS_ACCESS_KEY_ID: ${{ secrets.YOURBASE_AWS_ACCESS_KEY_ID }}
+  YOURBASE_AWS_SECRET_ACCESS_KEY: ${{ secrets.YOURBASE_AWS_SECRET_ACCESS_KEY }}
 jobs:
   main:
     runs-on: ubuntu-latest
