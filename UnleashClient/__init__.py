@@ -245,7 +245,6 @@ class UnleashClient:
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
-        :param default_value: Allows override of default value. (DEPRECIATED, used fallback_function instead!)
         :param fallback_function: Allows users to provide a custom function to set default value.
         :return: Feature flag result
         """
