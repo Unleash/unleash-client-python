@@ -21,6 +21,8 @@ jobs:
           mypy UnleashClient --install-types --non-interactive
           pylint UnleashClient
       - name: Unit tests
+        env: | 
+          YOURBASE_DISABLE: true
         run: |
           py.test tests/unit_tests
       - name: Specification tests
