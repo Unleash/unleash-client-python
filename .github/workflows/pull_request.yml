@@ -35,6 +35,7 @@ jobs:
          py.test tests/unit_tests
       - name: Unit tests with YB in observation mode
         env:
+         YOURBASE_TELEMETRY: false
          YOURBASE_OBSERVATION_MODE: true
          YOURBASE_DISABLE: false
         run: |
