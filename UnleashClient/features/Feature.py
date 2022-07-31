@@ -2,7 +2,7 @@
 from UnleashClient.variants import Variants
 from UnleashClient.utils import LOGGER
 from UnleashClient.constants import DISABLED_VARIATION
-
+import os
 
 # pylint: disable=dangerous-default-value, broad-except
 class Feature:
@@ -60,7 +60,7 @@ class Feature:
         :return:
         """
         flag_value = False
-
+        print("Feature.is_enabled on process id: " + str( os.getpid()) + "</p>")
         if self.enabled:
             try:
                 if self.strategies:
@@ -77,6 +77,12 @@ class Feature:
 
         LOGGER.info("Feature toggle status for feature %s: %s", self.name, flag_value)
 
+        from multiprocessing import Process, Manager
+
+        manager = Manager()
+        d = manager.dict()
+        print("Get from manager in feature.py")
+        print(d)
         return flag_value
 
     def get_variant(self,

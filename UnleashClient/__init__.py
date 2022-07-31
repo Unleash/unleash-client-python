@@ -14,6 +14,7 @@ from UnleashClient.loader import load_features
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
+import os
 
 # pylint: disable=dangerous-default-value
 class UnleashClient:
@@ -250,7 +251,7 @@ class UnleashClient:
         :return: Feature flag result
         """
         context = context or {}
-
+        print("init.py.is_enabled on process id: " + str(os.getpid()) + "</p>")
         # Update context with static values
         context.update(self.unleash_static_context)
 
