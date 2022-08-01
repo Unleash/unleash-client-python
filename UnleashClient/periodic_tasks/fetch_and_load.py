@@ -37,17 +37,22 @@ def fetch_and_load_features(url: str,
         # print("Writing to memory")
         # print(shm.buf)
 
-        from multiprocessing import Process, Manager
+        import multiprocessing
+        from multiprocessing import Manager
 
         manager = Manager()
+        Global = manager.Namespace()
+        Global.x = 10
         d = manager.dict()
         print("Get from manager before save")
         print(d)
+        print(Global)
         d['test'] = 'test'
         print("Get from manager after save")
         print(d)
         print("Get from manager after saveprocess id: " + str(os.getpid()) + "</p>")
-        cache.set(FEATURES_URL, feature_provisioning)
+        print("Process " + multiprocessing.current_process().name)
+        print("Process " + str(type(multiprocessing.current_process())))
     else:
         LOGGER.debug("No feature provisioning returned from server, using cached provisioning.")
 

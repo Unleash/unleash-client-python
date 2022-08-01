@@ -77,12 +77,17 @@ class Feature:
 
         LOGGER.info("Feature toggle status for feature %s: %s", self.name, flag_value)
 
-        from multiprocessing import Process, Manager
+        from multiprocessing import Manager
+        import multiprocessing
 
         manager = Manager()
         d = manager.dict()
         print("Get from manager in feature.py")
         print(d)
+        print("Process " + multiprocessing.current_process().name)
+        print("Process " + str(type(multiprocessing.current_process())))
+        Global = manager.Namespace()
+        print(Global)
         return flag_value
 
     def get_variant(self,
