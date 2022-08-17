@@ -1,6 +1,10 @@
 from typing import Tuple
 import requests
-from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
+from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL, \
+    REQUEST_RETRIES
 from UnleashClient.utils import LOGGER, log_resp_info
 
 
@@ -45,10 +49,14 @@ def get_feature_toggles(url: str,
         if project:
             base_params = {'project': project}
 
-        resp = requests.get(base_url,
-                            headers={**custom_headers, **headers},
-                            params=base_params,
-                            timeout=REQUEST_TIMEOUT, **custom_options)
+        adapter = HTTPAdapter(max_retries=Retry(total=REQUEST_RETRIES, status_forcelist=[500, 502, 504]))
+        with requests.Session() as session:
+            session.mount("https://", adapter)
+            session.mount("http://", adapter)
+            resp = session.get(base_url,
+                               headers={**custom_headers, **headers},
+                               params=base_params,
+                               timeout=REQUEST_TIMEOUT, **custom_options)
 
         if resp.status_code not in [200, 304]:
             log_resp_info(resp)
