@@ -1,7 +1,7 @@
 from typing import Tuple
 import requests
 from requests.adapters import HTTPAdapter
-from urllib3 import Retry
+from requests.packages.urllib3.util.retry import Retry
 
 from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL, \
     REQUEST_RETRIES
