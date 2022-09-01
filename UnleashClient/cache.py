@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 import requests
 from fcache.cache import FileCache as _FileCache
-from UnleashClient.constants import FEATURES_URL
+from UnleashClient.constants import FEATURES_URL, REQUEST_TIMEOUT
 
 
 class BaseCache(abc.ABC):
@@ -104,7 +104,7 @@ class FileCache(BaseCache):
         :param initial_configuration_url: Url that returns document containing initial configuration.  Must return JSON.
         :param headers: Headers to use when GETing the initial configuration URL.
         """
-        response = requests.get(initial_config_url, headers=headers)
+        response = requests.get(initial_config_url, headers=headers, timeout=REQUEST_TIMEOUT)
         self.set(FEATURES_URL, response.json())
         self.bootstrapped = True
 

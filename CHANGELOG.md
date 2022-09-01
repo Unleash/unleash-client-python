@@ -1,3 +1,8 @@
+## v5.3.0
+* (Minor) Add retries to GET /features.  Thanks @janboll!
+* (Minor) Add global segments.  Thanks @sighphyre!
+* (Minor) Documentation updates and tweaks.  Thanks @inirudebwoy, @sighphyre, @thomasheartman !
+
 ## v5.2.0
 * (Minor) Add support for bootstrapping UnleashClient with an initial configuration. 
 * (Minor) Add flag to disable toggle polling from server.  Thanks @povilasb!
