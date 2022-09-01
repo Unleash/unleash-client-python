@@ -41,7 +41,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_slack_token }}
           SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name != 'Unleash/unleash-client-python' }} && (success() || failure())
 
   tox:
     runs-on: ubuntu-latest
