@@ -28,7 +28,7 @@ disable = [
 ]
 max-attributes = 25
 max-args = 25
-max-locals = 20
+max-locals = 25
 extension-pkg-allow-list = ["mmh3"]
 
 [tool.setuptools_scm]
