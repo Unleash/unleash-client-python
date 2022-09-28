@@ -518,7 +518,7 @@ def test_uc_custom_scheduler():
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         scheduler=custom_scheduler,
-        scheduler_executor='hamster_executor1'
+        scheduler_executor='hamster_executor'
     )
 
     # Create Unleash client and check initial load
