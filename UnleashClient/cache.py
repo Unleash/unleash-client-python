@@ -62,8 +62,7 @@ class FileCache(BaseCache):
         unleash_client = UnleashClient(
             "https://my.unleash.server.com",
             "HAMSTER_API",
-            cache=cache,
-            bootstrapped=True
+            cache=cache
         )
 
     :param name: Name of cache.
