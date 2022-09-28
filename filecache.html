@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.3.0
+                5.3.1.dev1+g0fcfb6f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -58,7 +59,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="unleashclient.html">UnleashClient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategy.html">Strategy</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">FileCache</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FileCache</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#UnleashClient.cache.FileCache"><code class="docutils literal notranslate"><span class="pre">FileCache</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_dict"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_file"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_url"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.set"><code class="docutils literal notranslate"><span class="pre">FileCache.set()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.mset"><code class="docutils literal notranslate"><span class="pre">FileCache.mset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.get"><code class="docutils literal notranslate"><span class="pre">FileCache.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.exists"><code class="docutils literal notranslate"><span class="pre">FileCache.exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.destroy"><code class="docutils literal notranslate"><span class="pre">FileCache.destroy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="basecache.html">BaseCache</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Changelog</span></p>
@@ -113,8 +127,7 @@
 <span class="n">unleash_client</span> <span class="o">=</span> <span class="n">UnleashClient</span><span class="p">(</span>
     <span class="s2">&quot;https://my.unleash.server.com&quot;</span><span class="p">,</span>
     <span class="s2">&quot;HAMSTER_API&quot;</span><span class="p">,</span>
-    <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span>
-    <span class="n">bootstrapped</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">cache</span><span class="o">=</span><span class="n">cache</span>
 <span class="p">)</span>
 </pre></div>
 </div>

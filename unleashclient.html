@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.3.0
+                5.3.1.dev1+g0fcfb6f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,7 +57,16 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">UnleashClient</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">UnleashClient</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#UnleashClient.UnleashClient"><code class="docutils literal notranslate"><span class="pre">UnleashClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.UnleashClient.initialize_client"><code class="docutils literal notranslate"><span class="pre">UnleashClient.initialize_client()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.UnleashClient.destroy"><code class="docutils literal notranslate"><span class="pre">UnleashClient.destroy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.UnleashClient.is_enabled"><code class="docutils literal notranslate"><span class="pre">UnleashClient.is_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.UnleashClient.get_variant"><code class="docutils literal notranslate"><span class="pre">UnleashClient.get_variant()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="strategy.html">Strategy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filecache.html">FileCache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basecache.html">BaseCache</a></li>
@@ -114,7 +124,6 @@
 <li><p><strong>cache_directory</strong> – Location of the cache directory. When unset, FCache will determine the location.</p></li>
 <li><p><strong>verbose_log_level</strong> – Numerical log level (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">https://docs.python.org/3/library/logging.html#logging-levels</a>) for cases where checking a feature flag fails.</p></li>
 <li><p><strong>cache</strong> – Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.</p></li>
-<li><p><strong>bootstraped</strong> – Whether cache has been boostrapped (i.e. pre-seeded) with Unleash configuration.  When true, UnleashClient will use initial configuration until the client is initialized.  See FileCache object for more information about bootstrapping.</p></li>
 </ul>
 </dd>
 </dl>
