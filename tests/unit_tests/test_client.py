@@ -515,8 +515,8 @@ def test_uc_custom_scheduler():
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
-        refresh_interval=REFRESH_INTERVAL,
-        metrics_interval=METRICS_INTERVAL,
+        refresh_interval=5,
+        metrics_interval=10,
         scheduler=custom_scheduler,
         scheduler_executor='hamster_executor'
     )
@@ -529,9 +529,9 @@ def test_uc_custom_scheduler():
 
     # Simulate caching
     responses.add(responses.GET, URL + FEATURES_URL, json={}, status=304, headers={'etag': ETAG_VALUE})
-    time.sleep(16)
+    time.sleep(6)
 
     # Simulate server provisioning change
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200, headers={'etag': 'W/somethingelse'})
-    time.sleep(30)
+    time.sleep(6)
     assert len(unleash_client.features) >= 9
