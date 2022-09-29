@@ -1,3 +1,7 @@
+## v5.4.0
+* (Minor) Allow users to pass in an [apscheduler](https://github.com/agronholm/apscheduler) scheduler & executor name.
+* (Minor) Remove vestigial reference to `bootstraped` parameter.  Thanks @koffie !
+
 ## v5.3.0
 * (Minor) Add retries to GET /features.  Thanks @janboll!
 * (Minor) Add global segments.  Thanks @sighphyre!
