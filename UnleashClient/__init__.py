@@ -1,10 +1,14 @@
 # pylint: disable=invalid-name
 import warnings
+import random
+import string
 from datetime import datetime, timezone
 from typing import Callable, Optional
 from apscheduler.job import Job
+from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.executors.pool import ThreadPoolExecutor
 from UnleashClient.api import register_client
 from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
 from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
@@ -35,6 +39,8 @@ class UnleashClient:
     :param cache_directory: Location of the cache directory. When unset, FCache will determine the location.
     :param verbose_log_level: Numerical log level (https://docs.python.org/3/library/logging.html#logging-levels) for cases where checking a feature flag fails.
     :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
+    :param scheduler: Custom APScheduler object.  Use this if you want to customize jobstore or executors.  When unset, UnleashClient will create it's own scheduler.
+    :param scheduler_executor: Name of APSCheduler executor to use if using a custom scheduler.
     """
     def __init__(self,
                  url: str,
@@ -53,7 +59,9 @@ class UnleashClient:
                  cache_directory: Optional[str] = None,
                  project_name: str = None,
                  verbose_log_level: int = 30,
-                 cache: Optional[BaseCache] = None) -> None:
+                 cache: Optional[BaseCache] = None,
+                 scheduler: Optional[BaseScheduler] = None,
+                 scheduler_executor: Optional[str] = None) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -80,7 +88,6 @@ class UnleashClient:
 
         # Class objects
         self.features: dict = {}
-        self.scheduler = BackgroundScheduler()
         self.fl_job: Job = None
         self.metric_job: Job = None
 
@@ -90,6 +97,27 @@ class UnleashClient:
             ETAG: ''
         })
         self.unleash_bootstrapped = self.cache.bootstrapped
+
+        # Scheduler bootstrapping
+        # - Figure out the Unleash executor name.
+        if scheduler and scheduler_executor:
+            self.unleash_executor_name = scheduler_executor
+        elif scheduler and not scheduler_executor:
+            raise ValueError("If using a custom scheduler, you must specify a executor.")
+        else:
+            if not scheduler:
+                LOGGER.warning("scheduler_executor should only be used with a custom scheduler.")
+
+            self.unleash_executor_name = f"unleash_executor_{''.join(random.choices(string.ascii_uppercase + string.digits, k=6))}"
+
+        # Set up the scheduler.
+        if scheduler:
+            self.unleash_scheduler = scheduler
+        else:
+            executors = {
+                self.unleash_executor_name: ThreadPoolExecutor()
+            }
+            self.unleash_scheduler = BackgroundScheduler(executors=executors)
 
         # Mappings
         default_strategy_mapping = {
@@ -184,20 +212,22 @@ class UnleashClient:
 
                 job_func(**job_args)  # type: ignore
                 # Start periodic jobs
-                self.scheduler.start()
-                self.fl_job = self.scheduler.add_job(job_func,
+                self.unleash_scheduler.start()
+                self.fl_job = self.unleash_scheduler.add_job(job_func,
                                                      trigger=IntervalTrigger(
                                                          seconds=int(self.unleash_refresh_interval),
                                                          jitter=self.unleash_refresh_jitter,
                                                      ),
+                                                     executor=self.unleash_executor_name,
                                                      kwargs=job_args)
 
                 if not self.unleash_disable_metrics:
-                    self.metric_job = self.scheduler.add_job(aggregate_and_send_metrics,
+                    self.metric_job = self.unleash_scheduler.add_job(aggregate_and_send_metrics,
                                                              trigger=IntervalTrigger(
                                                                  seconds=int(self.unleash_metrics_interval),
                                                                  jitter=self.unleash_metrics_jitter,
                                                              ),
+                                                             executor=self.unleash_executor_name,
                                                              kwargs=metrics_args)
             except Exception as excep:
                 # Log exceptions during initialization.  is_initialized will remain false.
@@ -218,7 +248,7 @@ class UnleashClient:
         self.fl_job.remove()
         if self.metric_job:
             self.metric_job.remove()
-        self.scheduler.shutdown()
+        self.unleash_scheduler.shutdown()
         self.cache.destroy()
 
     @staticmethod

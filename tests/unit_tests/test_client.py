@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 import responses
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.executors.pool import ThreadPoolExecutor
 from UnleashClient import UnleashClient
 from UnleashClient.strategies import Strategy
 from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, REFRESH_JITTER, \
@@ -228,7 +230,7 @@ def test_uc_dirty_cache(unleash_client_nodestroy):
     unleash_client.initialize_client()
     time.sleep(5)
     assert unleash_client.is_enabled("testFlag")
-    unleash_client.scheduler.shutdown()
+    unleash_client.unleash_scheduler.shutdown()
 
     # Check that everything works if previous cache exists.
     unleash_client.initialize_client()
@@ -492,3 +494,44 @@ def test_uc_cache_bootstrap_url(cache):
     )
     assert len(unleash_client.features) >= 4
     assert unleash_client.is_enabled("testFlag")
+
+
+@responses.activate
+def test_uc_custom_scheduler():
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200, headers={'etag': ETAG_VALUE})
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Set up UnleashClient
+    custom_executors = {
+        'hamster_executor': ThreadPoolExecutor()
+    }
+
+    custom_scheduler = BackgroundScheduler(
+        executors=custom_executors
+    )
+
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=5,
+        metrics_interval=10,
+        scheduler=custom_scheduler,
+        scheduler_executor='hamster_executor'
+    )
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_initialized
+    assert len(unleash_client.features) >= 4
+
+    # Simulate caching
+    responses.add(responses.GET, URL + FEATURES_URL, json={}, status=304, headers={'etag': ETAG_VALUE})
+    time.sleep(6)
+
+    # Simulate server provisioning change
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200, headers={'etag': 'W/somethingelse'})
+    time.sleep(6)
+    assert len(unleash_client.features) >= 9
