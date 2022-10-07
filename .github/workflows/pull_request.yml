@@ -25,6 +25,8 @@ jobs:
       - name: Unit tests
         run: |
           py.test tests/unit_tests
+      - name: Download test cases
+        run: git clone --depth 5 --branch v4.2.2 https://github.com/Unleash/client-specification.git tests/specification_tests/client-specification
       - name: Specification tests
         run: |
           py.test --no-cov tests/specification_tests
