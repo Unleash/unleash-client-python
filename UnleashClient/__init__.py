@@ -279,8 +279,10 @@ class UnleashClient:
         """
         context = context or {}
 
-        # Update context with static values
-        context.update(self.unleash_static_context)
+        base_context = self.unleash_static_context.copy()
+        # Update context with static values and allow context to override environment
+        base_context.update(context)
+        context = base_context
 
         if self.unleash_bootstrapped or self.is_initialized:
             try:
