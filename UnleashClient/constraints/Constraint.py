@@ -175,6 +175,10 @@ class Constraint:
                     constraint_check = self.check_date_operators(context_value=context_value)
                 elif self.operator in [ConstraintOperators.SEMVER_EQ, ConstraintOperators.SEMVER_GT, ConstraintOperators.SEMVER_LT]:
                     constraint_check = self.check_semver_operators(context_value=context_value)
+            else:
+                # This is a special case in the client spec - so it's getting it's own handler here
+                if self.operator is ConstraintOperators.NOT_IN:
+                    return True
 
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
