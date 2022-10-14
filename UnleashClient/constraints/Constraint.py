@@ -82,19 +82,20 @@ class Constraint:
 
     def check_numeric_operators(self, context_value: Union[float, int]) -> bool:
         return_value = False
+
         parsed_value = float(self.value)
+        parsed_context = float(context_value)
 
         if self.operator == ConstraintOperators.NUM_EQ:
-            return_value = context_value == parsed_value
+            return_value = parsed_context == parsed_value
         elif self.operator == ConstraintOperators.NUM_GT:
-            return_value = context_value > parsed_value
+            return_value = parsed_context > parsed_value
         elif self.operator == ConstraintOperators.NUM_GTE:
-            return_value = context_value >= parsed_value
+            return_value = parsed_context >= parsed_value
         elif self.operator == ConstraintOperators.NUM_LT:
-            return_value = context_value < parsed_value
+            return_value = parsed_context < parsed_value
         elif self.operator == ConstraintOperators.NUM_LTE:
-            return_value = context_value <= parsed_value
-
+            return_value = parsed_context <= parsed_value
         return return_value
 
 
