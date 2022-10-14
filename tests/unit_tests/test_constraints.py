@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlite3 import Date
+import pytz
 import pytest
 from UnleashClient.constraints import Constraint
 from tests.utilities.mocks import mock_constraints
@@ -66,7 +66,7 @@ def test_constraint_inversion():
 def test_constraint_STR_CONTAINS():
     constraint_not_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_CONTAINS_NOT_CI)
     constraint_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_CONTAINS_CI)
-    
+
     assert constraint_ci.apply({'customField': "adogb"})
     assert not constraint_ci.apply({'customField': "aparrotb"})
     assert constraint_ci.apply({'customField': "ahamsterb"})
@@ -79,7 +79,7 @@ def test_constraint_STR_CONTAINS():
 def test_constraint_STR_ENDS_WITH():
     constraint_not_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_ENDS_WITH_NOT_CI)
     constraint_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_ENDS_WITH_CI)
-    
+
     assert constraint_ci.apply({'customField': "adog"})
     assert not constraint_ci.apply({'customField': "aparrot"})
     assert constraint_ci.apply({'customField': "ahamster"})
@@ -92,7 +92,7 @@ def test_constraint_STR_ENDS_WITH():
 def test_constraint_STR_STARTS_WITH():
     constraint_not_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_STARTS_WITH_NOT_CI)
     constraint_ci = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DICT_STR_STARTS_WITH_CI)
-    
+
     assert constraint_ci.apply({'customField': "dogb"})
     assert not constraint_ci.apply({'customField': "parrotb"})
     assert constraint_ci.apply({'customField': "hamsterb"})
@@ -153,17 +153,17 @@ def test_constraints_NUM_FLOAT():
 def test_constraints_DATE_AFTER():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_AFTER)
 
-    assert constraint.apply({'currentTime': datetime(2022, 1, 23)})
-    assert not constraint.apply({'currentTime': datetime(2022, 1, 22)})
-    assert not constraint.apply({'currentTime': datetime(2022, 1, 21)})
+    assert constraint.apply({'currentTime': datetime(2022, 1, 23, tzinfo=pytz.UTC)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 22, tzinfo=pytz.UTC)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 21, tzinfo=pytz.UTC)})
 
 
 def test_constraints_DATE_BEFORE():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_BEFORE)
 
-    assert not constraint.apply({'currentTime': datetime(2022, 1, 23)})
-    assert not constraint.apply({'currentTime': datetime(2022, 1, 22)})
-    assert constraint.apply({'currentTime': datetime(2022, 1, 21)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 23, tzinfo=pytz.UTC)})
+    assert not constraint.apply({'currentTime': datetime(2022, 1, 22, tzinfo=pytz.UTC)})
+    assert constraint.apply({'currentTime': datetime(2022, 1, 21, tzinfo=pytz.UTC)})
 
 
 def test_constraints_default():

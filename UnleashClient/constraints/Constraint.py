@@ -99,13 +99,16 @@ class Constraint:
         return return_value
 
 
-    def check_date_operators(self, context_value: str) -> bool:
+    def check_date_operators(self, context_value: Union[datetime, str]) -> bool:
         return_value = False
         parsing_exception = False
 
         try:
             parsed_date = parse(self.value)
-            context_date = parse(context_value)
+            if isinstance(context_value, str):
+                context_date = parse(context_value)
+            else:
+                context_date = context_value
         except ParserError:
             LOGGER.error(f"Unable to parse date: {self.value}")
             parsing_exception = True
