@@ -99,21 +99,22 @@ class Constraint:
         return return_value
 
 
-    def check_date_operators(self, context_value: datetime) -> bool:
+    def check_date_operators(self, context_value: str) -> bool:
         return_value = False
         parsing_exception = False
 
         try:
-            parsed_date = parse(self.value, ignoretz=True)
+            parsed_date = parse(self.value)
+            context_date = parse(context_value)
         except ParserError:
             LOGGER.error(f"Unable to parse date: {self.value}")
             parsing_exception = True
 
         if not parsing_exception:
             if self.operator == ConstraintOperators.DATE_AFTER:
-                return_value = context_value > parsed_date
+                return_value = context_date > parsed_date
             elif self.operator == ConstraintOperators.DATE_BEFORE:
-                return_value = context_value < parsed_date
+                return_value = context_date < parsed_date
 
         return return_value
 
