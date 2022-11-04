@@ -59,7 +59,7 @@ try:
     TEST_NAMES = [f"{x[0]}-{x[1]}" for x in ALL_SPECS]
 except FileNotFoundError:
     print(
-        "Cannot find the client specifications, these can be downloaded with the following command: 'git clone --depth 5 --branch v4.2.2 https://github.com/Unleash/client-specification.git tests/specification_tests/client-specification'"
+        "Cannot find the client specifications, these can be downloaded by running make install or tox"
     )
     raise
 

@@ -25,6 +25,14 @@ Running Tox locally
 4. Run ``make install`` to get latest local dependencies.
 5. Run ``make tox`` to run tox.
 
+Upgrading the Client Specification Tests
+###########################################
+This SDK implements tests for the `Unleash Client Specifications <https://github.com/Unleash/client-specification>`_,
+when adding a new feature set that's covered by the client specs, it's a good idea to also upgrade the client specifications.
+This can be done by updating the ``CLIENT_SPEC_VERSION`` constant found in ``UnleashClient/constants.py``.
+This constant should match the latest tag in the Client Specifications repository.
+
+
 Release
 #######################################
 
