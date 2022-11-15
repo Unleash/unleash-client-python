@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> unleash-client-python
           </a>
               <div class="version">
-                5.4.1.dev1+g6863076
+                5.4.1.dev2+g9aa528a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#tooling">Tooling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-tox-locally">Running Tox locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading-the-client-specification-tests">Upgrading the Client Specification Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#release">Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#snippets">Snippets</a></li>
 </ul>
@@ -87,8 +88,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Development</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Development</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/unleash/unleash-client-python/blob/main/docs/development.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -124,6 +125,13 @@
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> to get latest local dependencies.</p></li>
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">tox</span></code> to run tox.</p></li>
 </ol>
+</section>
+<section id="upgrading-the-client-specification-tests">
+<h2>Upgrading the Client Specification Tests<a class="headerlink" href="#upgrading-the-client-specification-tests" title="Permalink to this heading"></a></h2>
+<p>This SDK implements tests for the <a class="reference external" href="https://github.com/Unleash/client-specification">Unleash Client Specifications</a>,
+when adding a new feature set that’s covered by the client specs, it’s a good idea to also upgrade the client specifications.
+This can be done by updating the <code class="docutils literal notranslate"><span class="pre">CLIENT_SPEC_VERSION</span></code> constant found in <code class="docutils literal notranslate"><span class="pre">UnleashClient/constants.py</span></code>.
+This constant should match the latest tag in the Client Specifications repository.</p>
 </section>
 <section id="release">
 <h2>Release<a class="headerlink" href="#release" title="Permalink to this heading"></a></h2>
