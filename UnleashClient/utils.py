@@ -5,6 +5,7 @@ from requests import Response
 
 LOGGER = logging.getLogger('UnleashClient')
 
+
 def normalized_hash(identifier: str,
                     activation_group: str,
                     normalizer: int = 100) -> int:

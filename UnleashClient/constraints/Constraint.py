@@ -82,37 +82,42 @@ class Constraint:
 
     def check_numeric_operators(self, context_value: Union[float, int]) -> bool:
         return_value = False
+
         parsed_value = float(self.value)
+        parsed_context = float(context_value)
 
         if self.operator == ConstraintOperators.NUM_EQ:
-            return_value = context_value == parsed_value
+            return_value = parsed_context == parsed_value
         elif self.operator == ConstraintOperators.NUM_GT:
-            return_value = context_value > parsed_value
+            return_value = parsed_context > parsed_value
         elif self.operator == ConstraintOperators.NUM_GTE:
-            return_value = context_value >= parsed_value
+            return_value = parsed_context >= parsed_value
         elif self.operator == ConstraintOperators.NUM_LT:
-            return_value = context_value < parsed_value
+            return_value = parsed_context < parsed_value
         elif self.operator == ConstraintOperators.NUM_LTE:
-            return_value = context_value <= parsed_value
-
+            return_value = parsed_context <= parsed_value
         return return_value
 
 
-    def check_date_operators(self, context_value: datetime) -> bool:
+    def check_date_operators(self, context_value: Union[datetime, str]) -> bool:
         return_value = False
         parsing_exception = False
 
         try:
-            parsed_date = parse(self.value, ignoretz=True)
+            parsed_date = parse(self.value)
+            if isinstance(context_value, str):
+                context_date = parse(context_value)
+            else:
+                context_date = context_value
         except ParserError:
             LOGGER.error(f"Unable to parse date: {self.value}")
             parsing_exception = True
 
         if not parsing_exception:
             if self.operator == ConstraintOperators.DATE_AFTER:
-                return_value = context_value > parsed_date
+                return_value = context_date > parsed_date
             elif self.operator == ConstraintOperators.DATE_BEFORE:
-                return_value = context_value < parsed_date
+                return_value = context_date < parsed_date
 
         return return_value
 
@@ -173,6 +178,10 @@ class Constraint:
                     constraint_check = self.check_date_operators(context_value=context_value)
                 elif self.operator in [ConstraintOperators.SEMVER_EQ, ConstraintOperators.SEMVER_GT, ConstraintOperators.SEMVER_LT]:
                     constraint_check = self.check_semver_operators(context_value=context_value)
+            else:
+                # This is a special case in the client spec - so it's getting it's own handler here
+                if self.operator is ConstraintOperators.NOT_IN:
+                    return True
 
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)

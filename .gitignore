@@ -106,3 +106,4 @@ site
 test_results
 _static
 _templates
+tests/specification_tests/client-specification

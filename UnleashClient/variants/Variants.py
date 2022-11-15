@@ -51,7 +51,7 @@ class Variants:
         elif stickiness_selector == 'random':
             seed = str(random.random() * 10000)
         else:
-            seed = context[stickiness_selector]
+            seed = context.get(stickiness_selector) or context.get("properties")[stickiness_selector]
 
         return seed
 
@@ -84,7 +84,6 @@ class Variants:
                 return fallback_variant
 
             stickiness_selector = self.variants[0]['stickiness'] if 'stickiness' in self.variants[0].keys() else "default"
-
             target = utils.normalized_hash(self._get_seed(context, stickiness_selector), self.feature_name, total_weight)
             counter = 0
             for variation in self.variants:
