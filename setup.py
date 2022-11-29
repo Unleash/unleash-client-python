@@ -21,7 +21,7 @@ setup(
     install_requires=[
         "requests",
         "fcache",
-        "mmh3",
+        "mmhash3",
         "apscheduler",
         "importlib_metadata",
         "python-dateutil",
