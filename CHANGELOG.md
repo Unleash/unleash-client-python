@@ -1,3 +1,10 @@
+## v5.4.1
+* (Bugfix) Fix an issue where custom stickiness fail to calculate correctly
+* (Bugfix) Fix floats not working correctly in constraints
+* (Bugfix) Fix an issue where timezones would be incorrectly handled in constraints
+* (Bugfix) Fix for NOT_IN constraint to handle failure case correctly as per spec
+* (Bugfix) Update murmurhash library to resolve correctly on Python 3.10+ without gcc
+
 ## v5.4.0
 * (Minor) Allow users to pass in an [apscheduler](https://github.com/agronholm/apscheduler) scheduler & executor name.
 * (Minor) Remove vestigial reference to `bootstraped` parameter.  Thanks @koffie !
@@ -8,7 +15,7 @@
 * (Minor) Documentation updates and tweaks.  Thanks @inirudebwoy, @sighphyre, @thomasheartman !
 
 ## v5.2.0
-* (Minor) Add support for bootstrapping UnleashClient with an initial configuration. 
+* (Minor) Add support for bootstrapping UnleashClient with an initial configuration.
 * (Minor) Add flag to disable toggle polling from server.  Thanks @povilasb!
 
 ## v5.1.2
@@ -77,8 +84,8 @@
 * (Minor) Update requests version to 2.25.1.
 
 ## v3.5.0
-* (Major) Stop using the `default_value` argument in the `is_enabled()` method (as it can cause counter-intuitive behavior) and add deprecation warning.  This argument will be removed in the next major version upgrade!  
-    * We recommend using the `fallback_function` argument instead.  If you need a blanket True in case of an exception, you can pass in a lambda like: `lambda x, y: True`. 
+* (Major) Stop using the `default_value` argument in the `is_enabled()` method (as it can cause counter-intuitive behavior) and add deprecation warning.  This argument will be removed in the next major version upgrade!
+    * We recommend using the `fallback_function` argument instead.  If you need a blanket True in case of an exception, you can pass in a lambda like: `lambda x, y: True`.
 * (Minor) Add better logging for API errors.
 * (Minor) Update requests version to v2.25.0.
 
@@ -123,7 +130,7 @@
 
 **General**
 
-* (Major) Support constraints on all default strategies.  
+* (Major) Support constraints on all default strategies.
     * This is a breaking change!  To update your custom strategy, please checkout the [custom strategy migration guide](https://unleash.github.io/unleash-client-python/customstrategies/).
 * (Major) Added flexibleRollout strategy.
 
@@ -131,7 +138,7 @@
 
 **General**
 
-* (Minor) Add ability to add request kwargs when initializing the client.  These will be used when registering the client, fetching feature flags, and sending metrics. 
+* (Minor) Add ability to add request kwargs when initializing the client.  These will be used when registering the client, fetching feature flags, and sending metrics.
 
 ## v2.5.0
 
@@ -196,7 +203,7 @@
 ## v1.0.0
 **General**
 
-* Implemented custom strategies. 
+* Implemented custom strategies.
 
 ## v0.3.0
 
