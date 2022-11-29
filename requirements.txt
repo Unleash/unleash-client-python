@@ -2,7 +2,7 @@
 importlib_metadata
 requests
 fcache
-mmh3
+mmhash3
 APScheduler
 python-dateutil
 semver
