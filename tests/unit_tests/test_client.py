@@ -7,7 +7,7 @@ import pytest
 import responses
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
-from UnleashClient import UnleashClient, INSTANCES
+from UnleashClient import UnleashClient, INSTANCES, InstanceAllowType
 from UnleashClient.strategies import Strategy
 from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, REFRESH_JITTER, \
     METRICS_INTERVAL, METRICS_JITTER, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME, PROJECT_URL, \
@@ -34,6 +34,11 @@ class EnvironmentStrategy(Strategy):
             default_value = context["environment"] in self.parsed_provisioning
 
         return default_value
+
+
+@pytest.fixture(autouse=True)
+def before_each():
+    INSTANCES._reset()
 
 
 @pytest.fixture
@@ -537,31 +542,27 @@ def test_uc_custom_scheduler():
     assert len(unleash_client.features) >= 9
 
 
-def test_multiple_instances_without_configuration_blocks_client_instantiation():
-    INSTANCES._reset()
+def test_multiple_instances_blocks_client_instantiation():
     with pytest.raises(Exception):
-        UnleashClient(URL, APP_NAME)
-        UnleashClient(URL, APP_NAME)
+        UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK)
+        UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK)
 
 
 def test_multiple_instances_with_allow_multiple_warns(caplog):
-    INSTANCES._reset()
-    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
-    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
-    assert any(["Multiple instances has been disabled" in r.msg for r in caplog.records])
+    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    assert any(["You already have 1 instance" in r.msg for r in caplog.records])
 
 
 def test_multiple_instances_tracks_current_instance_count(caplog):
-    INSTANCES._reset()
     UnleashClient(URL, APP_NAME)
-    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
-    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
-    assert any(["Multiple instances has been disabled and you already have 1" in r.msg for r in caplog.records])
-    assert any(["Multiple instances has been disabled and you already have 2" in r.msg for r in caplog.records])
+    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    assert any(["You already have 1 instance" in r.msg for r in caplog.records])
+    assert any(["You already have 2 instance(s)" in r.msg for r in caplog.records])
 
 
 def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(caplog):
-    INSTANCES._reset()
     UnleashClient(URL, "some-probably-unique-app-name")
     UnleashClient(URL, "some-probably-unique-app-name", instance_id="some-unique-instance-id", refresh_interval="60")
     UnleashClient(URL, "some-probably-unique-but-different-app-name", refresh_interval="60")
@@ -569,7 +570,6 @@ def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(
 
 
 def test_multiple_instances_are_unique_on_api_key(caplog):
-    INSTANCES._reset()
     UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "penguins"})
     UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "hamsters"})
     assert not all(["Multiple instances has been disabled" in r.msg for r in caplog.records])

@@ -76,7 +76,7 @@ class UnleashClient:
     :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
     :param scheduler: Custom APScheduler object.  Use this if you want to customize jobstore or executors.  When unset, UnleashClient will create it's own scheduler.
     :param scheduler_executor: Name of APSCheduler executor to use if using a custom scheduler.
-    :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.BLOCK
+    :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.WARN
     """
     def __init__(self,
                  url: str,
@@ -98,7 +98,7 @@ class UnleashClient:
                  cache: Optional[BaseCache] = None,
                  scheduler: Optional[BaseScheduler] = None,
                  scheduler_executor: Optional[str] = None,
-                 deny_multiple_instances: InstanceAllowType = InstanceAllowType.BLOCK) -> None:
+                 multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -127,9 +127,9 @@ class UnleashClient:
         identifier = self.__get_identifier()
         if identifier in INSTANCES:
             msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
-            if deny_multiple_instances == InstanceAllowType.BLOCK:
+            if multiple_instance_mode == InstanceAllowType.BLOCK:
                 raise Exception(msg)
-            elif deny_multiple_instances == InstanceAllowType.WARN:
+            elif multiple_instance_mode == InstanceAllowType.WARN:
                 LOGGER.warning(msg)
         INSTANCES.increment(identifier)
 
