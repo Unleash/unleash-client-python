@@ -22,7 +22,7 @@ from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
 
 
-class InstanceAllowType:
+class InstanceAllowType(Enum):
     BLOCK = 1,
     WARN = 2,
     SILENTLY_ALLOW = 3
