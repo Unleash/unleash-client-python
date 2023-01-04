@@ -23,8 +23,8 @@ from .cache import BaseCache, FileCache
 
 
 class InstanceAllowType(Enum):
-    BLOCK = 1,
-    WARN = 2,
+    BLOCK = 1
+    WARN = 2
     SILENTLY_ALLOW = 3
 
 
@@ -123,15 +123,7 @@ class UnleashClient:
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
 
-        # Instance checking - deny multiple instantiations unless the consumer has explicitly opted in
-        identifier = self.__get_identifier()
-        if identifier in INSTANCES:
-            msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
-            if multiple_instance_mode == InstanceAllowType.BLOCK:
-                raise Exception(msg)
-            elif multiple_instance_mode == InstanceAllowType.WARN:
-                LOGGER.warning(msg)
-        INSTANCES.increment(identifier)
+        self._do_instance_check(multiple_instance_mode)
 
         # Class objects
         self.features: dict = {}
@@ -372,6 +364,16 @@ class UnleashClient:
             LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
             LOGGER.log(self.unleash_verbose_log_level, "Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
             return DISABLED_VARIATION
+
+    def _do_instance_check(self, multiple_instance_mode):
+        identifier = self.__get_identifier()
+        if identifier in INSTANCES:
+            msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
+            if multiple_instance_mode == InstanceAllowType.BLOCK:
+                raise Exception(msg)
+            if multiple_instance_mode == InstanceAllowType.WARN:
+                LOGGER.warning(msg)
+        INSTANCES.increment(identifier)
 
     def __get_identifier(self):
         api_key = self.unleash_custom_headers.get("Authorization") if self.unleash_custom_headers is not None else None
