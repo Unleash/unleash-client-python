@@ -7,7 +7,7 @@ import pytest
 import responses
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
-from UnleashClient import UnleashClient
+from UnleashClient import UnleashClient, INSTANCES
 from UnleashClient.strategies import Strategy
 from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, REFRESH_JITTER, \
     METRICS_INTERVAL, METRICS_JITTER, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME, PROJECT_URL, \
@@ -535,3 +535,41 @@ def test_uc_custom_scheduler():
     responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_ALL_FEATURES, status=200, headers={'etag': 'W/somethingelse'})
     time.sleep(6)
     assert len(unleash_client.features) >= 9
+
+
+def test_multiple_instances_without_configuration_blocks_client_instantiation():
+    INSTANCES._reset()
+    with pytest.raises(Exception):
+        UnleashClient(URL, APP_NAME)
+        UnleashClient(URL, APP_NAME)
+
+
+def test_multiple_instances_with_allow_multiple_warns(caplog):
+    INSTANCES._reset()
+    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
+    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
+    assert any(["Multiple instances has been disabled" in r.msg for r in caplog.records])
+
+
+def test_multiple_instances_tracks_current_instance_count(caplog):
+    INSTANCES._reset()
+    UnleashClient(URL, APP_NAME)
+    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
+    UnleashClient(URL, APP_NAME, deny_multiple_instances=False)
+    assert any(["Multiple instances has been disabled and you already have 1" in r.msg for r in caplog.records])
+    assert any(["Multiple instances has been disabled and you already have 2" in r.msg for r in caplog.records])
+
+
+def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(caplog):
+    INSTANCES._reset()
+    UnleashClient(URL, "some-probably-unique-app-name")
+    UnleashClient(URL, "some-probably-unique-app-name", instance_id="some-unique-instance-id", refresh_interval="60")
+    UnleashClient(URL, "some-probably-unique-but-different-app-name", refresh_interval="60")
+    assert not all(["Multiple instances has been disabled" in r.msg for r in caplog.records])
+
+
+def test_multiple_instances_are_unique_on_api_key(caplog):
+    INSTANCES._reset()
+    UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "penguins"})
+    UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "hamsters"})
+    assert not all(["Multiple instances has been disabled" in r.msg for r in caplog.records])

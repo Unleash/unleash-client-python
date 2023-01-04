@@ -3,6 +3,8 @@ import warnings
 import random
 import string
 from datetime import datetime, timezone
+from enum import Enum
+from threading import RLock
 from typing import Callable, Optional
 from apscheduler.job import Job
 from apscheduler.schedulers.base import BaseScheduler
@@ -18,6 +20,39 @@ from UnleashClient.loader import load_features
 from .utils import LOGGER
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
+
+
+class InstanceAllowType:
+    BLOCK = 1,
+    WARN = 2,
+    SILENTLY_ALLOW = 3
+
+
+class InstanceCounter:
+    def __init__(self):
+        self.instances = {}
+        self.lock = RLock()
+
+    def __contains__(self, key):
+        with self.lock:
+            return key in self.instances
+
+    def _reset(self):
+        self.instances = {}
+
+    def count(self, key):
+        with self.lock:
+            return self.instances.get(key) or 0
+
+    def increment(self, key):
+        with self.lock:
+            if key in self:
+                self.instances[key] += 1
+            else:
+                self.instances[key] = 1
+
+
+INSTANCES = InstanceCounter()
 
 # pylint: disable=dangerous-default-value
 class UnleashClient:
@@ -41,6 +76,7 @@ class UnleashClient:
     :param cache: Custom cache implementation that extends UnleashClient.cache.BaseCache.  When unset, UnleashClient will use Fcache.
     :param scheduler: Custom APScheduler object.  Use this if you want to customize jobstore or executors.  When unset, UnleashClient will create it's own scheduler.
     :param scheduler_executor: Name of APSCheduler executor to use if using a custom scheduler.
+    :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.BLOCK
     """
     def __init__(self,
                  url: str,
@@ -61,7 +97,8 @@ class UnleashClient:
                  verbose_log_level: int = 30,
                  cache: Optional[BaseCache] = None,
                  scheduler: Optional[BaseScheduler] = None,
-                 scheduler_executor: Optional[str] = None) -> None:
+                 scheduler_executor: Optional[str] = None,
+                 deny_multiple_instances: InstanceAllowType = InstanceAllowType.BLOCK) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -85,6 +122,16 @@ class UnleashClient:
         }
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
+
+        # Instance checking - deny multiple instantiations unless the consumer has explicitly opted in
+        identifier = self.__get_identifier()
+        if identifier in INSTANCES:
+            msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
+            if deny_multiple_instances == InstanceAllowType.BLOCK:
+                raise Exception(msg)
+            elif deny_multiple_instances == InstanceAllowType.WARN:
+                LOGGER.warning(msg)
+        INSTANCES.increment(identifier)
 
         # Class objects
         self.features: dict = {}
@@ -325,6 +372,10 @@ class UnleashClient:
             LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
             LOGGER.log(self.unleash_verbose_log_level, "Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
             return DISABLED_VARIATION
+
+    def __get_identifier(self):
+        api_key = self.unleash_custom_headers.get("Authorization") if self.unleash_custom_headers is not None else None
+        return f"apiKey:{api_key} appName:{self.unleash_app_name} instanceId:{self.unleash_instance_id}"
 
     def __enter__(self) -> "UnleashClient":
         self.initialize_client()
