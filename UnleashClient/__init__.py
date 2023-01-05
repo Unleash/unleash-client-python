@@ -340,7 +340,7 @@ class UnleashClient:
             if multiple_instance_mode == InstanceAllowType.BLOCK:
                 raise Exception(msg)
             if multiple_instance_mode == InstanceAllowType.WARN:
-                LOGGER.warning(msg)
+                LOGGER.error(msg)
         INSTANCES.increment(identifier)
 
     def __get_identifier(self):
