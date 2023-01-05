@@ -1,9 +1,9 @@
 import logging
 from enum import Enum
+from threading import RLock
 from typing import Any
 import mmh3  # pylint: disable=import-error
 from requests import Response
-from threading import RLock
 
 LOGGER = logging.getLogger('UnleashClient')
 
