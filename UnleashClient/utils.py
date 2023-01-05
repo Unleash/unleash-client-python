@@ -1,9 +1,41 @@
 import logging
+from enum import Enum
+from threading import RLock
 from typing import Any
 import mmh3  # pylint: disable=import-error
 from requests import Response
 
 LOGGER = logging.getLogger('UnleashClient')
+
+
+class InstanceAllowType(Enum):
+    BLOCK = 1
+    WARN = 2
+    SILENTLY_ALLOW = 3
+
+
+class InstanceCounter:
+    def __init__(self):
+        self.instances = {}
+        self.lock = RLock()
+
+    def __contains__(self, key):
+        with self.lock:
+            return key in self.instances
+
+    def _reset(self):
+        self.instances = {}
+
+    def count(self, key):
+        with self.lock:
+            return self.instances.get(key) or 0
+
+    def increment(self, key):
+        with self.lock:
+            if key in self:
+                self.instances[key] += 1
+            else:
+                self.instances[key] = 1
 
 
 def normalized_hash(identifier: str,
