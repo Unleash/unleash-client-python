@@ -3,8 +3,6 @@ import warnings
 import random
 import string
 from datetime import datetime, timezone
-from enum import Enum
-from threading import RLock
 from typing import Callable, Optional
 from apscheduler.job import Job
 from apscheduler.schedulers.base import BaseScheduler
@@ -17,39 +15,9 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
 from UnleashClient.loader import load_features
-from .utils import LOGGER
+from .utils import LOGGER, InstanceCounter, InstanceAllowType
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
-
-
-class InstanceAllowType(Enum):
-    BLOCK = 1
-    WARN = 2
-    SILENTLY_ALLOW = 3
-
-
-class InstanceCounter:
-    def __init__(self):
-        self.instances = {}
-        self.lock = RLock()
-
-    def __contains__(self, key):
-        with self.lock:
-            return key in self.instances
-
-    def _reset(self):
-        self.instances = {}
-
-    def count(self, key):
-        with self.lock:
-            return self.instances.get(key) or 0
-
-    def increment(self, key):
-        with self.lock:
-            if key in self:
-                self.instances[key] += 1
-            else:
-                self.instances[key] = 1
 
 
 INSTANCES = InstanceCounter()

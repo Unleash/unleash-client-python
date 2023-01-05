@@ -7,8 +7,9 @@ import pytest
 import responses
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
-from UnleashClient import UnleashClient, INSTANCES, InstanceAllowType
+from UnleashClient import UnleashClient, INSTANCES
 from UnleashClient.strategies import Strategy
+from UnleashClient.utils import InstanceAllowType
 from tests.utilities.testing_constants import URL, ENVIRONMENT, APP_NAME, INSTANCE_ID, REFRESH_INTERVAL, REFRESH_JITTER, \
     METRICS_INTERVAL, METRICS_JITTER, DISABLE_METRICS, DISABLE_REGISTRATION, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME, PROJECT_URL, \
     ETAG_VALUE
