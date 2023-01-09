@@ -72,7 +72,7 @@ client.is_enabled("my_toggle", fallback_function=custom_fallback)
 
 You can also use the `fallback_function` argument to replace the obsolete `default_value` keyword argument by using a lambda that ignores its inputs. Whatever the lambda returns will be used as the default value.
 
-```python title="Use fallback_function to provide a default value"
+```python
 client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
 ```
 
