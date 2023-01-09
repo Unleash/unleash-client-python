@@ -20,7 +20,7 @@ Check out the [project documentation](https://unleash.github.io/unleash-client-p
 
 Check out the package on [Pypi](https://pypi.org/project/UnleashClient/)!
 
-```
+```bash
 pip install UnleashClient
 ```
 
