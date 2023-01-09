@@ -43,7 +43,7 @@ client = UnleashClient(
 client.initialize_client()
 ```
 
-For more information about configuring `UnleashClient`, check out the [docs](https://docs.getunleash.io/unleash-client-python/unleashclient.html)!
+For more information about configuring `UnleashClient`, check out the [project reference docs](https://docs.getunleash.io/unleash-client-python/unleashclient.html)!
 
 ### Checking if a feature is enabled
 
@@ -51,6 +51,15 @@ A check of a simple toggle:
 ```python
 client.is_enabled("my_toggle")
 ```
+
+To supply application context, use the second positional argument:
+
+```python
+app_context = {"userId": "test@email.com"}
+client.is_enabled("user_id_toggle", app_context)
+```
+
+#### Fallback function and default values
 
 You can specify a fallback function for cases where the client doesn't recognize the toggle by using the `fallback_function` keyword argument:
 
@@ -61,17 +70,15 @@ def custom_fallback(feature_name: str, context: dict) -> bool:
 client.is_enabled("my_toggle", fallback_function=custom_fallback)
 ```
 
-You can also use the `fallback_function` argument to replace the obsolete `default_value` by using a lambda that ignores its inputs:
+You can also use the `fallback_function` argument to replace the obsolete `default_value` keyword argument by using a lambda that ignores its inputs. Whatever the lambda returns will be used as the default value.
 
-```python
+```python title="Use fallback_function to provide a default value"
 client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
 ```
 
-Supplying application context:
-```python
-app_context = {"userId": "test@email.com"}
-client.is_enabled("user_id_toggle", app_context)
-```
+The fallback function **must** accept the feature name and context as positional arguments in that order.
+
+The client will evaluate the fallback function only if an exception occurs when calling the `is_enabled()` method. This happens when the client can't find the feature flag. The client _may_ also throw other, general exceptions.
 
 For more information about usage, see the [Usage documentation](https://docs.getunleash.io/unleash-client-python/usage.html).
 
