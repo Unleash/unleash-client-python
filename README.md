@@ -32,7 +32,7 @@ If you're looking into running Unleash from Flask, you might want to take a look
 
 ### Initialization
 
-```Python
+```python
 from UnleashClient import UnleashClient
 
 client = UnleashClient(
@@ -48,13 +48,13 @@ For more information about configuring `UnleashClient`, check out the [docs](htt
 ### Checking if a feature is enabled
 
 A check of a simple toggle:
-```Python
+```python
 client.is_enabled("my_toggle")
 ```
 
 You can specify a fallback function for cases where the client doesn't recognize the toggle by using the `fallback_function` keyword argument:
 
-```Python
+```python
 def custom_fallback(feature_name: str, context: dict) -> bool:
     return True
 
@@ -63,12 +63,12 @@ client.is_enabled("my_toggle", fallback_function=custom_fallback)
 
 You can also use the `fallback_function` argument to replace the obsolete `default_value` by using a lambda that ignores its inputs:
 
-```Python
+```python
 client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
 ```
 
 Supplying application context:
-```Python
+```python
 app_context = {"userId": "test@email.com"}
 client.is_enabled("user_id_toggle", app_context)
 ```
