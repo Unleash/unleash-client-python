@@ -15,7 +15,6 @@ def constraint_NOTIN():
     yield Constraint(mock_constraints.CONSTRAINT_DICT_NOTIN)
 
 
-
 def test_constraint_IN_match(constraint_IN):
     constraint = constraint_IN
     context = {
@@ -36,6 +35,16 @@ def test_constraint_IN_not_match(constraint_IN):
 
 def test_constraint_IN_missingcontext(constraint_IN):
     constraint = constraint_IN
+    assert not constraint.apply({})
+
+
+def test_constraint_NOTIN_missingcontext(constraint_NOTIN):
+    constraint = constraint_NOTIN
+    assert constraint.apply({})
+
+
+def test_constraint_NOTIN_missingcontext_inversion():
+    constraint = Constraint(mock_constraints.CONSTRAINT_DICT_NOTIN_INVERT)
     assert not constraint.apply({})
 
 

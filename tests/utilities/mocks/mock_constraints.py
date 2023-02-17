@@ -20,6 +20,18 @@ CONSTRAINT_DICT_NOTIN = \
     }
 
 
+CONSTRAINT_DICT_NOTIN_INVERT = \
+    {
+        "contextName": "appName",
+        "operator": "NOT_IN",
+        "values": [
+            "test",
+            "test2"
+        ],
+        "inverted": True
+    }
+
+
 CONSTRAINT_DICT_STR_INVERT = \
     {
         "contextName": "customField",
@@ -28,6 +40,7 @@ CONSTRAINT_DICT_STR_INVERT = \
         "caseInsensitive": True,
         "inverted": True
     }
+
 
 CONSTRAINT_DICT_STR_CONTAINS_CI = \
     {
