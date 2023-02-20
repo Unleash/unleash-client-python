@@ -178,6 +178,7 @@ class UnleashClient:
         """
         # Only perform initialization steps if client is not initialized.
         if not self.is_initialized:
+            # pylint: disable=no-else-raise
             try:
                 # Setup
                 metrics_args = {
@@ -338,6 +339,7 @@ class UnleashClient:
         if identifier in INSTANCES:
             msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
             if multiple_instance_mode == InstanceAllowType.BLOCK:
+                # pylint: disable=broad-exception-raised
                 raise Exception(msg)
             if multiple_instance_mode == InstanceAllowType.WARN:
                 LOGGER.error(msg)
