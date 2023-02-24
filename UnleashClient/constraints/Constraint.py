@@ -181,7 +181,7 @@ class Constraint:
             else:
                 # This is a special case in the client spec - so it's getting it's own handler here
                 if self.operator is ConstraintOperators.NOT_IN:
-                    return True
+                    constraint_check = True
 
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
