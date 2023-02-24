@@ -11,7 +11,8 @@ MOCK_FEATURE_RESPONSE = {
                     "parameters": {}
                 }
             ],
-            "createdAt": "2018-10-04T01:27:28.477Z"
+            "createdAt": "2018-10-04T01:27:28.477Z",
+            "impressionData": False
         },
         {
             "name": "testFlag2",
@@ -25,7 +26,8 @@ MOCK_FEATURE_RESPONSE = {
                     }
                 }
             ],
-            "createdAt": "2018-10-04T11:03:56.062Z"
+            "createdAt": "2018-10-04T11:03:56.062Z",
+            "impressionData": False
         },
         {
             "name": "testContextFlag",
@@ -39,7 +41,8 @@ MOCK_FEATURE_RESPONSE = {
                     }
                 }
             ],
-            "createdAt": "2018-10-04T01:27:28.477Z"
+            "createdAt": "2018-10-04T01:27:28.477Z",
+            "impressionData": False
         },
         {
             "name": "testConstraintFlag",
@@ -59,57 +62,59 @@ MOCK_FEATURE_RESPONSE = {
                     ],
                 },
             ],
-            "createdAt": "2018-10-04T01:27:28.477Z"
+            "createdAt": "2018-10-04T01:27:28.477Z",
+            "impressionData": False
         },
         {
-          "name": "testVariations",
-          "description": "Test variation",
-          "enabled": True,
-          "strategies": [
-              {
-                  "name": "userWithId",
-                  "parameters": {
-                      "userIds": "2"
-                  }
-              }
-          ],
-          "variants": [
-              {
-                  "name": "VarA",
-                  "weight": 34,
-                  "payload": {
-                      "type": "string",
-                      "value": "Test1"
-                  },
-                  "overrides": [
-                      {
-                          "contextName": "userId",
-                          "values": [
-                              "ivanklee86@gmail.com",
-                              "ivan@aaptiv.com"
-                          ]
-                      }
-                  ]
-              },
-              {
-                  "name": "VarB",
-                  "weight": 33,
-                  "payload": {
-                      "type": "string",
-                      "value": "Test 2"
-                  }
-              },
-              {
-                  "name": "VarC",
-                  "weight": 33,
-                  "payload": {
-                      "type": "string",
-                      "value": "Test 3"
-                  }
-              }
-          ],
-          "createdAt": "2019-10-25T13:22:02.035Z"
-      }
+            "name": "testVariations",
+            "description": "Test variation",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "userWithId",
+                    "parameters": {
+                        "userIds": "2"
+                    }
+                }
+            ],
+            "variants": [
+                {
+                    "name": "VarA",
+                    "weight": 34,
+                    "payload": {
+                        "type": "string",
+                        "value": "Test1"
+                    },
+                    "overrides": [
+                        {
+                            "contextName": "userId",
+                            "values": [
+                                "ivanklee86@gmail.com",
+                                "ivan@aaptiv.com"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "VarB",
+                    "weight": 33,
+                    "payload": {
+                        "type": "string",
+                        "value": "Test 2"
+                    }
+                },
+                {
+                    "name": "VarC",
+                    "weight": 33,
+                    "payload": {
+                        "type": "string",
+                        "value": "Test 3"
+                    }
+                }
+            ],
+            "createdAt": "2019-10-25T13:22:02.035Z",
+            "impressionData": False
+        }
     ]
 }
 
@@ -132,7 +137,6 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
             "name": "Test",
             "description": "",
             "project": "default",
-            "stale": False,
             "type": "release",
             "variants": []
         }
@@ -180,24 +184,25 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
 }
 
 MOCK_FEATURE_RESPONSE_PROJECT = {
-   "version":1,
-   "features":[
-      {
-         "name":"ivan-project",
-         "type":"release",
-         "enabled": True,
-         "stale": False,
-         "strategies":[
-            {
-               "name":"default",
-               "parameters":{
+    "version": 1,
+    "features": [
+        {
+            "name": "ivan-project",
+            "type": "release",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {
 
-               }
-            }
-         ],
-         "variants":[
+                    }
+                }
+            ],
+            "variants": [
 
-         ]
-      }
-   ]
+            ],
+            "createdAt": "2023-01-24T06:40:25.331Z",
+            "impressionData": False
+        }
+    ]
 }

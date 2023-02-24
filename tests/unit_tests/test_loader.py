@@ -36,6 +36,8 @@ def test_loader_initialization(cache_full):  # noqa: F811
         if isinstance(strategy, Variants):
             assert strategy.variants
 
+        assert feature.impression_data is False
+
 
 def test_loader_refresh_strategies(cache_full):  # noqa: F811
     # Set up variables

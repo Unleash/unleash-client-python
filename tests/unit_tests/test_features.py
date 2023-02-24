@@ -32,6 +32,7 @@ def test_create_feature_true(test_feature):
 
     my_feature.reset_stats()
     assert my_feature.yes_count == 0
+    assert not my_feature.impression_data
 
 
 def test_create_feature_false(test_feature):

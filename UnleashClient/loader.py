@@ -59,11 +59,13 @@ def _create_feature(provisioning: dict,
     else:
         variant = None
 
-    return Feature(name=provisioning["name"],
-                   enabled=provisioning["enabled"],
-                   strategies=parsed_strategies,
-                   variants=variant
-                   )
+    return Feature(
+        name=provisioning["name"],
+        enabled=provisioning["enabled"],
+        strategies=parsed_strategies,
+        variants=variant,
+        impression_data=provisioning.get("impressionData", False),
+    )
 
 
 def load_features(cache: BaseCache,
@@ -118,6 +120,8 @@ def load_features(cache: BaseCache,
                 parsed_features[feature]['variants'],
                 parsed_features[feature]['name']
             )
+
+        feature_for_update.impression_data = parsed_features[feature].get("impressionData", False)
 
     # Handle creation or deletions
     new_features = list(set(feature_names) - set(feature_toggles.keys()))
