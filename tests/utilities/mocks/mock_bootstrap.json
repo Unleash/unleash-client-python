@@ -5,7 +5,6 @@
           "name":"ivan-project",
           "type":"release",
           "enabled": true,
-          "stale": false,
           "strategies":[
              {
                 "name":"default",
@@ -16,7 +15,8 @@
           ],
           "variants":[
              
-          ]
+          ],
+          "impressionData": false
        }
     ]
  }

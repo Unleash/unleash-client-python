@@ -1,4 +1,6 @@
 # pylint: disable=invalid-name
+from typing import Optional
+
 from UnleashClient.variants import Variants
 from UnleashClient.utils import LOGGER
 from UnleashClient.constants import DISABLED_VARIATION
@@ -10,19 +12,24 @@ class Feature:
                  name: str,
                  enabled: bool,
                  strategies: list,
-                 variants: Variants = None) -> None:
+                 variants: Optional[Variants] = None,
+                 impression_data: bool = False) -> None:
         """
         A representation of a feature object
 
         :param name: Name of the feature.
         :param enabled: Whether feature is enabled.
         :param strategies: List of sub-classed Strategy objects representing feature strategies.
+        :param impression_data: Whether impression data is enabled.
         """
         # Experiment information
         self.name = name
         self.enabled = enabled
         self.strategies = strategies
         self.variants = variants
+
+        # Additional information
+        self.impression_data = impression_data
 
         # Stats tracking
         self.yes_count = 0
