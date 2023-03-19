@@ -22,7 +22,7 @@ setup(
         "requests",
         "fcache",
         "mmhash3",
-        "apscheduler",
+        "apscheduler < 4.0.0",
         "importlib_metadata",
         "python-dateutil",
         "semver < 3.0.0"
