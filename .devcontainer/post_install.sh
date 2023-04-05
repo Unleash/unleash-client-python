@@ -2,6 +2,9 @@
 set -ex
 
 # Install package
+sudo python -m venv .venv
+source .venv/bin/activate
+pip install -U -r requirements.txt
 python setup.py install
 ./get-spec.sh
 

@@ -8,7 +8,3 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 
 # Update pip
 RUN pip install -U pip
-
-# Install dependencies
-COPY requirements.txt .
-RUN pip install -U -r requirements.txt
