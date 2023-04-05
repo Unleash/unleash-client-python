@@ -373,7 +373,7 @@ class UnleashClient:
         if identifier in INSTANCES:
             msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
             if multiple_instance_mode == InstanceAllowType.BLOCK:
-                raise Exception(msg)
+                raise Exception(msg)  # pylint: disable=broad-exception-raised
             if multiple_instance_mode == InstanceAllowType.WARN:
                 LOGGER.error(msg)
         INSTANCES.increment(identifier)
