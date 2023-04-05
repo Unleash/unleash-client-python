@@ -12,7 +12,7 @@ MOCK_FEATURE_RESPONSE = {
                 }
             ],
             "createdAt": "2018-10-04T01:27:28.477Z",
-            "impressionData": False
+            "impressionData": True
         },
         {
             "name": "testFlag2",
@@ -113,7 +113,7 @@ MOCK_FEATURE_RESPONSE = {
                 }
             ],
             "createdAt": "2019-10-25T13:22:02.035Z",
-            "impressionData": False
+            "impressionData": True
         }
     ]
 }

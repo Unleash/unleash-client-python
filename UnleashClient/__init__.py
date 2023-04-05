@@ -47,7 +47,7 @@ class UnleashClient:
     :param scheduler: Custom APScheduler object.  Use this if you want to customize jobstore or executors.  When unset, UnleashClient will create it's own scheduler.
     :param scheduler_executor: Name of APSCheduler executor to use if using a custom scheduler.
     :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.WARN
-    :param event_callback: Function to call if impression events are enabled.
+    :param event_callback: Function to call if impression events are enabled.  WARNING: Depending on your event library, this may have performance implications!
     """
     def __init__(self,
                  url: str,
@@ -302,16 +302,20 @@ class UnleashClient:
                 feature = self.features[feature_name]
                 feature_check = feature.is_enabled(context)
 
-                if self.unleash_event_callback and feature.impression_data:
-                    event = UnleashEvent(
-                        event_type=UnleashEventType.FEATURE_FLAG,
-                        event_id=uuid.uuid1(),
-                        context=context,
-                        enabled=feature_check,
-                        feature_name=feature_name
-                    )
+                try:
+                    if self.unleash_event_callback and feature.impression_data:
+                        event = UnleashEvent(
+                            event_type=UnleashEventType.FEATURE_FLAG,
+                            event_id=uuid.uuid4(),
+                            context=context,
+                            enabled=feature_check,
+                            feature_name=feature_name
+                        )
 
-                    self.unleash_event_callback(event)
+                        self.unleash_event_callback(event)
+                except Exception as excep:
+                    LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                    return feature_check
 
                 return feature_check
             except Exception as excep:
@@ -347,16 +351,20 @@ class UnleashClient:
                 variant_check = feature.get_variant(context)
 
                 if self.unleash_event_callback and feature.impression_data:
-                    event = UnleashEvent(
-                        event_type=UnleashEventType.VARIANT,
-                        event_id=uuid.uuid1(),
-                        context=context,
-                        enabled=variant_check['enabled'],
-                        feature_name=feature_name,
-                        variant=variant_check['enabled']
-                    )
+                    try:
+                        event = UnleashEvent(
+                            event_type=UnleashEventType.VARIANT,
+                            event_id=uuid.uuid4(),
+                            context=context,
+                            enabled=variant_check['enabled'],
+                            feature_name=feature_name,
+                            variant=variant_check['name']
+                        )
 
-                    self.unleash_event_callback(event)
+                        self.unleash_event_callback(event)
+                    except Exception as excep:
+                        LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                        return variant_check
 
                 return variant_check
             except Exception as excep:
