@@ -578,6 +578,7 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
     UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "hamsters"})
     assert not all(["Multiple instances has been disabled" in r.msg for r in caplog.records])
 
+
 @responses.activate
 def test_signals_feature_flag(cache):
     # Set up API
@@ -594,14 +595,14 @@ def test_signals_feature_flag(cache):
 
         if kw['data'].event_type == UnleashEventType.FEATURE_FLAG:
             assert kw['data'].feature_name == 'testFlag'
-            assert kw['data'].enabled == True
+            assert kw['data'].enabled
         elif kw['data'].event_type == UnleashEventType.VARIANT:
             assert kw['data'].feature_name == 'testVariations'
-            assert kw['data'].enabled == True
+            assert kw['data'].enabled
             assert kw['data'].variant == 'VarA'
-        
+
         raise Exception("Random!")
-    
+
     def example_callback(event: UnleashEvent):
         send_data.send('anonymous', data=event)
 
