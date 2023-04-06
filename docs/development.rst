@@ -25,6 +25,10 @@ Running Tox locally
 4. Run ``make install`` to get latest local dependencies.
 5. Run ``make tox`` to run tox.
 
+Using devcontainer
+###########################################
+This SDK ships with a devcontainer to make local (or cloud!) environment fast & easy!
+
 Upgrading the Client Specification Tests
 ###########################################
 This SDK implements tests for the `Unleash Client Specifications <https://github.com/Unleash/client-specification>`_,

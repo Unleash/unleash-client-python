@@ -2,6 +2,7 @@
 import warnings
 import random
 import string
+import uuid
 from datetime import datetime, timezone
 from typing import Callable, Optional
 from apscheduler.job import Job
@@ -15,6 +16,7 @@ from UnleashClient.strategies import ApplicationHostname, Default, GradualRollou
     GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
 from UnleashClient.loader import load_features
+from UnleashClient.events import UnleashEvent, UnleashEventType
 from .utils import LOGGER, InstanceCounter, InstanceAllowType
 from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .cache import BaseCache, FileCache
@@ -45,6 +47,7 @@ class UnleashClient:
     :param scheduler: Custom APScheduler object.  Use this if you want to customize jobstore or executors.  When unset, UnleashClient will create it's own scheduler.
     :param scheduler_executor: Name of APSCheduler executor to use if using a custom scheduler.
     :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.WARN
+    :param event_callback: Function to call if impression events are enabled.  WARNING: Depending on your event library, this may have performance implications!
     """
     def __init__(self,
                  url: str,
@@ -66,7 +69,8 @@ class UnleashClient:
                  cache: Optional[BaseCache] = None,
                  scheduler: Optional[BaseScheduler] = None,
                  scheduler_executor: Optional[str] = None,
-                 multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN) -> None:
+                 multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
+                 event_callback: Optional[Callable[[UnleashEvent], None]] = None) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
@@ -90,6 +94,7 @@ class UnleashClient:
         }
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
+        self.unleash_event_callback = event_callback
 
         self._do_instance_check(multiple_instance_mode)
 
@@ -294,7 +299,25 @@ class UnleashClient:
 
         if self.unleash_bootstrapped or self.is_initialized:
             try:
-                return self.features[feature_name].is_enabled(context)
+                feature = self.features[feature_name]
+                feature_check = feature.is_enabled(context)
+
+                try:
+                    if self.unleash_event_callback and feature.impression_data:
+                        event = UnleashEvent(
+                            event_type=UnleashEventType.FEATURE_FLAG,
+                            event_id=uuid.uuid4(),
+                            context=context,
+                            enabled=feature_check,
+                            feature_name=feature_name
+                        )
+
+                        self.unleash_event_callback(event)
+                except Exception as excep:
+                    LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                    return feature_check
+
+                return feature_check
             except Exception as excep:
                 LOGGER.log(self.unleash_verbose_log_level, "Returning default value for feature: %s", feature_name)
                 LOGGER.log(self.unleash_verbose_log_level, "Error checking feature flag: %s", excep)
@@ -324,7 +347,26 @@ class UnleashClient:
 
         if self.unleash_bootstrapped or self.is_initialized:
             try:
-                return self.features[feature_name].get_variant(context)
+                feature = self.features[feature_name]
+                variant_check = feature.get_variant(context)
+
+                if self.unleash_event_callback and feature.impression_data:
+                    try:
+                        event = UnleashEvent(
+                            event_type=UnleashEventType.VARIANT,
+                            event_id=uuid.uuid4(),
+                            context=context,
+                            enabled=variant_check['enabled'],
+                            feature_name=feature_name,
+                            variant=variant_check['name']
+                        )
+
+                        self.unleash_event_callback(event)
+                    except Exception as excep:
+                        LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                        return variant_check
+
+                return variant_check
             except Exception as excep:
                 LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
                 LOGGER.log(self.unleash_verbose_log_level, "Error checking feature flag variant: %s", excep)
@@ -339,8 +381,7 @@ class UnleashClient:
         if identifier in INSTANCES:
             msg = f"You already have {INSTANCES.count(identifier)} instance(s) configured for this config: {identifier}, please double check the code where this client is being instantiated."
             if multiple_instance_mode == InstanceAllowType.BLOCK:
-                # pylint: disable=broad-exception-raised
-                raise Exception(msg)
+                raise Exception(msg)  # pylint: disable=broad-exception-raised
             if multiple_instance_mode == InstanceAllowType.WARN:
                 LOGGER.error(msg)
         INSTANCES.increment(identifier)

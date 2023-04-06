@@ -7,6 +7,8 @@ import pytest
 import responses
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
+from blinker import signal
+
 from UnleashClient import UnleashClient, INSTANCES
 from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
@@ -17,6 +19,7 @@ from tests.utilities.mocks.mock_features import MOCK_FEATURE_RESPONSE, MOCK_FEAT
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from UnleashClient.constants import REGISTER_URL, FEATURES_URL, METRICS_URL
 from UnleashClient.cache import FileCache
+from UnleashClient.events import UnleashEvent, UnleashEventType
 
 
 class EnvironmentStrategy(Strategy):
@@ -574,3 +577,49 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
     UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "penguins"})
     UnleashClient(URL, "some-probably-unique-app-name", custom_headers={"Authorization": "hamsters"})
     assert not all(["Multiple instances has been disabled" in r.msg for r in caplog.records])
+
+
+@responses.activate
+def test_signals_feature_flag(cache):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200)
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Set up signals
+    send_data = signal('send-data')
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+        print("Caught signal from %r, data %r" % (sender, kw))
+
+        if kw['data'].event_type == UnleashEventType.FEATURE_FLAG:
+            assert kw['data'].feature_name == 'testFlag'
+            assert kw['data'].enabled
+        elif kw['data'].event_type == UnleashEventType.VARIANT:
+            assert kw['data'].feature_name == 'testVariations'
+            assert kw['data'].enabled
+            assert kw['data'].variant == 'VarA'
+
+        raise Exception("Random!")
+
+    def example_callback(event: UnleashEvent):
+        send_data.send('anonymous', data=event)
+
+    # Set up Unleash
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache=cache,
+        event_callback=example_callback
+    )
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    assert unleash_client.is_enabled("testFlag")
+    variant = unleash_client.get_variant("testVariations", context={'userId': '2'})
+    assert variant['name'] == 'VarA'
