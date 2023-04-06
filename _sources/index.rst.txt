@@ -34,6 +34,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
     strategy
     filecache
     basecache
+    events
 
 .. toctree::
     :caption: Changelog
