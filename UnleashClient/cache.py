@@ -12,7 +12,10 @@ class BaseCache(abc.ABC):
     """
     Abstract base class for caches used for UnleashClient.
 
-    If implementing your own bootstrapping methods, you must set the `bootstrapped` attribute to True after configuration is set.
+    If implementing your own bootstrapping methods:
+
+    - Add your custom bootstrap method.
+    - You must set the `bootstrapped` attribute to True after configuration is set.
     """
     bootstrapped = False
 

@@ -21,6 +21,7 @@ Documentation for Unleash's Python client.  See the sidebar for more topics!
 
     customstrategies
     customcache
+    eventcallbacks
     development
     wsgi
     celery

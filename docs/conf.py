@@ -31,7 +31,8 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
-    "m2r2"
+    "m2r2",
+    "enum_tools.autoenum"
 ]
 
 # Add any paths that contain templates here, relative to this directory.

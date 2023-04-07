@@ -6,7 +6,7 @@ Implementing a custom cache
 #######################################
 
 - Create a custom cache object by sub-classing the BaseCache object.
-- Overwrite all the methods from the base class.
+- Overwrite all the methods from the base class.  You can also add custom bootstraping methods!
 
 .. code-block:: python
 

@@ -8,12 +8,9 @@ python-dateutil
 semver
 
 # Development packages
-bumpversion
 coveralls
 mimesis
-mkdocs
 mypy
-pur
 pylint
 pytest
 pytest-cov
@@ -32,3 +29,4 @@ tox
 types-requests
 twine
 blinker
+enum-tools[sphinx]

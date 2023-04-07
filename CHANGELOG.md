@@ -1,3 +1,10 @@
+## v5.6.0
+* (Major) Add support for event callbacks.
+
+## v5.5.0
+* (Minor) SDK now warns when multiple instances are created
+* (Bugfix) Fix an issue where the NOT_IN operator behaves incorrectly when inverted and no context is passed
+
 ## v5.4.1
 * (Bugfix) Fix an issue where custom stickiness fail to calculate correctly
 * (Bugfix) Fix floats not working correctly in constraints
