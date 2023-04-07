@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BaseCache &mdash; unleash-client-python  documentation</title>
@@ -12,8 +12,9 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,7 +34,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.5.1.dev4+g1018068
+                5.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -62,17 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="unleashclient.html">UnleashClient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategy.html">Strategy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filecache.html">FileCache</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">BaseCache</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#UnleashClient.cache.BaseCache"><code class="docutils literal notranslate"><span class="pre">BaseCache</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.BaseCache.set"><code class="docutils literal notranslate"><span class="pre">BaseCache.set()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.BaseCache.mset"><code class="docutils literal notranslate"><span class="pre">BaseCache.mset()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.BaseCache.get"><code class="docutils literal notranslate"><span class="pre">BaseCache.get()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.BaseCache.exists"><code class="docutils literal notranslate"><span class="pre">BaseCache.exists()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.BaseCache.destroy"><code class="docutils literal notranslate"><span class="pre">BaseCache.destroy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">BaseCache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Changelog</span></p>
@@ -105,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="basecache">
-<h1>BaseCache<a class="headerlink" href="#basecache" title="Permalink to this heading"></a></h1>
+<h1>BaseCache<a class="headerlink" href="#basecache" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="UnleashClient.cache.BaseCache">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.cache.</span></span><span class="sig-name descname"><span class="pre">BaseCache</span></span><a class="headerlink" href="#UnleashClient.cache.BaseCache" title="Permalink to this definition"></a></dt>
@@ -127,7 +118,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="UnleashClient.cache.BaseCache.get">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.BaseCache.get" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.BaseCache.get" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
