@@ -33,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.5.1.dev3+g1fcedbf
+                5.5.1.dev4+g1018068
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,6 +52,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="customstrategies.html">Custom Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customcache.html">Custom Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eventcallbacks.html">Event Callbacks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsgi.html">Running with WSGI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="celery.html">Running with Celery</a></li>
@@ -109,7 +110,11 @@
 <dt class="sig sig-object py" id="UnleashClient.cache.BaseCache">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.cache.</span></span><span class="sig-name descname"><span class="pre">BaseCache</span></span><a class="headerlink" href="#UnleashClient.cache.BaseCache" title="Permalink to this definition"></a></dt>
 <dd><p>Abstract base class for caches used for UnleashClient.</p>
-<p>If implementing your own bootstrapping methods, you must set the <cite>bootstrapped</cite> attribute to True after configuration is set.</p>
+<p>If implementing your own bootstrapping methods:</p>
+<ul class="simple">
+<li><p>Add your custom bootstrap method.</p></li>
+<li><p>You must set the <cite>bootstrapped</cite> attribute to True after configuration is set.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="UnleashClient.cache.BaseCache.set">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.BaseCache.set" title="Permalink to this definition"></a></dt>

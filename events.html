@@ -33,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.5.1.dev3+g1fcedbf
+                5.5.1.dev4+g1018068
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,6 +52,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="customstrategies.html">Custom Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customcache.html">Custom Cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eventcallbacks.html">Event Callbacks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsgi.html">Running with WSGI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="celery.html">Running with Celery</a></li>
@@ -63,6 +64,11 @@
 <li class="toctree-l1"><a class="reference internal" href="filecache.html">FileCache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basecache.html">BaseCache</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#UnleashClient.events.UnleashEventType"><code class="docutils literal notranslate"><span class="pre">UnleashEventType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.events.UnleashEventType.FEATURE_FLAG"><code class="docutils literal notranslate"><span class="pre">UnleashEventType.FEATURE_FLAG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.events.UnleashEventType.VARIANT"><code class="docutils literal notranslate"><span class="pre">UnleashEventType.VARIANT</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#UnleashClient.events.UnleashEvent"><code class="docutils literal notranslate"><span class="pre">UnleashEvent</span></code></a></li>
 </ul>
 </li>
@@ -98,10 +104,28 @@
              
   <section id="events">
 <h1>Events<a class="headerlink" href="#events" title="Permalink to this heading"></a></h1>
+<dl class="py class enum">
+<dt class="sig sig-object py" id="UnleashClient.events.UnleashEventType">
+<em class="property"><span class="pre">enum</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.events.</span></span><span class="sig-name descname"><span class="pre">UnleashEventType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.events.UnleashEventType" title="Permalink to this definition"></a></dt>
+<dd><p>Indicates what kind of event was triggered.</p>
+<p>Valid values are as follows:</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="UnleashClient.events.UnleashEventType.FEATURE_FLAG">
+<span class="sig-name descname"><span class="pre">FEATURE_FLAG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnleashEventType.FEATURE_FLAG:</span> <span class="pre">'feature_flag'&gt;</span></em><a class="headerlink" href="#UnleashClient.events.UnleashEventType.FEATURE_FLAG" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="UnleashClient.events.UnleashEventType.VARIANT">
+<span class="sig-name descname"><span class="pre">VARIANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;UnleashEventType.VARIANT:</span> <span class="pre">'variant'&gt;</span></em><a class="headerlink" href="#UnleashClient.events.UnleashEventType.VARIANT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="UnleashClient.events.UnleashEvent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.events.</span></span><span class="sig-name descname"><span class="pre">UnleashEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UnleashClient.events.UnleashEventType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.events.UnleashEvent" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.events.</span></span><span class="sig-name descname"><span class="pre">UnleashEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#UnleashClient.events.UnleashEventType" title="UnleashClient.events.UnleashEventType"><span class="pre">UnleashEventType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.events.UnleashEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Dataclass capturing information from an Unleash feature flag or variant check.</p>
+</dd></dl>
 
 </section>
 
