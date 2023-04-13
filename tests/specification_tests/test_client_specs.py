@@ -1,11 +1,12 @@
 import json
 import uuid
 from os import path
-from UnleashClient import UnleashClient
-from tests.utilities.testing_constants import URL, APP_NAME
-from UnleashClient.cache import FileCache
+
 import pytest
 
+from tests.utilities.testing_constants import APP_NAME, URL
+from UnleashClient import UnleashClient
+from UnleashClient.cache import FileCache
 
 CLIENT_SPEC_PATH = "tests/specification_tests/client-specification/specifications"
 

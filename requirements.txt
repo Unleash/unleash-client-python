@@ -11,7 +11,9 @@ semver
 coveralls
 mimesis
 mypy
-pylint
+black
+ruff
+isort
 pytest
 pytest-cov
 pytest-flake8

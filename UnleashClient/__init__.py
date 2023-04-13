@@ -1,28 +1,42 @@
 # pylint: disable=invalid-name
-import warnings
 import random
 import string
 import uuid
+import warnings
 from datetime import datetime, timezone
 from typing import Callable, Optional
-from apscheduler.job import Job
-from apscheduler.schedulers.base import BaseScheduler
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.interval import IntervalTrigger
-from apscheduler.executors.pool import ThreadPoolExecutor
-from UnleashClient.api import register_client
-from UnleashClient.periodic_tasks import fetch_and_load_features, aggregate_and_send_metrics
-from UnleashClient.strategies import ApplicationHostname, Default, GradualRolloutRandom, \
-    GradualRolloutSessionId, GradualRolloutUserId, UserWithId, RemoteAddress, FlexibleRollout
-from UnleashClient.constants import METRIC_LAST_SENT_TIME, DISABLED_VARIATION, ETAG
-from UnleashClient.loader import load_features
-from UnleashClient.events import UnleashEvent, UnleashEventType
-from .utils import LOGGER, InstanceCounter, InstanceAllowType
-from .deprecation_warnings import strategy_v2xx_deprecation_check
-from .cache import BaseCache, FileCache
 
+from apscheduler.executors.pool import ThreadPoolExecutor
+from apscheduler.job import Job
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.base import BaseScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+
+from UnleashClient.api import register_client
+from UnleashClient.constants import DISABLED_VARIATION, ETAG, METRIC_LAST_SENT_TIME
+from UnleashClient.events import UnleashEvent, UnleashEventType
+from UnleashClient.loader import load_features
+from UnleashClient.periodic_tasks import (
+    aggregate_and_send_metrics,
+    fetch_and_load_features,
+)
+from UnleashClient.strategies import (
+    ApplicationHostname,
+    Default,
+    FlexibleRollout,
+    GradualRolloutRandom,
+    GradualRolloutSessionId,
+    GradualRolloutUserId,
+    RemoteAddress,
+    UserWithId,
+)
+
+from .cache import BaseCache, FileCache
+from .deprecation_warnings import strategy_v2xx_deprecation_check
+from .utils import LOGGER, InstanceAllowType, InstanceCounter
 
 INSTANCES = InstanceCounter()
+
 
 # pylint: disable=dangerous-default-value
 class UnleashClient:
@@ -49,48 +63,55 @@ class UnleashClient:
     :param multiple_instance_mode: Determines how multiple instances being instantiated is handled by the SDK, when set to InstanceAllowType.BLOCK, the client constructor will fail when more than one instance is detected, when set to InstanceAllowType.WARN, multiple instances will be allowed but log a warning, when set to InstanceAllowType.SILENTLY_ALLOW, no warning or failure will be raised when instantiating multiple instances of the client. Defaults to InstanceAllowType.WARN
     :param event_callback: Function to call if impression events are enabled.  WARNING: Depending on your event library, this may have performance implications!
     """
-    def __init__(self,
-                 url: str,
-                 app_name: str,
-                 environment: str = "default",
-                 instance_id: str = "unleash-client-python",
-                 refresh_interval: int = 15,
-                 refresh_jitter: Optional[int] = None,
-                 metrics_interval: int = 60,
-                 metrics_jitter: Optional[int] = None,
-                 disable_metrics: bool = False,
-                 disable_registration: bool = False,
-                 custom_headers: Optional[dict] = None,
-                 custom_options: Optional[dict] = None,
-                 custom_strategies: Optional[dict] = None,
-                 cache_directory: Optional[str] = None,
-                 project_name: str = None,
-                 verbose_log_level: int = 30,
-                 cache: Optional[BaseCache] = None,
-                 scheduler: Optional[BaseScheduler] = None,
-                 scheduler_executor: Optional[str] = None,
-                 multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
-                 event_callback: Optional[Callable[[UnleashEvent], None]] = None) -> None:
+
+    def __init__(
+        self,
+        url: str,
+        app_name: str,
+        environment: str = "default",
+        instance_id: str = "unleash-client-python",
+        refresh_interval: int = 15,
+        refresh_jitter: Optional[int] = None,
+        metrics_interval: int = 60,
+        metrics_jitter: Optional[int] = None,
+        disable_metrics: bool = False,
+        disable_registration: bool = False,
+        custom_headers: Optional[dict] = None,
+        custom_options: Optional[dict] = None,
+        custom_strategies: Optional[dict] = None,
+        cache_directory: Optional[str] = None,
+        project_name: str = None,
+        verbose_log_level: int = 30,
+        cache: Optional[BaseCache] = None,
+        scheduler: Optional[BaseScheduler] = None,
+        scheduler_executor: Optional[str] = None,
+        multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
+        event_callback: Optional[Callable[[UnleashEvent], None]] = None,
+    ) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
         custom_strategies = custom_strategies or {}
 
         # Configuration
-        self.unleash_url = url.rstrip('/')
+        self.unleash_url = url.rstrip("/")
         self.unleash_app_name = app_name
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval
-        self.unleash_refresh_jitter = int(refresh_jitter) if refresh_jitter is not None else None
+        self.unleash_refresh_jitter = (
+            int(refresh_jitter) if refresh_jitter is not None else None
+        )
         self.unleash_metrics_interval = metrics_interval
-        self.unleash_metrics_jitter = int(metrics_jitter) if metrics_jitter is not None else None
+        self.unleash_metrics_jitter = (
+            int(metrics_jitter) if metrics_jitter is not None else None
+        )
         self.unleash_disable_metrics = disable_metrics
         self.unleash_disable_registration = disable_registration
         self.unleash_custom_headers = custom_headers
         self.unleash_custom_options = custom_options
         self.unleash_static_context = {
             "appName": self.unleash_app_name,
-            "environment": self.unleash_environment
+            "environment": self.unleash_environment,
         }
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
@@ -103,11 +124,10 @@ class UnleashClient:
         self.fl_job: Job = None
         self.metric_job: Job = None
 
-        self.cache = cache or FileCache(self.unleash_app_name, directory=cache_directory)
-        self.cache.mset({
-            METRIC_LAST_SENT_TIME: datetime.now(timezone.utc),
-            ETAG: ''
-        })
+        self.cache = cache or FileCache(
+            self.unleash_app_name, directory=cache_directory
+        )
+        self.cache.mset({METRIC_LAST_SENT_TIME: datetime.now(timezone.utc), ETAG: ""})
         self.unleash_bootstrapped = self.cache.bootstrapped
 
         # Scheduler bootstrapping
@@ -115,10 +135,14 @@ class UnleashClient:
         if scheduler and scheduler_executor:
             self.unleash_executor_name = scheduler_executor
         elif scheduler and not scheduler_executor:
-            raise ValueError("If using a custom scheduler, you must specify a executor.")
+            raise ValueError(
+                "If using a custom scheduler, you must specify a executor."
+            )
         else:
             if not scheduler:
-                LOGGER.warning("scheduler_executor should only be used with a custom scheduler.")
+                LOGGER.warning(
+                    "scheduler_executor should only be used with a custom scheduler."
+                )
 
             self.unleash_executor_name = f"unleash_executor_{''.join(random.choices(string.ascii_uppercase + string.digits, k=6))}"
 
@@ -126,9 +150,7 @@ class UnleashClient:
         if scheduler:
             self.unleash_scheduler = scheduler
         else:
-            executors = {
-                self.unleash_executor_name: ThreadPoolExecutor()
-            }
+            executors = {self.unleash_executor_name: ThreadPoolExecutor()}
             self.unleash_scheduler = BackgroundScheduler(executors=executors)
 
         # Mappings
@@ -140,11 +162,13 @@ class UnleashClient:
             "gradualRolloutUserId": GradualRolloutUserId,
             "remoteAddress": RemoteAddress,
             "userWithId": UserWithId,
-            "flexibleRollout": FlexibleRollout
+            "flexibleRollout": FlexibleRollout,
         }
 
         if custom_strategies:
-            strategy_v2xx_deprecation_check([x for x in custom_strategies.values()])  # pylint: disable=R1721
+            strategy_v2xx_deprecation_check(
+                [x for x in custom_strategies.values()]
+            )  # pylint: disable=R1721
 
         self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
 
@@ -153,7 +177,11 @@ class UnleashClient:
 
         # Bootstrapping
         if self.unleash_bootstrapped:
-            load_features(cache=self.cache, feature_toggles=self.features, strategy_mapping=self.strategy_mapping)
+            load_features(
+                cache=self.cache,
+                feature_toggles=self.features,
+                strategy_mapping=self.strategy_mapping,
+            )
 
     def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
@@ -193,14 +221,20 @@ class UnleashClient:
                     "custom_headers": self.unleash_custom_headers,
                     "custom_options": self.unleash_custom_options,
                     "features": self.features,
-                    "cache": self.cache
+                    "cache": self.cache,
                 }
 
                 # Register app
                 if not self.unleash_disable_registration:
-                    register_client(self.unleash_url, self.unleash_app_name, self.unleash_instance_id,
-                                    self.unleash_metrics_interval, self.unleash_custom_headers,
-                                    self.unleash_custom_options, self.strategy_mapping)
+                    register_client(
+                        self.unleash_url,
+                        self.unleash_app_name,
+                        self.unleash_instance_id,
+                        self.unleash_metrics_interval,
+                        self.unleash_custom_headers,
+                        self.unleash_custom_options,
+                        self.strategy_mapping,
+                    )
 
                 if fetch_toggles:
                     job_args = {
@@ -226,31 +260,39 @@ class UnleashClient:
                 job_func(**job_args)  # type: ignore
                 # Start periodic jobs
                 self.unleash_scheduler.start()
-                self.fl_job = self.unleash_scheduler.add_job(job_func,
-                                                     trigger=IntervalTrigger(
-                                                         seconds=int(self.unleash_refresh_interval),
-                                                         jitter=self.unleash_refresh_jitter,
-                                                     ),
-                                                     executor=self.unleash_executor_name,
-                                                     kwargs=job_args)
+                self.fl_job = self.unleash_scheduler.add_job(
+                    job_func,
+                    trigger=IntervalTrigger(
+                        seconds=int(self.unleash_refresh_interval),
+                        jitter=self.unleash_refresh_jitter,
+                    ),
+                    executor=self.unleash_executor_name,
+                    kwargs=job_args,
+                )
 
                 if not self.unleash_disable_metrics:
-                    self.metric_job = self.unleash_scheduler.add_job(aggregate_and_send_metrics,
-                                                             trigger=IntervalTrigger(
-                                                                 seconds=int(self.unleash_metrics_interval),
-                                                                 jitter=self.unleash_metrics_jitter,
-                                                             ),
-                                                             executor=self.unleash_executor_name,
-                                                             kwargs=metrics_args)
+                    self.metric_job = self.unleash_scheduler.add_job(
+                        aggregate_and_send_metrics,
+                        trigger=IntervalTrigger(
+                            seconds=int(self.unleash_metrics_interval),
+                            jitter=self.unleash_metrics_jitter,
+                        ),
+                        executor=self.unleash_executor_name,
+                        kwargs=metrics_args,
+                    )
             except Exception as excep:
                 # Log exceptions during initialization.  is_initialized will remain false.
-                LOGGER.warning("Exception during UnleashClient initialization: %s", excep)
+                LOGGER.warning(
+                    "Exception during UnleashClient initialization: %s", excep
+                )
                 raise excep
             else:
                 # Set is_iniialized to true if no exception is encountered.
                 self.is_initialized = True
         else:
-            warnings.warn("Attempted to initialize an Unleash Client instance that has already been initialized.")
+            warnings.warn(
+                "Attempted to initialize an Unleash Client instance that has already been initialized."
+            )
 
     def destroy(self) -> None:
         """
@@ -265,7 +307,9 @@ class UnleashClient:
         self.cache.destroy()
 
     @staticmethod
-    def _get_fallback_value(fallback_function: Callable, feature_name: str, context: dict) -> bool:
+    def _get_fallback_value(
+        fallback_function: Callable, feature_name: str, context: dict
+    ) -> bool:
         if fallback_function:
             fallback_value = fallback_function(feature_name, context)
         else:
@@ -274,10 +318,12 @@ class UnleashClient:
         return fallback_value
 
     # pylint: disable=broad-except
-    def is_enabled(self,
-                   feature_name: str,
-                   context: Optional[dict] = None,
-                   fallback_function: Callable = None) -> bool:
+    def is_enabled(
+        self,
+        feature_name: str,
+        context: Optional[dict] = None,
+        fallback_function: Callable = None,
+    ) -> bool:
         """
         Checks if a feature toggle is enabled.
 
@@ -309,28 +355,48 @@ class UnleashClient:
                             event_id=uuid.uuid4(),
                             context=context,
                             enabled=feature_check,
-                            feature_name=feature_name
+                            feature_name=feature_name,
                         )
 
                         self.unleash_event_callback(event)
                 except Exception as excep:
-                    LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                    LOGGER.log(
+                        self.unleash_verbose_log_level,
+                        "Error in event callback: %s",
+                        excep,
+                    )
                     return feature_check
 
                 return feature_check
             except Exception as excep:
-                LOGGER.log(self.unleash_verbose_log_level, "Returning default value for feature: %s", feature_name)
-                LOGGER.log(self.unleash_verbose_log_level, "Error checking feature flag: %s", excep)
-                return self._get_fallback_value(fallback_function, feature_name, context)
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Returning default value for feature: %s",
+                    feature_name,
+                )
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Error checking feature flag: %s",
+                    excep,
+                )
+                return self._get_fallback_value(
+                    fallback_function, feature_name, context
+                )
         else:
-            LOGGER.log(self.unleash_verbose_log_level, "Returning default value for feature: %s", feature_name)
-            LOGGER.log(self.unleash_verbose_log_level, "Attempted to get feature_flag %s, but client wasn't initialized!", feature_name)
+            LOGGER.log(
+                self.unleash_verbose_log_level,
+                "Returning default value for feature: %s",
+                feature_name,
+            )
+            LOGGER.log(
+                self.unleash_verbose_log_level,
+                "Attempted to get feature_flag %s, but client wasn't initialized!",
+                feature_name,
+            )
             return self._get_fallback_value(fallback_function, feature_name, context)
 
     # pylint: disable=broad-except
-    def get_variant(self,
-                    feature_name: str,
-                    context: Optional[dict] = None) -> dict:
+    def get_variant(self, feature_name: str, context: Optional[dict] = None) -> dict:
         """
         Checks if a feature toggle is enabled.  If so, return variant.
 
@@ -356,24 +422,44 @@ class UnleashClient:
                             event_type=UnleashEventType.VARIANT,
                             event_id=uuid.uuid4(),
                             context=context,
-                            enabled=variant_check['enabled'],
+                            enabled=variant_check["enabled"],
                             feature_name=feature_name,
-                            variant=variant_check['name']
+                            variant=variant_check["name"],
                         )
 
                         self.unleash_event_callback(event)
                     except Exception as excep:
-                        LOGGER.log(self.unleash_verbose_log_level, "Error in event callback: %s", excep)
+                        LOGGER.log(
+                            self.unleash_verbose_log_level,
+                            "Error in event callback: %s",
+                            excep,
+                        )
                         return variant_check
 
                 return variant_check
             except Exception as excep:
-                LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
-                LOGGER.log(self.unleash_verbose_log_level, "Error checking feature flag variant: %s", excep)
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Returning default flag/variation for feature: %s",
+                    feature_name,
+                )
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Error checking feature flag variant: %s",
+                    excep,
+                )
                 return DISABLED_VARIATION
         else:
-            LOGGER.log(self.unleash_verbose_log_level, "Returning default flag/variation for feature: %s", feature_name)
-            LOGGER.log(self.unleash_verbose_log_level, "Attempted to get feature flag/variation %s, but client wasn't initialized!", feature_name)
+            LOGGER.log(
+                self.unleash_verbose_log_level,
+                "Returning default flag/variation for feature: %s",
+                feature_name,
+            )
+            LOGGER.log(
+                self.unleash_verbose_log_level,
+                "Attempted to get feature flag/variation %s, but client wasn't initialized!",
+                feature_name,
+            )
             return DISABLED_VARIATION
 
     def _do_instance_check(self, multiple_instance_mode):
@@ -387,7 +473,11 @@ class UnleashClient:
         INSTANCES.increment(identifier)
 
     def __get_identifier(self):
-        api_key = self.unleash_custom_headers.get("Authorization") if self.unleash_custom_headers is not None else None
+        api_key = (
+            self.unleash_custom_headers.get("Authorization")
+            if self.unleash_custom_headers is not None
+            else None
+        )
         return f"apiKey:{api_key} appName:{self.unleash_app_name} instanceId:{self.unleash_instance_id}"
 
     def __enter__(self) -> "UnleashClient":

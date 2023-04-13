@@ -1,4 +1,5 @@
 import warnings
+
 from UnleashClient.strategies import Strategy
 
 
@@ -12,7 +13,7 @@ def strategy_v2xx_deprecation_check(strategies: list) -> None:
             if strategy.__call__ != Strategy.__call__:
                 warnings.warn(
                     f"unleash-client-python v3.x.x requires overriding the execute() method instead of the __call__() method. Error in: {strategy.__name__}",
-                    DeprecationWarning
+                    DeprecationWarning,
                 )
         except AttributeError:
             # Ignore if not.

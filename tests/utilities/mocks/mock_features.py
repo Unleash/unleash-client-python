@@ -5,44 +5,29 @@ MOCK_FEATURE_RESPONSE = {
             "name": "testFlag",
             "description": "This is a test!",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "default",
-                    "parameters": {}
-                }
-            ],
+            "strategies": [{"name": "default", "parameters": {}}],
             "createdAt": "2018-10-04T01:27:28.477Z",
-            "impressionData": True
+            "impressionData": True,
         },
         {
             "name": "testFlag2",
             "description": "Test flag 2",
             "enabled": True,
             "strategies": [
-                {
-                    "name": "gradualRolloutRandom",
-                    "parameters": {
-                        "percentage": 50
-                    }
-                }
+                {"name": "gradualRolloutRandom", "parameters": {"percentage": 50}}
             ],
             "createdAt": "2018-10-04T11:03:56.062Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "testContextFlag",
             "description": "This is a test for static context fileds!",
             "enabled": True,
             "strategies": [
-                {
-                    "name": "custom-context",
-                    "parameters": {
-                        "environments": "prod"
-                    }
-                }
+                {"name": "custom-context", "parameters": {"environments": "prod"}}
             ],
             "createdAt": "2018-10-04T01:27:28.477Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "testConstraintFlag",
@@ -57,65 +42,46 @@ MOCK_FEATURE_RESPONSE = {
                             "contextName": "currentTime",
                             "operator": "DATE_BEFORE",
                             "value": "2022-01-22T00:00:00.000Z",
-                            "inverted": False
+                            "inverted": False,
                         }
                     ],
                 },
             ],
             "createdAt": "2018-10-04T01:27:28.477Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "testVariations",
             "description": "Test variation",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "userWithId",
-                    "parameters": {
-                        "userIds": "2"
-                    }
-                }
-            ],
+            "strategies": [{"name": "userWithId", "parameters": {"userIds": "2"}}],
             "variants": [
                 {
                     "name": "VarA",
                     "weight": 34,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test1"
-                    },
+                    "payload": {"type": "string", "value": "Test1"},
                     "overrides": [
                         {
                             "contextName": "userId",
-                            "values": [
-                                "ivanklee86@gmail.com",
-                                "ivan@aaptiv.com"
-                            ]
+                            "values": ["ivanklee86@gmail.com", "ivan@aaptiv.com"],
                         }
-                    ]
+                    ],
                 },
                 {
                     "name": "VarB",
                     "weight": 33,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test 2"
-                    }
+                    "payload": {"type": "string", "value": "Test 2"},
                 },
                 {
                     "name": "VarC",
                     "weight": 33,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test 3"
-                    }
-                }
+                    "payload": {"type": "string", "value": "Test 3"},
+                },
             ],
             "createdAt": "2019-10-25T13:22:02.035Z",
-            "impressionData": True
-        }
-    ]
+            "impressionData": True,
+        },
+    ],
 }
 
 MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
@@ -127,9 +93,7 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
                     "name": "default",
                     "constraints": [],
                     "parameters": {},
-                    "segments": [
-                        1, 2
-                    ]
+                    "segments": [1, 2],
                 }
             ],
             "impressionData": False,
@@ -138,13 +102,10 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
             "description": "",
             "project": "default",
             "type": "release",
-            "variants": []
+            "variants": [],
         }
     ],
-    "query": {
-        "environment": "development",
-        "inlineSegmentConstraints": False
-    },
+    "query": {"environment": "development", "inlineSegmentConstraints": False},
     "segments": [
         {
             "id": 1,
@@ -157,11 +118,11 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
                     "inverted": False,
                     "operator": "DATE_BEFORE",
                     "contextName": "currentTime",
-                    "caseInsensitive": False
+                    "caseInsensitive": False,
                 }
             ],
             "createdBy": "admin",
-            "createdAt": "2022-06-14T06:40:25.331Z"
+            "createdAt": "2022-06-14T06:40:25.331Z",
         },
         {
             "id": 2,
@@ -174,13 +135,13 @@ MOCK_FEATURES_WITH_SEGMENTS_RESPONSE = {
                     "inverted": False,
                     "operator": "DATE_AFTER",
                     "contextName": "currentTime",
-                    "caseInsensitive": False
+                    "caseInsensitive": False,
                 }
             ],
             "createdBy": "admin",
-            "createdAt": "2022-06-14T06:40:25.331Z"
-        }
-    ]
+            "createdAt": "2022-06-14T06:40:25.331Z",
+        },
+    ],
 }
 
 MOCK_FEATURE_RESPONSE_PROJECT = {
@@ -190,19 +151,10 @@ MOCK_FEATURE_RESPONSE_PROJECT = {
             "name": "ivan-project",
             "type": "release",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "default",
-                    "parameters": {
-
-                    }
-                }
-            ],
-            "variants": [
-
-            ],
+            "strategies": [{"name": "default", "parameters": {}}],
+            "variants": [],
             "createdAt": "2023-01-24T06:40:25.331Z",
-            "impressionData": False
+            "impressionData": False,
         }
-    ]
+    ],
 }

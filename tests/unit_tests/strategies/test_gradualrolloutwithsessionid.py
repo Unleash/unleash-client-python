@@ -1,5 +1,7 @@
 import uuid
+
 import pytest
+
 from UnleashClient.strategies import GradualRolloutSessionId
 
 

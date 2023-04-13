@@ -8,41 +8,29 @@ MOCK_ALL_FEATURES = {
             "strategies": [
                 {
                     "name": "applicationHostname",
-                    "parameters": {
-                        "hostNames": "iMacPro.local,test1,test2"
-                    }
+                    "parameters": {"hostNames": "iMacPro.local,test1,test2"},
                 }
             ],
             "createdAt": "2018-10-09T06:05:14.757Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "Default",
             "description": "Default feature toggle",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "default",
-                    "parameters": {}
-                }
-            ],
+            "strategies": [{"name": "default", "parameters": {}}],
             "createdAt": "2018-10-09T06:04:05.667Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "GradualRolloutRandom",
             "description": "Gradual Rollout Random example",
             "enabled": True,
             "strategies": [
-                {
-                    "name": "gradualRolloutRandom",
-                    "parameters": {
-                        "percentage": 50
-                    }
-                }
+                {"name": "gradualRolloutRandom", "parameters": {"percentage": 50}}
             ],
             "createdAt": "2018-10-09T06:05:37.637Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "GradualRolloutSessionId",
@@ -53,12 +41,12 @@ MOCK_ALL_FEATURES = {
                     "name": "gradualRolloutSessionId",
                     "parameters": {
                         "percentage": 50,
-                        "groupId": "GradualRolloutSessionId"
-                    }
+                        "groupId": "GradualRolloutSessionId",
+                    },
                 }
             ],
             "createdAt": "2018-10-09T06:06:51.057Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "GradualRolloutUserID",
@@ -67,14 +55,11 @@ MOCK_ALL_FEATURES = {
             "strategies": [
                 {
                     "name": "gradualRolloutUserId",
-                    "parameters": {
-                        "percentage": 50,
-                        "groupId": "GradualRolloutUserID"
-                    }
+                    "parameters": {"percentage": 50, "groupId": "GradualRolloutUserID"},
                 }
             ],
             "createdAt": "2018-10-09T06:07:17.520Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "RemoteAddress",
@@ -85,11 +70,11 @@ MOCK_ALL_FEATURES = {
                     "name": "remoteAddress",
                     "parameters": {
                         "IPs": "69.208.0.0/29,70.208.1.1,2001:db8:1234::/48,2002:db8:1234:0000:0000:0000:0000:0001"
-                    }
+                    },
                 }
             ],
             "createdAt": "2018-10-09T06:08:42.398Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "UserWithId",
@@ -100,11 +85,11 @@ MOCK_ALL_FEATURES = {
                     "name": "userWithId",
                     "parameters": {
                         "userIds": "meep@meep.com,test@test.com,wat@wat.com"
-                    }
+                    },
                 }
             ],
             "createdAt": "2018-10-09T06:09:19.203Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "FlexibleRollout",
@@ -116,108 +101,74 @@ MOCK_ALL_FEATURES = {
                     "parameters": {
                         "rollout": "21",
                         "stickiness": "userId",
-                        "groupId": "ivantest"
+                        "groupId": "ivantest",
                     },
                     "constraints": [
                         {
                             "contextName": "environment",
                             "operator": "IN",
-                            "values": [
-                                "staging",
-                                "prod"
-                            ]
+                            "values": ["staging", "prod"],
                         },
                         {
                             "contextName": "userId",
                             "operator": "NOT_IN",
-                            "values": [
-                                "1",
-                                "2",
-                                "3"
-                            ]
+                            "values": ["1", "2", "3"],
                         },
                         {
                             "contextName": "userId",
                             "operator": "IN",
-                            "values": [
-                                "4",
-                                "5",
-                                "6"
-                            ]
+                            "values": ["4", "5", "6"],
                         },
                         {
                             "contextName": "appName",
                             "operator": "IN",
-                            "values": [
-                                "test"
-                            ]
-                        }
-                    ]
+                            "values": ["test"],
+                        },
+                    ],
                 }
             ],
             "variants": None,
             "createdAt": "2019-10-05T07:30:29.896Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "Variations",
             "description": "Test variation",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "default"
-                }
-            ],
+            "strategies": [{"name": "default"}],
             "variants": [
                 {
                     "name": "VarA",
                     "weight": 34,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test1"
-                    },
+                    "payload": {"type": "string", "value": "Test1"},
                     "overrides": [
                         {
                             "contextName": "userId",
-                            "values": [
-                                "ivanklee86@gmail.com",
-                                "ivan@aaptiv.com"
-                            ]
+                            "values": ["ivanklee86@gmail.com", "ivan@aaptiv.com"],
                         }
-                    ]
+                    ],
                 },
                 {
                     "name": "VarB",
                     "weight": 33,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test 2"
-                    }
+                    "payload": {"type": "string", "value": "Test 2"},
                 },
                 {
                     "name": "VarC",
                     "weight": 33,
-                    "payload": {
-                        "type": "string",
-                        "value": "Test 3"
-                    }
-                }
+                    "payload": {"type": "string", "value": "Test 3"},
+                },
             ],
             "createdAt": "2019-10-25T13:22:02.035Z",
-            "impressionData": False
+            "impressionData": False,
         },
         {
             "name": "Garbage",
             "description": "Invalid strategy",
             "enabled": True,
-            "strategies": [
-                {
-                    "name": "blargwatisdis",
-                    "parameters": {}
-                }
-            ],
+            "strategies": [{"name": "blargwatisdis", "parameters": {}}],
             "createdAt": "2018-10-09T06:04:05.667Z",
-            "impressionData": False
+            "impressionData": False,
         },
-    ]
+    ],
 }

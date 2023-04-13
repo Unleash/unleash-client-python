@@ -1,14 +1,15 @@
 # Old Strategy object from unleash-client-python version 1.x.x and 2.x.x
 
+
 # pylint: disable=dangerous-default-value
-class StrategyOldV2():
+class StrategyOldV2:
     """
     In general, default & custom classes should only need to override:
     * __call__() - Implementation of the strategy.
     * load_provisioning - Loads strategy provisioning
     """
-    def __init__(self,
-                 parameters: dict = {}) -> None:
+
+    def __init__(self, parameters: dict = {}) -> None:
         """
         A generic strategy objects.
         :param parameters: 'parameters' key from strategy section (...from feature section) of

@@ -1,19 +1,21 @@
 # pylint: disable=invalid-name
 from typing import Optional
 
-from UnleashClient.variants import Variants
-from UnleashClient.utils import LOGGER
 from UnleashClient.constants import DISABLED_VARIATION
+from UnleashClient.utils import LOGGER
+from UnleashClient.variants import Variants
 
 
 # pylint: disable=dangerous-default-value, broad-except
 class Feature:
-    def __init__(self,
-                 name: str,
-                 enabled: bool,
-                 strategies: list,
-                 variants: Optional[Variants] = None,
-                 impression_data: bool = False) -> None:
+    def __init__(
+        self,
+        name: str,
+        enabled: bool,
+        strategies: list,
+        variants: Optional[Variants] = None,
+        impression_data: bool = False,
+    ) -> None:
         """
         A representation of a feature object
 
@@ -56,9 +58,9 @@ class Feature:
         else:
             self.no_count += 1
 
-    def is_enabled(self,
-                   context: dict = None,
-                   default_value: bool = False) -> bool:  # pylint: disable=unused-argument
+    def is_enabled(
+        self, context: dict = None, default_value: bool = False
+    ) -> bool:  # pylint: disable=unused-argument
         """
         Checks if feature is enabled.
 
@@ -86,8 +88,7 @@ class Feature:
 
         return flag_value
 
-    def get_variant(self,
-                    context: dict = None) -> dict:
+    def get_variant(self, context: dict = None) -> dict:
         """
         Checks if feature is enabled and, if so, get the variant.
 
@@ -100,7 +101,7 @@ class Feature:
         if is_feature_enabled and self.variants is not None:
             try:
                 variant = self.variants.get_variant(context)
-                variant['enabled'] = is_feature_enabled
+                variant["enabled"] = is_feature_enabled
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 

@@ -25,8 +25,13 @@ install:
 #-----------------------------------------------------------------------
 # Testing & Linting
 #-----------------------------------------------------------------------
+fix:
+	black . && \
+	ruff UnleashClient tests --fix
+
 lint:
-	pylint ${PROJECT_NAME} && \
+	black . --check && \
+	ruff UnleashClient tests && \
 	mypy ${PROJECT_NAME} --install-types --non-interactive;
 
 pytest:

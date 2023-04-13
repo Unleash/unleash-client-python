@@ -1,6 +1,7 @@
 import pytest
-from UnleashClient.strategies import RemoteAddress
+
 from tests.utilities.testing_constants import IP_LIST
+from UnleashClient.strategies import RemoteAddress
 
 
 @pytest.fixture()
@@ -29,11 +30,15 @@ def test_ipv4_value(strategy):
 
 
 def test_ipv6_rangee(strategy):
-    assert strategy.execute(context={"remoteAddress": "2001:db8:1234:0000:0000:0000:0000:0001"})
+    assert strategy.execute(
+        context={"remoteAddress": "2001:db8:1234:0000:0000:0000:0000:0001"}
+    )
 
 
 def test_ipv6_value(strategy):
-    assert strategy.execute(context={"remoteAddress": "2002:db8:1234:0000:0000:0000:0000:0001"})
+    assert strategy.execute(
+        context={"remoteAddress": "2002:db8:1234:0000:0000:0000:0000:0001"}
+    )
 
 
 def test_garbage_value(strategy):

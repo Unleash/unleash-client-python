@@ -20,8 +20,9 @@ jobs:
           python setup.py install
       - name: Linting
         run: |
-          mypy UnleashClient --install-types --non-interactive
-          pylint UnleashClient
+          black . --check && \
+          ruff UnleashClient tests && \
+          mypy ${PROJECT_NAME} --install-types --non-interactive;
       - name: Unit tests
         run: |
           py.test tests/unit_tests

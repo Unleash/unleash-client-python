@@ -1,18 +1,21 @@
 import pytest
-from UnleashClient.features import Feature
-from UnleashClient.strategies import RemoteAddress, UserWithId, Default
-from UnleashClient.variants import Variants
-from tests.utilities import generate_email_list
-from tests.utilities.testing_constants import IP_LIST
-from tests.utilities.mocks.mock_variants import VARIANTS
 
+from tests.utilities import generate_email_list
+from tests.utilities.mocks.mock_variants import VARIANTS
+from tests.utilities.testing_constants import IP_LIST
+from UnleashClient.features import Feature
+from UnleashClient.strategies import Default, RemoteAddress, UserWithId
+from UnleashClient.variants import Variants
 
 (EMAIL_LIST, CONTEXT) = generate_email_list(20)
 
 
 @pytest.fixture()
 def test_feature():
-    strategies = [RemoteAddress(parameters={"IPs": IP_LIST}), UserWithId(parameters={"userIds": EMAIL_LIST})]
+    strategies = [
+        RemoteAddress(parameters={"IPs": IP_LIST}),
+        UserWithId(parameters={"userIds": EMAIL_LIST}),
+    ]
     yield Feature("My Feature", True, strategies)
 
 
@@ -66,10 +69,10 @@ def test_create_feature_exception(test_feature):
 def test_select_variation_novariation(test_feature):
     selected_variant = test_feature.get_variant()
     assert type(selected_variant) == dict
-    assert selected_variant['name'] == 'disabled'
+    assert selected_variant["name"] == "disabled"
 
 
 def test_select_variation_variation(test_feature_variants):
-    selected_variant = test_feature_variants.get_variant({'userId': '2'})
-    assert selected_variant['enabled']
-    assert selected_variant['name'] == 'VarB'
+    selected_variant = test_feature_variants.get_variant({"userId": "2"})
+    assert selected_variant["enabled"]
+    assert selected_variant["name"] == "VarB"

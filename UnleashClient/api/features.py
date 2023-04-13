@@ -1,21 +1,23 @@
 from typing import Tuple
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from UnleashClient.constants import REQUEST_TIMEOUT, FEATURES_URL, \
-    REQUEST_RETRIES
+from UnleashClient.constants import FEATURES_URL, REQUEST_RETRIES, REQUEST_TIMEOUT
 from UnleashClient.utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
-def get_feature_toggles(url: str,
-                        app_name: str,
-                        instance_id: str,
-                        custom_headers: dict,
-                        custom_options: dict,
-                        project: str = None,
-                        cached_etag: str = '') -> Tuple[dict, str]:
+def get_feature_toggles(
+    url: str,
+    app_name: str,
+    instance_id: str,
+    custom_headers: dict,
+    custom_options: dict,
+    project: str = None,
+    cached_etag: str = "",
+) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
 
@@ -35,43 +37,51 @@ def get_feature_toggles(url: str,
     try:
         LOGGER.info("Getting feature flag.")
 
-        headers = {
-            "UNLEASH-APPNAME": app_name,
-            "UNLEASH-INSTANCEID": instance_id
-        }
+        headers = {"UNLEASH-APPNAME": app_name, "UNLEASH-INSTANCEID": instance_id}
 
         if cached_etag:
-            headers['If-None-Match'] = cached_etag
+            headers["If-None-Match"] = cached_etag
 
         base_url = f"{url}{FEATURES_URL}"
         base_params = {}
 
         if project:
-            base_params = {'project': project}
+            base_params = {"project": project}
 
-        adapter = HTTPAdapter(max_retries=Retry(total=REQUEST_RETRIES, status_forcelist=[500, 502, 504]))
+        adapter = HTTPAdapter(
+            max_retries=Retry(total=REQUEST_RETRIES, status_forcelist=[500, 502, 504])
+        )
         with requests.Session() as session:
             session.mount("https://", adapter)
             session.mount("http://", adapter)
-            resp = session.get(base_url,
-                               headers={**custom_headers, **headers},
-                               params=base_params,
-                               timeout=REQUEST_TIMEOUT, **custom_options)
+            resp = session.get(
+                base_url,
+                headers={**custom_headers, **headers},
+                params=base_params,
+                timeout=REQUEST_TIMEOUT,
+                **custom_options,
+            )
 
         if resp.status_code not in [200, 304]:
             log_resp_info(resp)
-            LOGGER.warning("Unleash Client feature fetch failed due to unexpected HTTP status code.")
-            raise Exception("Unleash Client feature fetch failed!")  # pylint: disable=broad-exception-raised
+            LOGGER.warning(
+                "Unleash Client feature fetch failed due to unexpected HTTP status code."
+            )
+            raise Exception(
+                "Unleash Client feature fetch failed!"
+            )  # pylint: disable=broad-exception-raised
 
-        etag = ''
-        if 'etag' in resp.headers.keys():
-            etag = resp.headers['etag']
+        etag = ""
+        if "etag" in resp.headers.keys():
+            etag = resp.headers["etag"]
 
         if resp.status_code == 304:
             return None, etag
 
         return resp.json(), etag
     except Exception as exc:
-        LOGGER.exception("Unleash Client feature fetch failed due to exception: %s", exc)
+        LOGGER.exception(
+            "Unleash Client feature fetch failed due to exception: %s", exc
+        )
 
-    return {}, ''
+    return {}, ""

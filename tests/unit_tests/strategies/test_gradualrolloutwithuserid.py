@@ -1,6 +1,7 @@
 import pytest
-from UnleashClient.strategies import GradualRolloutUserId
+
 from tests.utilities import generate_context
+from UnleashClient.strategies import GradualRolloutUserId
 
 
 @pytest.fixture()
