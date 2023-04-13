@@ -1,3 +1,4 @@
+from typing import Optional
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
@@ -14,7 +15,7 @@ def fetch_and_load_features(
     cache: BaseCache,
     features: dict,
     strategy_mapping: dict,
-    project: str = None,
+    project: Optional[str] = None,
 ) -> None:
     (feature_provisioning, etag) = get_feature_toggles(
         url,

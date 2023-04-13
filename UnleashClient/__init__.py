@@ -80,7 +80,7 @@ class UnleashClient:
         custom_options: Optional[dict] = None,
         custom_strategies: Optional[dict] = None,
         cache_directory: Optional[str] = None,
-        project_name: str = None,
+        project_name: Optional[str] = None,
         verbose_log_level: int = 30,
         cache: Optional[BaseCache] = None,
         scheduler: Optional[BaseScheduler] = None,

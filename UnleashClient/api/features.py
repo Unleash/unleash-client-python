@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -15,7 +15,7 @@ def get_feature_toggles(
     instance_id: str,
     custom_headers: dict,
     custom_options: dict,
-    project: str = None,
+    project: Optional[str] = None,
     cached_etag: str = "",
 ) -> Tuple[dict, str]:
     """
