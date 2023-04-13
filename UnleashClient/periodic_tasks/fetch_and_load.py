@@ -1,4 +1,5 @@
 from typing import Optional
+
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
