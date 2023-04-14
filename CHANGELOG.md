@@ -1,3 +1,6 @@
+## Next
+* (Minor) Switch to ruff for linting and black for formatting.
+
 ## v5.6.0
 * (Major) Add support for event callbacks.
 
