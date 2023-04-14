@@ -16,8 +16,14 @@ addopts= """
 log_file_level="INFO"
 
 [tool.ruff]
-# Enable Pyflakes `E` and `F` codes by default.
-select = ["E", "F", "PL", "YTT", "I"]
+select = [
+    "E",   # pycodestyle, error
+    "W",   # pycodestyle, warning
+    "F",   # pyflakes
+    "PL",  # pylint,
+    "YTT", # flake8-2020
+    "I"    # isort
+]
 ignore = ["E501", "PLR2004"]
 
 fixable = ["I"]
