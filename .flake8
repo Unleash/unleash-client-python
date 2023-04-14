@@ -1,3 +1,0 @@
-[flake8]
-ignore = E501
-exclude = docs/source/conf.py,build,dist,__init__.py,tests/utilities/mocks/*
