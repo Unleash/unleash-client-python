@@ -1,11 +1,15 @@
-import pytest
 import platform
+
+import pytest
+
 from UnleashClient.strategies import ApplicationHostname
 
 
 @pytest.fixture()
 def strategy():
-    yield ApplicationHostname(parameters={"hostNames": "%s,garbage,garbage2" % platform.node()})
+    yield ApplicationHostname(
+        parameters={"hostNames": "%s,garbage,garbage2" % platform.node()}
+    )
 
 
 def test_applicationhostname(strategy):

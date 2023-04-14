@@ -1,4 +1,5 @@
 import pytest
+
 from tests.utilities import generate_email_list
 from UnleashClient.strategies import UserWithId
 

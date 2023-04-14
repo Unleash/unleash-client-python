@@ -9,11 +9,11 @@ METRIC_LAST_SENT_TIME = "mlst"
 CLIENT_SPEC_VERSION = "4.2.2"
 
 # =Unleash=
-APPLICATION_HEADERS = {"Content-Type": "application/json", "Unleash-Client-Spec": CLIENT_SPEC_VERSION}
-DISABLED_VARIATION = {
-    'name': 'disabled',
-    'enabled': False
+APPLICATION_HEADERS = {
+    "Content-Type": "application/json",
+    "Unleash-Client-Spec": CLIENT_SPEC_VERSION,
 }
+DISABLED_VARIATION = {"name": "disabled", "enabled": False}
 
 # Paths
 REGISTER_URL = "/client/register"
@@ -21,5 +21,5 @@ FEATURES_URL = "/client/features"
 METRICS_URL = "/client/metrics"
 
 # Cache keys
-FAILED_STRATEGIES = 'failed_strategies'
-ETAG = 'etag'
+FAILED_STRATEGIES = "failed_strategies"
+ETAG = "etag"

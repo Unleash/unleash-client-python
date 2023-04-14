@@ -1,19 +1,29 @@
 import json
 from datetime import datetime, timezone
+
 import requests
-from requests.exceptions import MissingSchema, InvalidSchema, InvalidURL, InvalidHeader
-from UnleashClient.constants import SDK_NAME, SDK_VERSION, REQUEST_TIMEOUT, APPLICATION_HEADERS, REGISTER_URL
+from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
+
+from UnleashClient.constants import (
+    APPLICATION_HEADERS,
+    REGISTER_URL,
+    REQUEST_TIMEOUT,
+    SDK_NAME,
+    SDK_VERSION,
+)
 from UnleashClient.utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
-def register_client(url: str,
-                    app_name: str,
-                    instance_id: str,
-                    metrics_interval: int,
-                    custom_headers: dict,
-                    custom_options: dict,
-                    supported_strategies: dict) -> bool:
+def register_client(
+    url: str,
+    app_name: str,
+    instance_id: str,
+    metrics_interval: int,
+    custom_headers: dict,
+    custom_options: dict,
+    supported_strategies: dict,
+) -> bool:
     """
     Attempts to register client with unleash server.
 
@@ -36,28 +46,35 @@ def register_client(url: str,
         "sdkVersion": f"{SDK_NAME}:{SDK_VERSION}",
         "strategies": [*supported_strategies],
         "started": datetime.now(timezone.utc).isoformat(),
-        "interval": metrics_interval
+        "interval": metrics_interval,
     }
 
     try:
         LOGGER.info("Registering unleash client with unleash @ %s", url)
         LOGGER.info("Registration request information: %s", registation_request)
 
-        resp = requests.post(url + REGISTER_URL,
-                             data=json.dumps(registation_request),
-                             headers={**custom_headers, **APPLICATION_HEADERS},
-                             timeout=REQUEST_TIMEOUT, **custom_options)
+        resp = requests.post(
+            url + REGISTER_URL,
+            data=json.dumps(registation_request),
+            headers={**custom_headers, **APPLICATION_HEADERS},
+            timeout=REQUEST_TIMEOUT,
+            **custom_options,
+        )
 
         if resp.status_code != 202:
             log_resp_info(resp)
-            LOGGER.warning("Unleash Client registration failed due to unexpected HTTP status code.")
+            LOGGER.warning(
+                "Unleash Client registration failed due to unexpected HTTP status code."
+            )
             return False
 
         LOGGER.info("Unleash Client successfully registered!")
 
         return True
     except (MissingSchema, InvalidSchema, InvalidHeader, InvalidURL) as exc:
-        LOGGER.exception("Unleash Client registration failed fatally due to exception: %s", exc)
+        LOGGER.exception(
+            "Unleash Client registration failed fatally due to exception: %s", exc
+        )
         raise exc
     except requests.RequestException as exc:
         LOGGER.exception("Unleash Client registration failed due to exception: %s", exc)

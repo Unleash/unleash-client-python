@@ -1,19 +1,21 @@
 from collections import ChainMap
 from datetime import datetime, timezone
+
 from UnleashClient.api import send_metrics
+from UnleashClient.cache import BaseCache
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
-from UnleashClient.cache import BaseCache
 
 
-def aggregate_and_send_metrics(url: str,
-                               app_name: str,
-                               instance_id: str,
-                               custom_headers: dict,
-                               custom_options: dict,
-                               features: dict,
-                               cache: BaseCache
-                               ) -> None:
+def aggregate_and_send_metrics(
+    url: str,
+    app_name: str,
+    instance_id: str,
+    custom_headers: dict,
+    custom_options: dict,
+    features: dict,
+    cache: BaseCache,
+) -> None:
     feature_stats_list = []
 
     for feature_name in features.keys():
@@ -23,7 +25,7 @@ def aggregate_and_send_metrics(url: str,
         feature_stats = {
             features[feature_name].name: {
                 "yes": features[feature_name].yes_count,
-                "no": features[feature_name].no_count
+                "no": features[feature_name].no_count,
             }
         }
 
@@ -36,8 +38,8 @@ def aggregate_and_send_metrics(url: str,
         "bucket": {
             "start": cache.get(METRIC_LAST_SENT_TIME).isoformat(),
             "stop": datetime.now(timezone.utc).isoformat(),
-            "toggles": dict(ChainMap(*feature_stats_list))
-        }
+            "toggles": dict(ChainMap(*feature_stats_list)),
+        },
     }
 
     if feature_stats_list:

@@ -19,14 +19,19 @@ build-local: clean build-package
 
 install:
 	pip install -U -r requirements.txt && \
-	./get-spec.sh && \
-	python setup.py install
+	python setup.py install && \
+	./get-spec.sh
 
 #-----------------------------------------------------------------------
 # Testing & Linting
 #-----------------------------------------------------------------------
+fmt:
+	black . && \
+	ruff UnleashClient tests --fix
+
 lint:
-	pylint ${PROJECT_NAME} && \
+	black . --check && \
+	ruff UnleashClient tests docs && \
 	mypy ${PROJECT_NAME} --install-types --non-interactive;
 
 pytest:

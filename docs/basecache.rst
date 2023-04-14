@@ -11,5 +11,5 @@ BaseCache
 	.. automethod:: get
 
 	.. automethod:: exists
-	
+
 	.. automethod:: destroy

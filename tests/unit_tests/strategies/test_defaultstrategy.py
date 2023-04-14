@@ -1,4 +1,5 @@
 import pytest
+
 from UnleashClient.strategies import Default
 
 

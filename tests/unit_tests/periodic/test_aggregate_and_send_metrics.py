@@ -1,13 +1,21 @@
 import json
-from datetime import datetime, timezone, timedelta
-import responses
-from tests.utilities.testing_constants import URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, IP_LIST
-from UnleashClient.constants import METRICS_URL, METRIC_LAST_SENT_TIME
-from UnleashClient.periodic_tasks import aggregate_and_send_metrics
-from UnleashClient.features import Feature
-from UnleashClient.strategies import RemoteAddress, Default
-from UnleashClient.cache import FileCache
+from datetime import datetime, timedelta, timezone
 
+import responses
+
+from tests.utilities.testing_constants import (
+    APP_NAME,
+    CUSTOM_HEADERS,
+    CUSTOM_OPTIONS,
+    INSTANCE_ID,
+    IP_LIST,
+    URL,
+)
+from UnleashClient.cache import FileCache
+from UnleashClient.constants import METRIC_LAST_SENT_TIME, METRICS_URL
+from UnleashClient.features import Feature
+from UnleashClient.periodic_tasks import aggregate_and_send_metrics
+from UnleashClient.strategies import Default, RemoteAddress
 
 FULL_METRICS_URL = URL + METRICS_URL
 print(FULL_METRICS_URL)
@@ -35,15 +43,17 @@ def test_aggregate_and_send_metrics():
 
     features = {"My Feature1": my_feature1, "My Feature 2": my_feature2}
 
-    aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache)
+    aggregate_and_send_metrics(
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache
+    )
 
     assert len(responses.calls) == 1
     request = json.loads(responses.calls[0].request.body)
 
-    assert len(request['bucket']["toggles"].keys()) == 2
-    assert request['bucket']["toggles"]["My Feature1"]["yes"] == 1
-    assert request['bucket']["toggles"]["My Feature1"]["no"] == 1
-    assert "My Feature3" not in request['bucket']["toggles"].keys()
+    assert len(request["bucket"]["toggles"].keys()) == 2
+    assert request["bucket"]["toggles"]["My Feature1"]["yes"] == 1
+    assert request["bucket"]["toggles"]["My Feature1"]["no"] == 1
+    assert "My Feature3" not in request["bucket"]["toggles"].keys()
     assert cache.get(METRIC_LAST_SENT_TIME) > start_time
 
 
@@ -62,6 +72,8 @@ def test_no_metrics():
 
     features = {"My Feature1": my_feature1}
 
-    aggregate_and_send_metrics(URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache)
+    aggregate_and_send_metrics(
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache
+    )
 
     assert len(responses.calls) == 0

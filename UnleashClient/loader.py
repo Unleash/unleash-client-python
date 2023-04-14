@@ -1,61 +1,76 @@
 from typing import Optional
-from UnleashClient.features.Feature import Feature
-from UnleashClient.variants.Variants import Variants
-from UnleashClient.constants import FEATURES_URL, FAILED_STRATEGIES
-from UnleashClient.utils import LOGGER
+
 from UnleashClient.cache import BaseCache
+from UnleashClient.constants import FAILED_STRATEGIES, FEATURES_URL
+from UnleashClient.features.Feature import Feature
+from UnleashClient.utils import LOGGER
+from UnleashClient.variants.Variants import Variants
 
 
 # pylint: disable=broad-except
-def _create_strategies(provisioning: dict,
-                       strategy_mapping: dict,
-                       cache: BaseCache,
-                       global_segments: Optional[dict]) -> list:
+def _create_strategies(
+    provisioning: dict,
+    strategy_mapping: dict,
+    cache: BaseCache,
+    global_segments: Optional[dict],
+) -> list:
     feature_strategies = []
 
     for strategy in provisioning["strategies"]:
         try:
             if "parameters" in strategy.keys():
-                strategy_provisioning = strategy['parameters']
+                strategy_provisioning = strategy["parameters"]
             else:
                 strategy_provisioning = {}
 
             if "constraints" in strategy.keys():
-                constraint_provisioning = strategy['constraints']
+                constraint_provisioning = strategy["constraints"]
             else:
                 constraint_provisioning = {}
 
             if "segments" in strategy.keys():
-                segment_provisioning = strategy['segments']
+                segment_provisioning = strategy["segments"]
             else:
                 segment_provisioning = []
 
-            feature_strategies.append(strategy_mapping[strategy['name']](
-                constraints=constraint_provisioning, parameters=strategy_provisioning, global_segments=global_segments, segment_ids=segment_provisioning
-            ))
+            feature_strategies.append(
+                strategy_mapping[strategy["name"]](
+                    constraints=constraint_provisioning,
+                    parameters=strategy_provisioning,
+                    global_segments=global_segments,
+                    segment_ids=segment_provisioning,
+                )
+            )
         except Exception as excep:
             strategies = cache.get(FAILED_STRATEGIES, [])
 
-            if strategy['name'] not in strategies:
-                LOGGER.warning("Failed to load strategy. This may be a problem with a custom strategy. Exception: %s", excep)
-                strategies.append(strategy['name'])
+            if strategy["name"] not in strategies:
+                LOGGER.warning(
+                    "Failed to load strategy. This may be a problem with a custom strategy. Exception: %s",
+                    excep,
+                )
+                strategies.append(strategy["name"])
 
             cache.set(FAILED_STRATEGIES, strategies)
 
     return feature_strategies
 
 
-def _create_feature(provisioning: dict,
-                    strategy_mapping: dict,
-                    cache: BaseCache,
-                    global_segments: Optional[dict]) -> Feature:
+def _create_feature(
+    provisioning: dict,
+    strategy_mapping: dict,
+    cache: BaseCache,
+    global_segments: Optional[dict],
+) -> Feature:
     if "strategies" in provisioning.keys():
-        parsed_strategies = _create_strategies(provisioning, strategy_mapping, cache, global_segments)
+        parsed_strategies = _create_strategies(
+            provisioning, strategy_mapping, cache, global_segments
+        )
     else:
         parsed_strategies = []
 
     if "variants" in provisioning:
-        variant = Variants(provisioning['variants'], provisioning['name'])
+        variant = Variants(provisioning["variants"], provisioning["name"])
     else:
         variant = None
 
@@ -68,10 +83,12 @@ def _create_feature(provisioning: dict,
     )
 
 
-def load_features(cache: BaseCache,
-                  feature_toggles: dict,
-                  strategy_mapping: dict,
-                  global_segments: Optional[dict] = None) -> None:
+def load_features(
+    cache: BaseCache,
+    feature_toggles: dict,
+    strategy_mapping: dict,
+    global_segments: Optional[dict] = None,
+) -> None:
     """
     Caching
 
@@ -83,8 +100,10 @@ def load_features(cache: BaseCache,
     # Pull raw provisioning from cache.
     feature_provisioning = cache.get(FEATURES_URL)
     if not feature_provisioning:
-        LOGGER.warning("Unleash client does not have cached features. "
-                       "Please make sure client can communicate with Unleash server!")
+        LOGGER.warning(
+            "Unleash client does not have cached features. "
+            "Please make sure client can communicate with Unleash server!"
+        )
         return
 
     # Parse provisioning
@@ -112,19 +131,24 @@ def load_features(cache: BaseCache,
 
         feature_for_update.enabled = parsed_features[feature]["enabled"]
         if strategies:
-            parsed_strategies = _create_strategies(parsed_features[feature], strategy_mapping, cache, global_segments)
+            parsed_strategies = _create_strategies(
+                parsed_features[feature], strategy_mapping, cache, global_segments
+            )
             feature_for_update.strategies = parsed_strategies
 
-        if 'variants' in parsed_features[feature]:
+        if "variants" in parsed_features[feature]:
             feature_for_update.variants = Variants(
-                parsed_features[feature]['variants'],
-                parsed_features[feature]['name']
+                parsed_features[feature]["variants"], parsed_features[feature]["name"]
             )
 
-        feature_for_update.impression_data = parsed_features[feature].get("impressionData", False)
+        feature_for_update.impression_data = parsed_features[feature].get(
+            "impressionData", False
+        )
 
     # Handle creation or deletions
     new_features = list(set(feature_names) - set(feature_toggles.keys()))
 
     for feature in new_features:
-        feature_toggles[feature] = _create_feature(parsed_features[feature], strategy_mapping, cache, global_segments)
+        feature_toggles[feature] = _create_feature(
+            parsed_features[feature], strategy_mapping, cache, global_segments
+        )

@@ -1,6 +1,6 @@
 # pylint: disable=invalid-name
-from UnleashClient.utils import normalized_hash
 from UnleashClient.strategies.Strategy import Strategy
+from UnleashClient.utils import normalized_hash
 
 
 class GradualRolloutUserId(Strategy):
@@ -13,4 +13,7 @@ class GradualRolloutUserId(Strategy):
         percentage = int(self.parameters["percentage"])
         activation_group = self.parameters["groupId"]
 
-        return percentage > 0 and normalized_hash(context["userId"], activation_group) <= percentage
+        return (
+            percentage > 0
+            and normalized_hash(context["userId"], activation_group) <= percentage
+        )

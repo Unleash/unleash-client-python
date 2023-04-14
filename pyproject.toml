@@ -15,21 +15,24 @@ addopts= """
 """
 log_file_level="INFO"
 
-[tool.pylint]
-load-plugins="pylint.extensions.no_self_use"
-
-[tool.pylint.messages_control]
-disable = [
-    "line-too-long",
-    "missing-class-docstring",
-    "missing-module-docstring",
-    "missing-function-docstring",
-    "logging-fstring-interpolation"
+[tool.ruff]
+select = [
+    "E",   # pycodestyle, error
+    "W",   # pycodestyle, warning
+    "F",   # pyflakes
+    "PL",  # pylint,
+    "YTT", # flake8-2020
+    "I"    # isort
 ]
-max-attributes = 25
+ignore = ["E501", "PLR2004"]
+
+fixable = ["I"]
+
+[tool.ruff.pylint]
 max-args = 25
-max-locals = 25
-extension-pkg-allow-list = ["mmh3"]
+
+[tool.isort]
+profile = "black"
 
 [tool.setuptools_scm]
 

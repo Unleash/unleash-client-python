@@ -1,16 +1,16 @@
-import time
-from UnleashClient import UnleashClient
-
 # ---
 import logging
 import sys
+import time
+
+from UnleashClient import UnleashClient
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 root.addHandler(handler)
 # ---
@@ -21,7 +21,7 @@ my_client = UnleashClient(
     app_name="pyIvan",
     instance_id="Sc5fv9aCyFPB4XcEFk-E",
     disable_metrics=True,
-    disable_registration=True
+    disable_registration=True,
 )
 
 my_client.initialize_client()

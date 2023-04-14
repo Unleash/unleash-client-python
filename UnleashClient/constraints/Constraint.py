@@ -1,9 +1,11 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
-from typing import Optional, Union
 from datetime import datetime
 from enum import Enum
-from dateutil.parser import parse, ParserError
+from typing import Optional, Union
+
 import semver
+from dateutil.parser import ParserError, parse
+
 from UnleashClient.utils import LOGGER, get_identifier
 
 
@@ -41,14 +43,27 @@ class Constraint:
 
         :param constraint_dict: From the strategy document.
         """
-        self.context_name: str = constraint_dict['contextName']
-        self.operator: ConstraintOperators = ConstraintOperators(constraint_dict['operator'].upper())
-        self.values = constraint_dict['values'] if 'values' in constraint_dict.keys() else []
-        self.value = constraint_dict['value'] if 'value' in constraint_dict.keys() else None
+        self.context_name: str = constraint_dict["contextName"]
+        self.operator: ConstraintOperators = ConstraintOperators(
+            constraint_dict["operator"].upper()
+        )
+        self.values = (
+            constraint_dict["values"] if "values" in constraint_dict.keys() else []
+        )
+        self.value = (
+            constraint_dict["value"] if "value" in constraint_dict.keys() else None
+        )
 
-        self.case_insensitive = constraint_dict['caseInsensitive'] if 'caseInsensitive' in constraint_dict.keys() else False
-        self.inverted = constraint_dict['inverted'] if 'inverted' in constraint_dict.keys() else False
-
+        self.case_insensitive = (
+            constraint_dict["caseInsensitive"]
+            if "caseInsensitive" in constraint_dict.keys()
+            else False
+        )
+        self.inverted = (
+            constraint_dict["inverted"]
+            if "inverted" in constraint_dict.keys()
+            else False
+        )
 
     # Methods to handle each operator type.
     def check_list_operators(self, context_value: str) -> bool:
@@ -72,11 +87,17 @@ class Constraint:
         return_value = False
 
         if self.operator == ConstraintOperators.STR_CONTAINS:
-            return_value = any([x in normalized_context_value for x in normalized_values])
+            return_value = any(
+                [x in normalized_context_value for x in normalized_values]
+            )
         elif self.operator == ConstraintOperators.STR_ENDS_WITH:
-            return_value = any([normalized_context_value.endswith(x) for x in normalized_values])
+            return_value = any(
+                [normalized_context_value.endswith(x) for x in normalized_values]
+            )
         elif self.operator == ConstraintOperators.STR_STARTS_WITH:
-            return_value = any([normalized_context_value.startswith(x) for x in normalized_values])
+            return_value = any(
+                [normalized_context_value.startswith(x) for x in normalized_values]
+            )
 
         return return_value
 
@@ -97,7 +118,6 @@ class Constraint:
         elif self.operator == ConstraintOperators.NUM_LTE:
             return_value = parsed_context <= parsed_value
         return return_value
-
 
     def check_date_operators(self, context_value: Union[datetime, str]) -> bool:
         return_value = False
@@ -120,7 +140,6 @@ class Constraint:
                 return_value = context_date < parsed_date
 
         return return_value
-
 
     def check_semver_operators(self, context_value: str) -> bool:
         return_value = False
@@ -150,7 +169,6 @@ class Constraint:
 
         return return_value
 
-
     def apply(self, context: dict = None) -> bool:
         """
         Returns true/false depending on constraint provisioning and context.
@@ -168,22 +186,54 @@ class Constraint:
                 context_value = datetime.now()
 
             if context_value is not None:
-                if self.operator in [ConstraintOperators.IN, ConstraintOperators.NOT_IN]:
-                    constraint_check = self.check_list_operators(context_value=context_value)
-                elif self.operator in [ConstraintOperators.STR_CONTAINS, ConstraintOperators.STR_ENDS_WITH, ConstraintOperators.STR_STARTS_WITH]:
-                    constraint_check = self.check_string_operators(context_value=context_value)
-                elif self.operator in [ConstraintOperators.NUM_EQ, ConstraintOperators.NUM_GT, ConstraintOperators.NUM_GTE, ConstraintOperators.NUM_LT, ConstraintOperators.NUM_LTE]:
-                    constraint_check = self.check_numeric_operators(context_value=context_value)
-                elif self.operator in [ConstraintOperators.DATE_AFTER, ConstraintOperators.DATE_BEFORE]:
-                    constraint_check = self.check_date_operators(context_value=context_value)
-                elif self.operator in [ConstraintOperators.SEMVER_EQ, ConstraintOperators.SEMVER_GT, ConstraintOperators.SEMVER_LT]:
-                    constraint_check = self.check_semver_operators(context_value=context_value)
+                if self.operator in [
+                    ConstraintOperators.IN,
+                    ConstraintOperators.NOT_IN,
+                ]:
+                    constraint_check = self.check_list_operators(
+                        context_value=context_value
+                    )
+                elif self.operator in [
+                    ConstraintOperators.STR_CONTAINS,
+                    ConstraintOperators.STR_ENDS_WITH,
+                    ConstraintOperators.STR_STARTS_WITH,
+                ]:
+                    constraint_check = self.check_string_operators(
+                        context_value=context_value
+                    )
+                elif self.operator in [
+                    ConstraintOperators.NUM_EQ,
+                    ConstraintOperators.NUM_GT,
+                    ConstraintOperators.NUM_GTE,
+                    ConstraintOperators.NUM_LT,
+                    ConstraintOperators.NUM_LTE,
+                ]:
+                    constraint_check = self.check_numeric_operators(
+                        context_value=context_value
+                    )
+                elif self.operator in [
+                    ConstraintOperators.DATE_AFTER,
+                    ConstraintOperators.DATE_BEFORE,
+                ]:
+                    constraint_check = self.check_date_operators(
+                        context_value=context_value
+                    )
+                elif self.operator in [
+                    ConstraintOperators.SEMVER_EQ,
+                    ConstraintOperators.SEMVER_GT,
+                    ConstraintOperators.SEMVER_LT,
+                ]:
+                    constraint_check = self.check_semver_operators(
+                        context_value=context_value
+                    )
             else:
                 # This is a special case in the client spec - so it's getting it's own handler here
-                if self.operator is ConstraintOperators.NOT_IN:
+                if self.operator is ConstraintOperators.NOT_IN:  # noqa: PLR5501
                     constraint_check = True
 
         except Exception as excep:  # pylint: disable=broad-except
-            LOGGER.info("Could not evaluate context %s!  Error: %s", self.context_name, excep)
+            LOGGER.info(
+                "Could not evaluate context %s!  Error: %s", self.context_name, excep
+            )
 
         return not constraint_check if self.inverted else constraint_check

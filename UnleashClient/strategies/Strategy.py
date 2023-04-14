@@ -1,6 +1,7 @@
 # pylint: disable=invalid-name,dangerous-default-value
-from typing import Iterator
 import warnings
+from typing import Iterator
+
 from UnleashClient.constraints import Constraint
 
 
@@ -17,12 +18,13 @@ class Strategy:
     :param parameters: The 'parameter' objects from the strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     """
 
-    def __init__(self,
-                 constraints: list = [],
-                 parameters: dict = {},
-                 segment_ids: list = None,
-                 global_segments: dict = None
-                 ) -> None:
+    def __init__(
+        self,
+        constraints: list = [],
+        parameters: dict = {},
+        segment_ids: list = None,
+        global_segments: dict = None,
+    ) -> None:
         self.parameters = parameters
         self.constraints = constraints
         self.segment_ids = segment_ids or []
@@ -32,7 +34,7 @@ class Strategy:
     def __call__(self, context: dict = None):
         warnings.warn(
             "unleash-client-python v3.x.x requires overriding the execute() method instead of the __call__() method.",
-            DeprecationWarning
+            DeprecationWarning,
         )
 
     def execute(self, context: dict = None) -> bool:
@@ -72,7 +74,9 @@ class Strategy:
         """
         return []
 
-    def apply(self, context: dict = None) -> bool:  # pylint: disable=unused-argument,no-self-use
+    def apply(
+        self, context: dict = None
+    ) -> bool:  # pylint: disable=unused-argument,no-self-use
         """
         Strategy implementation.
 

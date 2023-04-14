@@ -4,7 +4,7 @@ from UnleashClient.strategies.Strategy import Strategy
 
 class UserWithId(Strategy):
     def load_provisioning(self) -> list:
-        return [x.strip() for x in self.parameters["userIds"].split(',')]
+        return [x.strip() for x in self.parameters["userIds"].split(",")]
 
     def apply(self, context: dict = None) -> bool:
         """

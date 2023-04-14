@@ -1,17 +1,16 @@
-import time
-from UnleashClient import UnleashClient
-
-
 # ---
 import logging
 import sys
+import time
+
+from UnleashClient import UnleashClient
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 root.addHandler(handler)
 # ---
@@ -26,8 +25,5 @@ my_client.initialize_client()
 
 while True:
     time.sleep(10)
-    context = {
-        'userId': "1",
-        'sound': 'woof'
-    }
+    context = {"userId": "1", "sound": "woof"}
     print(f"ivantest: {my_client.is_enabled('ivantest', context)}")

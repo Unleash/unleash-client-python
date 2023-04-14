@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 import requests
 from fcache.cache import FileCache as _FileCache
+
 from UnleashClient.constants import FEATURES_URL, REQUEST_TIMEOUT
 
 
@@ -17,6 +18,7 @@ class BaseCache(abc.ABC):
     - Add your custom bootstrap method.
     - You must set the `bootstrapped` attribute to True after configuration is set.
     """
+
     bootstrapped = False
 
     @abc.abstractmethod
@@ -71,6 +73,7 @@ class FileCache(BaseCache):
     :param name: Name of cache.
     :param directory: Location to create cache.  If empty, will use filecache default.
     """
+
     def __init__(self, name: str, directory: Optional[str] = None):
         self._cache = _FileCache(name, app_cache_dir=directory)
 
@@ -93,11 +96,13 @@ class FileCache(BaseCache):
 
         :param initial_configuration_file: Path to document containing initial configuration.  Must be JSON.
         """
-        with open(initial_config_file, "r",  encoding="utf8") as bootstrap_file:
+        with open(initial_config_file, "r", encoding="utf8") as bootstrap_file:
             self.set(FEATURES_URL, json.loads(bootstrap_file.read()))
             self.bootstrapped = True
 
-    def bootstrap_from_url(self, initial_config_url: str, headers: Optional[dict] = None) -> None:
+    def bootstrap_from_url(
+        self, initial_config_url: str, headers: Optional[dict] = None
+    ) -> None:
         """
         Loads initial Unleash configuration from a url.
 
@@ -106,7 +111,9 @@ class FileCache(BaseCache):
         :param initial_configuration_url: Url that returns document containing initial configuration.  Must return JSON.
         :param headers: Headers to use when GETing the initial configuration URL.
         """
-        response = requests.get(initial_config_url, headers=headers, timeout=REQUEST_TIMEOUT)
+        response = requests.get(
+            initial_config_url, headers=headers, timeout=REQUEST_TIMEOUT
+        )
         self.set(FEATURES_URL, response.json())
         self.bootstrapped = True
 

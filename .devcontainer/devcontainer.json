@@ -42,7 +42,8 @@
 				"ritwickdey.LiveServer",
 				"ms-vscode.makefile-tools",
 				"bungcip.better-toml",
-				"ms-python.vscode-pylance"
+				"ms-python.vscode-pylance",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	},
@@ -60,6 +61,10 @@
 	},
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "vscode",
+
+	// Merge .gitconfig
+	"remote": {
+
+	}
 }
-    
