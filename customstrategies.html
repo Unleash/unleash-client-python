@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Strategies &mdash; unleash-client-python  documentation</title>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.6.0
+                5.6.1.dev1+g699ca31
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -100,9 +99,9 @@
            <div itemprop="articleBody">
              
   <section id="custom-strategies">
-<h1>Custom Strategies<a class="headerlink" href="#custom-strategies" title="Permalink to this headline"></a></h1>
+<h1>Custom Strategies<a class="headerlink" href="#custom-strategies" title="Permalink to this heading"></a></h1>
 <section id="implementing-a-custom-strategy">
-<h2>Implementing a custom strategy<a class="headerlink" href="#implementing-a-custom-strategy" title="Permalink to this headline"></a></h2>
+<h2>Implementing a custom strategy<a class="headerlink" href="#implementing-a-custom-strategy" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Set up a custom strategy in Unleash.  Note down the name - you’ll need this exact value to ensure we’re loading the custom strategy correctly.</p></li>
 <li><p>Create a custom strategy object by sub-classing the Strategy object.</p></li>
@@ -144,7 +143,7 @@
 </ul>
 </section>
 <section id="migrating-your-custom-strategies-from-strategy-from-v2-x-x-to-v3-x-x-for-fun-and-profit">
-<h2>Migrating your custom strategies from Strategy from v2.x.x to v3.x.x (for fun and profit)<a class="headerlink" href="#migrating-your-custom-strategies-from-strategy-from-v2-x-x-to-v3-x-x-for-fun-and-profit" title="Permalink to this headline"></a></h2>
+<h2>Migrating your custom strategies from Strategy from v2.x.x to v3.x.x (for fun and profit)<a class="headerlink" href="#migrating-your-custom-strategies-from-strategy-from-v2-x-x-to-v3-x-x-for-fun-and-profit" title="Permalink to this heading"></a></h2>
 <p>To get support for for constraints in your custom strategy, take the following steps:</p>
 <ul class="simple">
 <li><p>Instead of overriding the <cite>__call__()</cite> method, override the <cite>apply()</cite> method.  (In practice, you can just rename the method!)</p></li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Running with Celery &mdash; unleash-client-python  documentation</title>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.6.0
+                5.6.1.dev1+g699ca31
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -96,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="running-with-celery">
-<h1>Running with Celery<a class="headerlink" href="#running-with-celery" title="Permalink to this headline"></a></h1>
+<h1>Running with Celery<a class="headerlink" href="#running-with-celery" title="Permalink to this heading"></a></h1>
 <p>To use this client with Celery, call the <cite>initialize_client</cite> method in the <cite>worker_process_init</cite> event. If you don’t initialize the client inside the <cite>worker_process_init</cite> event, the client will not poll for updates. As such, the client will not update its feature toggles, even when changes are made server side.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">UnleashClient</span> <span class="kn">import</span> <span class="n">UnleashClient</span>
 <span class="kn">from</span> <span class="nn">celery.signals</span> <span class="kn">import</span> <span class="n">worker_process_init</span>

@@ -7,7 +7,7 @@ FileCache
 	.. automethod:: bootstrap_from_dict
 
 	.. automethod:: bootstrap_from_file
-	
+
 	.. automethod:: bootstrap_from_url
 
 	.. automethod:: set
@@ -17,5 +17,5 @@ FileCache
 	.. automethod:: get
 
 	.. automethod:: exists
-	
+
 	.. automethod:: destroy

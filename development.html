@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Development &mdash; unleash-client-python  documentation</title>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.6.0
+                5.6.1.dev1+g699ca31
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -105,24 +104,26 @@
            <div itemprop="articleBody">
              
   <section id="development">
-<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline"></a></h1>
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading"></a></h1>
 <p>Contributions welcome!</p>
 <p>Here are some notes about common tools and tasks you’ll run into when working on <cite>unleash-client-python</cite>.</p>
 <section id="tooling">
-<h2>Tooling<a class="headerlink" href="#tooling" title="Permalink to this headline"></a></h2>
+<h2>Tooling<a class="headerlink" href="#tooling" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/pyenv/pyenv">Pyenv</a> for managing Python versions.</p></li>
+<li><p><a class="reference external" href="https://github.com/charliermarsh/ruff">ruff</a> for linting.</p></li>
+<li><p><a class="reference external" href="https://github.com/psf/black">black</a> for formatting.</p></li>
 </ul>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Activate your virtualenv solution (e.g. <cite>source activate YOUR_VIRTUALENV</cite>).</p></li>
 <li><p>Run linting &amp; tests: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code></p></li>
 </ol>
 </section>
 <section id="running-tox-locally">
-<h2>Running Tox locally<a class="headerlink" href="#running-tox-locally" title="Permalink to this headline"></a></h2>
+<h2>Running Tox locally<a class="headerlink" href="#running-tox-locally" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Install Python versions for each supported version.</p></li>
 <li><p>Deactivate your local virtualenv (if it’s activated).</p></li>
@@ -132,18 +133,18 @@
 </ol>
 </section>
 <section id="using-devcontainer">
-<h2>Using devcontainer<a class="headerlink" href="#using-devcontainer" title="Permalink to this headline"></a></h2>
+<h2>Using devcontainer<a class="headerlink" href="#using-devcontainer" title="Permalink to this heading"></a></h2>
 <p>This SDK ships with a devcontainer to make local (or cloud!) environment fast &amp; easy!</p>
 </section>
 <section id="upgrading-the-client-specification-tests">
-<h2>Upgrading the Client Specification Tests<a class="headerlink" href="#upgrading-the-client-specification-tests" title="Permalink to this headline"></a></h2>
+<h2>Upgrading the Client Specification Tests<a class="headerlink" href="#upgrading-the-client-specification-tests" title="Permalink to this heading"></a></h2>
 <p>This SDK implements tests for the <a class="reference external" href="https://github.com/Unleash/client-specification">Unleash Client Specifications</a>,
 when adding a new feature set that’s covered by the client specs, it’s a good idea to also upgrade the client specifications.
 This can be done by updating the <code class="docutils literal notranslate"><span class="pre">CLIENT_SPEC_VERSION</span></code> constant found in <code class="docutils literal notranslate"><span class="pre">UnleashClient/constants.py</span></code>.
 This constant should match the latest tag in the Client Specifications repository.</p>
 </section>
 <section id="release">
-<h2>Release<a class="headerlink" href="#release" title="Permalink to this headline"></a></h2>
+<h2>Release<a class="headerlink" href="#release" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Land all your PRs on <cite>main</cite>!</p></li>
 <li><p>If new configuration is added, update <a class="reference external" href="https://github.com/Unleash/Flask-Unleash">Flask-Unleash</a> config.</p></li>
@@ -155,7 +156,7 @@ This constant should match the latest tag in the Client Specifications repositor
 </ol>
 </section>
 <section id="snippets">
-<h2>Snippets<a class="headerlink" href="#snippets" title="Permalink to this headline"></a></h2>
+<h2>Snippets<a class="headerlink" href="#snippets" title="Permalink to this heading"></a></h2>
 <p>Serving docs from WSL!</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>unleash-docs<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/_build/html:/web<span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span>halverneus/static-file-server:latest
 </pre></div>

@@ -10,6 +10,8 @@ Tooling
 #######################################
 
 - `Pyenv <https://github.com/pyenv/pyenv>`_ for managing Python versions.
+- `ruff <https://github.com/charliermarsh/ruff>`_ for linting.
+- `black <https://github.com/psf/black>`_ for formatting.
 
 Testing
 #######################################

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Running with WSGI &mdash; unleash-client-python  documentation</title>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +33,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                5.6.0
+                5.6.1.dev1+g699ca31
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -96,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="running-with-wsgi">
-<h1>Running with WSGI<a class="headerlink" href="#running-with-wsgi" title="Permalink to this headline"></a></h1>
+<h1>Running with WSGI<a class="headerlink" href="#running-with-wsgi" title="Permalink to this heading"></a></h1>
 <p>WSGI is a fairly common way of running webserver applications for both Flask and Django, if you’re running in WSGI there are a few caveats that you should be aware of:</p>
 <ul class="simple">
 <li><p>By default WSGI removes the GIL and disables threading, this SDK requires threads to work for the background updates of feature toggles, without it, your application will run but will not reflect updates to state of feature toggles when changed. To get around this, you’ll need to enable threading, you can do this by setting enable-threads in your WSGI configuration</p></li>
