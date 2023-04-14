@@ -6,5 +6,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 ARG NODE_VERSION="none"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
+# Set up GPG
+RUN apt-get update && apt-get install gnupg2 -y
+
 # Update pip
 RUN pip install -U pip
