@@ -20,7 +20,7 @@ build-local: clean build-package
 install:
 	pip install -U -r requirements.txt && \
 	python setup.py install && \
-	./get-spec.sh
+	./scripts/get-spec.sh
 
 #-----------------------------------------------------------------------
 # Testing & Linting

@@ -1,34 +1,40 @@
 # App packages
-importlib_metadata
-requests
-fcache
-mmhash3
 APScheduler
+fcache
+importlib_metadata
+mmhash3
 python-dateutil
+requests
 semver
 
 # Development packages
+# - Testing
+black
 coveralls
+isort
 mimesis
 mypy
-black
-ruff
-isort
 pytest
 pytest-cov
-pytest-flake8
 pytest-html
 pytest-mock
-pytest-rerunfailures
-pytest-runner
 pytest-xdist
 responses
+ruff
+tox
+
+# - Testing ()
+blinker
+
+# - Tooling
 setuptools_scm
+twine
+
+# - Docs
+enum-tools[sphinx]
+m2r2
 sphinx
 sphinx-rtd-theme
-m2r2
-tox
+
+# - Typing
 types-requests
-twine
-blinker
-enum-tools[sphinx]
