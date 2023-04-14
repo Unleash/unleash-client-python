@@ -13,4 +13,3 @@ UnleashClient
 	.. automethod:: is_enabled
 
 	.. automethod:: get_variant
-
