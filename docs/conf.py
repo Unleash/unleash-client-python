@@ -12,7 +12,7 @@
 
 from importlib_metadata import version
 
-import UnleashClient
+import UnleashClient  # noqa: F401
 
 # -- Project information -----------------------------------------------------
 
