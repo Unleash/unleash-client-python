@@ -97,13 +97,22 @@ ENV/
 # Rope project settings
 .ropeproject
 
-#Custom
+# Custom
+
+# - IDEs
 .idea
 .vscode
-assets
+
+# - Linting
+.ruff_cache
+
+# - Testing
 results*
+tests/specification_tests/client-specification
+
+# - Docs
+assets
 site
 test_results
 _static
 _templates
-tests/specification_tests/client-specification
