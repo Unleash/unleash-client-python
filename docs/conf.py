@@ -10,8 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import UnleashClient
 from importlib_metadata import version
+
+import UnleashClient
 
 # -- Project information -----------------------------------------------------
 
