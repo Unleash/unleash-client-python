@@ -27,6 +27,7 @@ tox
 blinker
 
 # - Tooling
+build
 setuptools_scm
 twine
 

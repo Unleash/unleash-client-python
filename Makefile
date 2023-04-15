@@ -19,7 +19,7 @@ build-local: clean build-package
 
 install:
 	pip install -U -r requirements.txt && \
-	python setup.py install && \
+	pip install . && \
 	./scripts/get-spec.sh
 
 #-----------------------------------------------------------------------
@@ -54,7 +54,7 @@ clean:
 	rm -rf UnleashClient.egg-info;
 
 build-package:
-	python setup.py sdist bdist_wheel
+	python -m build
 
 upload:
 	twine upload dist/*
