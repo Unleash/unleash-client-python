@@ -14,9 +14,10 @@ coveralls
 isort
 mimesis
 mypy
+pylint
 pytest
 pytest-cov
-pytest-html
+pytest-html==4.0.0rc4
 pytest-mock
 pytest-xdist
 responses

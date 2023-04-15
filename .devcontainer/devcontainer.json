@@ -19,19 +19,18 @@
 		"vscode": {
 			// Set *default* container specific settings.json values on container create.
 			"settings": {
-				"python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-				"python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
+				"python.defaultInterpreterPath": "/home/vscode/.pyenv/shims/python",
+				"python.formatting.blackPath": "/home/vscode/.pyenv/shims/black",
 				"python.linting.enabled": true,
 				"python.linting.pylintEnabled": true,
-				"python.linting.flake8Path": "${workspaceFolder}/.venv/bin/flake8",
-				"python.linting.mypyPath": "${workspaceFolder}/.venv/bin/mypy",
-				"python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
+				"python.linting.flake8Path": "/home/vscode/.pyenv/shims/flake8",
+				"python.linting.mypyPath": "/home/vscode/.pyenv/shims/mypy",
+				"python.linting.pylintPath": "/home/vscode/.pyenv/shims/pylint",
 				"python.testing.pytestArgs": [
 					"tests"
 				],
 				"python.testing.unittestEnabled": false,
-				"python.testing.pytestEnabled": true,
-				"python.venvPath": "${workspaceFolder}/.venv"
+				"python.testing.pytestEnabled": true
 			},
 
 			// Add the IDs of extensions you want installed when the container is created.

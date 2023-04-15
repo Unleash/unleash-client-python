@@ -2,6 +2,8 @@ SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = UnleashClient
 
+.PHONY: sphinx
+
 #-----------------------------------------------------------------------
 # Rules of Rules : Grouped rules that _doathing_
 #-----------------------------------------------------------------------
@@ -12,6 +14,8 @@ precommit: clean generate-requirements
 build: clean build-package upload
 
 build-local: clean build-package
+
+docs: docker-docs-stop sphinx docker-docs
 
 #-----------------------------------------------------------------------
 # Install
@@ -58,3 +62,17 @@ build-package:
 
 upload:
 	twine upload dist/*
+
+#-----------------------------------------------------------------------
+# Docs
+#-----------------------------------------------------------------------
+docker-docs-stop:
+	docker stop unleash-docs | true
+
+sphinx:
+	cd docs; \
+	rm -rf _build; \
+	make html;
+
+docker-docs:
+	docker run -d --name unleash-docs --rm -v `pwd`/docs/_build/html:/web -p 8080:8080 halverneus/static-file-server:latest
