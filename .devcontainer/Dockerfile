@@ -11,3 +11,30 @@ RUN apt-get update && apt-get install gnupg2 -y
 
 # Update pip
 RUN pip install -U pip
+
+# Install pyenv
+USER vscode
+WORKDIR /home/vscode
+
+RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
+
+ENV PYENV_ROOT="/home/vscode/.pyenv"
+ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+
+RUN pyenv install 3.7 3.8 3.9 3.10 3.11
+RUN pyenv local 3.7 3.8 3.9 3.10 3.11
+RUN pyenv global ${VARIANT}
+
+# Set up pyenv-virtualenv
+RUN git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+
+# Modify dotfile
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+RUN echo 'export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+RUN echo 'export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+RUN echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+RUN echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+# Back to root
+USER root

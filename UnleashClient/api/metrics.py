@@ -31,7 +31,7 @@ def send_metrics(
             data=json.dumps(request_body),
             headers={**custom_headers, **APPLICATION_HEADERS},
             timeout=REQUEST_TIMEOUT,
-            **custom_options
+            **custom_options,
         )
 
         if resp.status_code != 202:

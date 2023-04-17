@@ -11,7 +11,7 @@ Example code using `blinker <https://github.com/pallets-eco/blinker>`_:
 
 .. code-block:: python
 
-    from blinker import ignal
+    from blinker import signal
     from UnleashClient import UnleashClient
     from UnleashClient.events import UnleashEvent
 

@@ -1,3 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm[toml]>=6.2"]
+
+[project]
+name = "UnleashClient"
+authors = [
+    { name = "Ivan Lee", email = "ivanklee86@gmail.com" },
+]
+description = "Python client for the Unleash feature toggle system!"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Typing :: Typed",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+
+[project.urls]
+Homepage = "https://github.com/Unleash/unleash-client-python"
+Documentation = "https://docs.getunleash.io/unleash-client-python"
+Changelog = "https://github.com/Unleash/unleash-client-python/blob/main/CHANGELOG.md"
+Repository = "https://github.com/Unleash/unleash-client-python"
+Issues = "https://github.com/Unleash/unleash-client-python/issues"
+
+[tool.isort]
+profile = "black"
+
 [tool.mypy]
 strict_optional = false
 ignore_missing_imports = true
@@ -31,10 +65,10 @@ fixable = ["I"]
 [tool.ruff.pylint]
 max-args = 25
 
-[tool.isort]
-profile = "black"
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages]
+find = {}
 
 [tool.setuptools_scm]
-
-[build-system]
-requires = ["setuptools", "wheel", "setuptools_scm>=6.2"]
