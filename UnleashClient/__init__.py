@@ -139,7 +139,7 @@ class UnleashClient:
                 "If using a custom scheduler, you must specify a executor."
             )
         else:
-            if not scheduler:
+            if not scheduler and scheduler_executor:
                 LOGGER.warning(
                     "scheduler_executor should only be used with a custom scheduler."
                 )
