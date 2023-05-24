@@ -77,10 +77,12 @@ def test_select_variation_variation(test_feature_variants):
     assert selected_variant["enabled"]
     assert selected_variant["name"] == "VarB"
 
+
 def test_variant_metrics_with_existing_variant(test_feature_variants):
     for iteration in range(1, 7):
         test_feature_variants.get_variant({"userId": "2"})
         assert test_feature_variants.variants_counts["VarB"] == 1
+
 
 def test_variant_metrics_with_disabled_feature(test_feature_variants):
     assert not test_feature_variants.is_enabled()
@@ -88,10 +90,12 @@ def test_variant_metrics_with_disabled_feature(test_feature_variants):
         test_feature_variants.get_variant()
         assert test_feature_variants.variants_counts["disabled"] == 1 + iteration
 
+
 def test_variant_metrics_feature_has_no_variants(test_feature_variants):
     for iteration in range(1, 7):
         test_feature.get_variant()
         assert test_feature.variants_counts["disabled"] == 1 + iteration
+
 
 ## remaining test cases:
 ## 4. getting a disabled variant increments the count (when the feature doesn't exist)
