@@ -78,6 +78,14 @@ def test_select_variation_variation(test_feature_variants):
     assert selected_variant["name"] == "VarB"
 
 
+def test_variant_metrics_are_reset(test_feature_variants):
+    test_feature_variants.get_variant({"userId": "2"})
+    assert test_feature_variants.variant_counts["VarB"] == 1
+
+    test_feature_variants.reset_stats()
+    assert test_feature_variants.variant_counts == {}
+
+
 def test_variant_metrics_with_existing_variant(test_feature_variants):
     for iteration in range(1, 7):
         test_feature_variants.get_variant({"userId": "2"})

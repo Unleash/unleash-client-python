@@ -26,6 +26,7 @@ def aggregate_and_send_metrics(
             features[feature_name].name: {
                 "yes": features[feature_name].yes_count,
                 "no": features[feature_name].no_count,
+                "variants": features[feature_name].variant_counts
             }
         }
 
