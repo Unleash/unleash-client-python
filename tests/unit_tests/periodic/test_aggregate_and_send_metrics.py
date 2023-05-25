@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import responses
 
+from tests.utilities.mocks.mock_variants import VARIANTS
 from tests.utilities.testing_constants import (
     APP_NAME,
     CUSTOM_HEADERS,
@@ -16,6 +17,7 @@ from UnleashClient.constants import METRIC_LAST_SENT_TIME, METRICS_URL
 from UnleashClient.features import Feature
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics
 from UnleashClient.strategies import Default, RemoteAddress
+from UnleashClient.variants import Variants
 
 FULL_METRICS_URL = URL + METRICS_URL
 print(FULL_METRICS_URL)
@@ -33,9 +35,16 @@ def test_aggregate_and_send_metrics():
     my_feature1.yes_count = 1
     my_feature1.no_count = 1
 
-    my_feature2 = Feature("My Feature2", True, strategies)
+    my_feature2 = Feature("My Feature2", True, strategies, variants = Variants(VARIANTS, "My Feature2"))
     my_feature2.yes_count = 2
     my_feature2.no_count = 2
+
+    feature2_variant_counts ={
+        "VarA": 56,
+        "VarB": 0,
+        "VarC": 4,
+    }
+    my_feature2.variant_counts = feature2_variant_counts
 
     my_feature3 = Feature("My Feature3", True, strategies)
     my_feature3.yes_count = 0
@@ -53,6 +62,7 @@ def test_aggregate_and_send_metrics():
     assert len(request["bucket"]["toggles"].keys()) == 2
     assert request["bucket"]["toggles"]["My Feature1"]["yes"] == 1
     assert request["bucket"]["toggles"]["My Feature1"]["no"] == 1
+    assert request["bucket"]["toggles"]["My Feature2"]["variants"] == feature2_variant_counts
     assert "My Feature3" not in request["bucket"]["toggles"].keys()
     assert cache.get(METRIC_LAST_SENT_TIME) > start_time
 
