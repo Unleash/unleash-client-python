@@ -65,7 +65,7 @@ class Feature:
         """
         Count a specific variant.
 
-        :param variant_name:
+        :param variant_name: The name of the variant to count.
         :return:
         """
         self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
