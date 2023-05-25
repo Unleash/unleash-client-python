@@ -36,6 +36,8 @@ class Feature:
         # Stats tracking
         self.yes_count = 0
         self.no_count = 0
+        ## { [ variant name ]: number }
+        self.variant_counts = {}
 
     def reset_stats(self) -> None:
         """
@@ -57,6 +59,15 @@ class Feature:
             self.yes_count += 1
         else:
             self.no_count += 1
+
+    def count_variant(self, variant_name: str) -> None:
+        """
+        Count a specific variant.
+
+        :param variant_name:
+        :return:
+        """
+        self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
     def is_enabled(
         self, context: dict = None, default_value: bool = False
