@@ -35,11 +35,13 @@ def test_aggregate_and_send_metrics():
     my_feature1.yes_count = 1
     my_feature1.no_count = 1
 
-    my_feature2 = Feature("My Feature2", True, strategies, variants = Variants(VARIANTS, "My Feature2"))
+    my_feature2 = Feature(
+        "My Feature2", True, strategies, variants=Variants(VARIANTS, "My Feature2")
+    )
     my_feature2.yes_count = 2
     my_feature2.no_count = 2
 
-    feature2_variant_counts ={
+    feature2_variant_counts = {
         "VarA": 56,
         "VarB": 0,
         "VarC": 4,
@@ -62,7 +64,10 @@ def test_aggregate_and_send_metrics():
     assert len(request["bucket"]["toggles"].keys()) == 2
     assert request["bucket"]["toggles"]["My Feature1"]["yes"] == 1
     assert request["bucket"]["toggles"]["My Feature1"]["no"] == 1
-    assert request["bucket"]["toggles"]["My Feature2"]["variants"] == feature2_variant_counts
+    assert (
+        request["bucket"]["toggles"]["My Feature2"]["variants"]
+        == feature2_variant_counts
+    )
     assert "My Feature3" not in request["bucket"]["toggles"].keys()
     assert cache.get(METRIC_LAST_SENT_TIME) > start_time
 
