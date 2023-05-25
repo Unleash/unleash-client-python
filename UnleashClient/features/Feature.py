@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name
-from typing import Dict, Optional
+from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
 from UnleashClient.utils import LOGGER
@@ -117,5 +117,5 @@ class Feature:
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 
-        self.count_variant(variant["name"])
+        self.count_variant(cast(str, variant["name"]))
         return variant
