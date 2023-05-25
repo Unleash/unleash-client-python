@@ -47,6 +47,7 @@ class Feature:
         """
         self.yes_count = 0
         self.no_count = 0
+        self.variant_counts = {}
 
     def increment_stats(self, result: bool) -> None:
         """
