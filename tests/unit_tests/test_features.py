@@ -104,7 +104,3 @@ def test_variant_metrics_feature_has_no_variants(test_feature):
     for iteration in range(1, 7):
         test_feature.get_variant({})
         assert test_feature.variant_counts["disabled"] == iteration
-
-
-## remaining test cases:
-## 4. getting a disabled variant increments the count (when the feature doesn't exist)
