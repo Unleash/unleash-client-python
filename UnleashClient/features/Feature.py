@@ -37,7 +37,7 @@ class Feature:
         self.yes_count = 0
         self.no_count = 0
         ## { [ variant name ]: number }
-        self.variant_counts = {}
+        self.variant_counts: Dict[str, int] = {}
 
     def reset_stats(self) -> None:
         """
