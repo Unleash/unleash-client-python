@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name
-from typing import Optional
+from typing import Dict, Optional
 
 from UnleashClient.constants import DISABLED_VARIATION
 from UnleashClient.utils import LOGGER
