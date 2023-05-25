@@ -117,4 +117,5 @@ class Feature:
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 
+        self.count_variant(variant["name"])
         return variant
