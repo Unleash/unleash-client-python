@@ -83,7 +83,7 @@ def test_variant_metrics_are_reset(test_feature_variants):
     assert test_feature_variants.variant_counts["VarB"] == 1
 
     test_feature_variants.reset_stats()
-    assert test_feature_variants.variant_counts == {}
+    assert not test_feature_variants.variant_counts
 
 
 def test_variant_metrics_with_existing_variant(test_feature_variants):
