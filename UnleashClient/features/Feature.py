@@ -61,7 +61,7 @@ class Feature:
         else:
             self.no_count += 1
 
-    def count_variant(self, variant_name: str) -> None:
+    def _count_variant(self, variant_name: str) -> None:
         """
         Count a specific variant.
 
@@ -117,5 +117,5 @@ class Feature:
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 
-        self.count_variant(cast(str, variant["name"]))
+        self._count_variant(cast(str, variant["name"]))
         return variant
