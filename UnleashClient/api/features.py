@@ -72,6 +72,7 @@ def get_feature_toggles(
             )  # pylint: disable=broad-exception-raised
 
         etag = ""
+        print("headers", resp.headers.keys(), "etag value", resp.headers["etag"])
         if "etag" in resp.headers.keys():
             etag = resp.headers["etag"]
 
