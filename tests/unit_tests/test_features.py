@@ -76,3 +76,31 @@ def test_select_variation_variation(test_feature_variants):
     selected_variant = test_feature_variants.get_variant({"userId": "2"})
     assert selected_variant["enabled"]
     assert selected_variant["name"] == "VarB"
+
+
+def test_variant_metrics_are_reset(test_feature_variants):
+    test_feature_variants.get_variant({"userId": "2"})
+    assert test_feature_variants.variant_counts["VarB"] == 1
+
+    test_feature_variants.reset_stats()
+    assert not test_feature_variants.variant_counts
+
+
+def test_variant_metrics_with_existing_variant(test_feature_variants):
+    for iteration in range(1, 7):
+        test_feature_variants.get_variant({"userId": "2"})
+        assert test_feature_variants.variant_counts["VarB"] == iteration
+
+
+def test_variant_metrics_with_disabled_feature(test_feature_variants):
+    test_feature_variants.enabled = False
+    assert not test_feature_variants.is_enabled()
+    for iteration in range(1, 7):
+        test_feature_variants.get_variant({})
+        assert test_feature_variants.variant_counts["disabled"] == iteration
+
+
+def test_variant_metrics_feature_has_no_variants(test_feature):
+    for iteration in range(1, 7):
+        test_feature.get_variant({})
+        assert test_feature.variant_counts["disabled"] == iteration
