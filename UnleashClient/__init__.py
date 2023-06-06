@@ -351,7 +351,9 @@ class UnleashClient:
                 feature_check = feature.is_enabled(context)
 
                 if feature.only_for_metrics:
-                    return self._get_fallback_value(fallback_function, feature_name, context)
+                    return self._get_fallback_value(
+                        fallback_function, feature_name, context
+                    )
 
                 try:
                     if self.unleash_event_callback and feature.impression_data:
@@ -391,7 +393,9 @@ class UnleashClient:
                 # Use the feature's is_enabled method to count the call
                 new_feature.is_enabled(context)
 
-                return self._get_fallback_value(fallback_function, feature_name, context)
+                return self._get_fallback_value(
+                    fallback_function, feature_name, context
+                )
 
         else:
             LOGGER.log(

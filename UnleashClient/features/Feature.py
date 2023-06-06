@@ -40,7 +40,7 @@ class Feature:
         self.variant_counts: Dict[str, int] = {}
 
         # Whether the feature exists only for tracking metrics or not.
-        self.only_for_metrics = False;
+        self.only_for_metrics = False
 
     def reset_stats(self) -> None:
         """
