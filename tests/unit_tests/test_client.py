@@ -408,6 +408,7 @@ def test_uc_metrics(unleash_client):
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["testFlag"]["yes"] == 1
 
+
 @responses.activate
 def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     # Set up API
@@ -451,6 +452,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
     assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+
 
 @responses.activate
 def test_uc_disabled_registration(unleash_client_toggle_only):
