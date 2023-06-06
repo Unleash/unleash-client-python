@@ -271,6 +271,14 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     assert unleash_client.is_enabled("testFlag", fallback_function=good_fallback)
     assert fallback_spy.call_count == 0
 
+def test_uc_tracks_metrics_even_when_not_initialized(unleash_client):
+    assert not unleash_client.is_enabled("testFlag")
+    assert unleash_client.features["testFlag"]["no"] == 1
+
+    unleash_client.get_variant("testFlag")
+    assert unleash_client.features["testFlag"]["no"] == 2
+    assert unleash_client.features["testFlag"]["variants"]["disabled"] == 1
+
 
 @responses.activate
 def test_uc_dirty_cache(unleash_client_nodestroy):
