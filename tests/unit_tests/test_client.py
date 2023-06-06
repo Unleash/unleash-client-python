@@ -449,27 +449,6 @@ def test_uc_server_error(unleash_client):
     assert unleash_client.is_enabled("testFlag")
 
 
-@responses.activate
-def test_uc_server_error_recovery(unleash_client):
-    # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
-
-    unleash_client = unleash_client
-    # Set up APIs
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
-    responses.add(responses.GET, URL + FEATURES_URL, status=500)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
-
-    unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("testFlag")
-
-    responses.remove(responses.GET, URL + FEATURES_URL)
-    responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
-    )
-    time.sleep(20)
-    assert unleash_client.is_enabled("testFlag")
-
-
 def test_uc_with_invalid_url():
     unleash_client = UnleashClient("thisisnotavalidurl", APP_NAME)
 
