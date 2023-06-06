@@ -350,6 +350,9 @@ class UnleashClient:
                 feature = self.features[feature_name]
                 feature_check = feature.is_enabled(context)
 
+                if feature.only_for_metrics:
+                    return self._get_fallback_value(fallback_function, feature_name, context)
+
                 try:
                     if self.unleash_event_callback and feature.impression_data:
                         event = UnleashEvent(
@@ -382,14 +385,14 @@ class UnleashClient:
                     excep,
                 )
                 # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature(feature_name, False, [])
+                new_feature = Feature.metrics_only_feature(feature_name)
                 self.features[feature_name] = new_feature
 
                 # Use the feature's is_enabled method to count the call
-                return new_feature.is_enabled(
-                    context,
-                    self._get_fallback_value(fallback_function, feature_name, context),
-                )
+                new_feature.is_enabled(context)
+
+                return self._get_fallback_value(fallback_function, feature_name, context)
+
         else:
             LOGGER.log(
                 self.unleash_verbose_log_level,
@@ -458,7 +461,7 @@ class UnleashClient:
                 )
 
                 # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature(feature_name, False, [])
+                new_feature = Feature.metrics_only_feature(feature_name)
                 self.features[feature_name] = new_feature
 
                 # Use the feature's is_enabled method to count the call

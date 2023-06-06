@@ -145,6 +145,11 @@ def load_features(
             "impressionData", False
         )
 
+        # If the feature had previously been added to the features list only for
+        # tracking, indicate that it is now a real feature that should be
+        # evaluated properly.
+        feature_for_update.only_for_metrics = False
+
     # Handle creation or deletions
     new_features = list(set(feature_names) - set(feature_toggles.keys()))
 

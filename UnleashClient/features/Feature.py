@@ -39,6 +39,9 @@ class Feature:
         ## { [ variant name ]: number }
         self.variant_counts: Dict[str, int] = {}
 
+        # Whether the feature exists only for tracking metrics or not.
+        self.only_for_metrics = False;
+
     def reset_stats(self) -> None:
         """
         Resets stats after metrics reporting
@@ -119,3 +122,9 @@ class Feature:
 
         self._count_variant(cast(str, variant["name"]))
         return variant
+
+    @staticmethod
+    def metrics_only_feature(feature_name: str):
+        feature = Feature(feature_name, False, [])
+        feature.only_for_metrics = True
+        return feature
