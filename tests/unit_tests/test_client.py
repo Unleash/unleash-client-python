@@ -418,7 +418,6 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.metrics_interval = 1
     unleash_client.initialize_client()
     time.sleep(1)
 
@@ -426,7 +425,7 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     unleash_client.is_enabled("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    time.sleep(1)
+    time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
 
@@ -441,7 +440,6 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.metrics_interval = 1
     unleash_client.initialize_client()
     time.sleep(1)
 
@@ -449,7 +447,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     unleash_client.get_variant("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    time.sleep(1)
+    time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
     assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
