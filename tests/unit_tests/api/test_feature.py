@@ -1,7 +1,8 @@
+from datetime import date
+
 import pytest
 import responses
 from pytest import mark, param
-from datetime import date
 
 from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_RESPONSE,
