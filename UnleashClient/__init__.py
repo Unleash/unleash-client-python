@@ -468,7 +468,7 @@ class UnleashClient:
                 new_feature = Feature.metrics_only_feature(feature_name)
                 self.features[feature_name] = new_feature
 
-                # Use the feature's is_enabled method to count the call
+                # Use the feature's get_variant method to count the call
                 return new_feature.get_variant(context)
         else:
             LOGGER.log(
