@@ -45,13 +45,14 @@ class UnleashClient:
 
     :param url: URL of the unleash server, required.
     :param app_name: Name of the application using the unleash client, required.
-    :param  environment: Name of the environment using the unleash client, optional & defaults to "default".
+    :param environment: Name of the environment using the unleash client, optional & defaults to "default".
     :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
     :param refresh_interval: Provisioning refresh interval in seconds, optional & defaults to 15 seconds
     :param refresh_jitter: Provisioning refresh interval jitter in seconds, optional & defaults to None
     :param metrics_interval: Metrics refresh interval in seconds, optional & defaults to 60 seconds
     :param metrics_jitter: Metrics refresh interval jitter in seconds, optional & defaults to None
     :param disable_metrics: Disables sending metrics to unleash server, optional & defaults to false.
+    :param disable_registration: Disables registration with unleash server, optional & defaults to false.
     :param custom_headers: Default headers to send to unleash server, optional & defaults to empty.
     :param custom_options: Default requests parameters, optional & defaults to empty.  Can be used to skip SSL verification.
     :param custom_strategies: Dictionary of custom strategy names : custom strategy objects.
