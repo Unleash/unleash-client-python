@@ -15,6 +15,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from UnleashClient.api import register_client
 from UnleashClient.constants import DISABLED_VARIATION, ETAG, METRIC_LAST_SENT_TIME
 from UnleashClient.events import UnleashEvent, UnleashEventType
+from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
@@ -288,7 +289,7 @@ class UnleashClient:
                 )
                 raise excep
             else:
-                # Set is_iniialized to true if no exception is encountered.
+                # Set is_initialized to true if no exception is encountered.
                 self.is_initialized = True
         else:
             warnings.warn(
@@ -349,6 +350,11 @@ class UnleashClient:
                 feature = self.features[feature_name]
                 feature_check = feature.is_enabled(context)
 
+                if feature.only_for_metrics:
+                    return self._get_fallback_value(
+                        fallback_function, feature_name, context
+                    )
+
                 try:
                     if self.unleash_event_callback and feature.impression_data:
                         event = UnleashEvent(
@@ -380,9 +386,17 @@ class UnleashClient:
                     "Error checking feature flag: %s",
                     excep,
                 )
+                # The feature doesn't exist, so create it to track metrics
+                new_feature = Feature.metrics_only_feature(feature_name)
+                self.features[feature_name] = new_feature
+
+                # Use the feature's is_enabled method to count the call
+                new_feature.is_enabled(context)
+
                 return self._get_fallback_value(
                     fallback_function, feature_name, context
                 )
+
         else:
             LOGGER.log(
                 self.unleash_verbose_log_level,
@@ -449,7 +463,13 @@ class UnleashClient:
                     "Error checking feature flag variant: %s",
                     excep,
                 )
-                return DISABLED_VARIATION
+
+                # The feature doesn't exist, so create it to track metrics
+                new_feature = Feature.metrics_only_feature(feature_name)
+                self.features[feature_name] = new_feature
+
+                # Use the feature's get_variant method to count the call
+                return new_feature.get_variant(context)
         else:
             LOGGER.log(
                 self.unleash_verbose_log_level,
