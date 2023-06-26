@@ -706,7 +706,7 @@ def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(
     UnleashClient(
         URL, "some-probably-unique-but-different-app-name", refresh_interval="60"
     )
-    assert not all(
+    assert not any(
         ["Multiple instances has been disabled" in r.msg for r in caplog.records]
     )
 
@@ -722,7 +722,7 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
         "some-probably-unique-app-name",
         custom_headers={"Authorization": "hamsters"},
     )
-    assert not all(
+    assert not any(
         ["Multiple instances has been disabled" in r.msg for r in caplog.records]
     )
 
