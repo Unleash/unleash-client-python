@@ -22,6 +22,16 @@ classifiers=[
     "Programming Language :: Python :: 3.11"
 ]
 
+dependencies=[
+    "requests",
+    "fcache",
+    "mmhash3",
+    "apscheduler < 4.0.0",
+    "importlib_metadata",
+    "python-dateutil",
+    "semver < 3.0.0"
+]
+
 [project.urls]
 Homepage = "https://github.com/Unleash/unleash-client-python"
 Documentation = "https://docs.getunleash.io/unleash-client-python"
