@@ -410,6 +410,51 @@ def test_uc_metrics(unleash_client):
 
 
 @responses.activate
+def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    # Check a flag that doesn't exist
+    unleash_client.is_enabled("nonexistent-flag")
+
+    # Verify that the metrics are serialized
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+
+
+@responses.activate
+def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    # Check a flag that doesn't exist
+    unleash_client.get_variant("nonexistent-flag")
+
+    # Verify that the metrics are serialized
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+    assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+
+
+@responses.activate
 def test_uc_disabled_registration(unleash_client_toggle_only):
     unleash_client = unleash_client_toggle_only
     # Set up APIs
@@ -430,27 +475,6 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 
 @responses.activate
 def test_uc_server_error(unleash_client):
-    # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
-
-    unleash_client = unleash_client
-    # Set up APIs
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
-    responses.add(responses.GET, URL + FEATURES_URL, status=500)
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
-
-    unleash_client.initialize_client()
-    assert not unleash_client.is_enabled("testFlag")
-
-    responses.remove(responses.GET, URL + FEATURES_URL)
-    responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
-    )
-    time.sleep(20)
-    assert unleash_client.is_enabled("testFlag")
-
-
-@responses.activate
-def test_uc_server_error_recovery(unleash_client):
     # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
 
     unleash_client = unleash_client
@@ -682,7 +706,7 @@ def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(
     UnleashClient(
         URL, "some-probably-unique-but-different-app-name", refresh_interval="60"
     )
-    assert not all(
+    assert not any(
         ["Multiple instances has been disabled" in r.msg for r in caplog.records]
     )
 
@@ -698,7 +722,7 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
         "some-probably-unique-app-name",
         custom_headers={"Authorization": "hamsters"},
     )
-    assert not all(
+    assert not any(
         ["Multiple instances has been disabled" in r.msg for r in caplog.records]
     )
 

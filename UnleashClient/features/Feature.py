@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name
-from typing import Optional
+from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
 from UnleashClient.utils import LOGGER
@@ -36,6 +36,11 @@ class Feature:
         # Stats tracking
         self.yes_count = 0
         self.no_count = 0
+        ## { [ variant name ]: number }
+        self.variant_counts: Dict[str, int] = {}
+
+        # Whether the feature exists only for tracking metrics or not.
+        self.only_for_metrics = False
 
     def reset_stats(self) -> None:
         """
@@ -45,6 +50,7 @@ class Feature:
         """
         self.yes_count = 0
         self.no_count = 0
+        self.variant_counts = {}
 
     def increment_stats(self, result: bool) -> None:
         """
@@ -57,6 +63,15 @@ class Feature:
             self.yes_count += 1
         else:
             self.no_count += 1
+
+    def _count_variant(self, variant_name: str) -> None:
+        """
+        Count a specific variant.
+
+        :param variant_name: The name of the variant to count.
+        :return:
+        """
+        self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
     def is_enabled(
         self, context: dict = None, default_value: bool = False
@@ -105,4 +120,11 @@ class Feature:
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 
+        self._count_variant(cast(str, variant["name"]))
         return variant
+
+    @staticmethod
+    def metrics_only_feature(feature_name: str):
+        feature = Feature(feature_name, False, [])
+        feature.only_for_metrics = True
+        return feature
