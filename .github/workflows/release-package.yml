@@ -19,9 +19,6 @@ jobs:
       - name: Build package
         run: |
           make build
-      - name: Upload package to pypi
-        run: |
-          make upload
         env:
           TWINE_USERNAME: ${{ secrets.pypi_username }}
           TWINE_PASSWORD: ${{ secrets.pypi_password }}
