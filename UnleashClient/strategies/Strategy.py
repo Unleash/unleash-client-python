@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name,dangerous-default-value
 import warnings
-from typing import Iterator, Optional
 from dataclasses import dataclass
+from typing import Iterator, Optional
+
 from UnleashClient.constraints import Constraint
 from UnleashClient.variants import Variants
 
@@ -86,7 +87,9 @@ class Strategy:
 
     @property
     def parsed_variants(self) -> Variants:
-        return Variants(variants_list=self.variants, group_id=self.parameters.get('group_id', ''))
+        return Variants(
+            variants_list=self.variants, group_id=self.parameters.get("group_id", "")
+        )
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """

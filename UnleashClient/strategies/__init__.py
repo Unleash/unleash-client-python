@@ -6,5 +6,5 @@ from .GradualRolloutRandom import GradualRolloutRandom
 from .GradualRolloutSessionId import GradualRolloutSessionId
 from .GradualRolloutUserId import GradualRolloutUserId
 from .RemoteAddress import RemoteAddress
-from .Strategy import Strategy, EvaluationResult
+from .Strategy import EvaluationResult, Strategy
 from .UserWithId import UserWithId

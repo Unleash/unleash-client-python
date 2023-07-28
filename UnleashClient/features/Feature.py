@@ -3,9 +3,9 @@ import copy
 from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
+from UnleashClient.strategies import EvaluationResult, Strategy
 from UnleashClient.utils import LOGGER
 from UnleashClient.variants import Variants
-from UnleashClient.strategies import Strategy, EvaluationResult
 
 
 # pylint: disable=dangerous-default-value, broad-except
@@ -113,7 +113,11 @@ class Feature:
             variant = evaluation_result.variant
             is_feature_enabled = evaluation_result.enabled
 
-        if is_feature_enabled and self.variants is not None and variant == DISABLED_VARIATION:
+        if (
+            is_feature_enabled
+            and self.variants is not None
+            and variant == DISABLED_VARIATION
+        ):
             try:
                 variant = self.variants.get_variant(context)
                 variant["enabled"] = is_feature_enabled
@@ -123,12 +127,16 @@ class Feature:
         self._count_variant(cast(str, variant["name"]))
         return variant
 
-    def _get_evaluation_result(self, context: dict = None, default_value: bool = False) -> EvaluationResult:
+    def _get_evaluation_result(
+        self, context: dict = None, default_value: bool = False
+    ) -> EvaluationResult:
         strategy_result = EvaluationResult(False, DISABLED_VARIATION)
         if self.enabled:
             try:
                 if self.strategies:
-                    enabled_strategy: Strategy = next((x for x in self.strategies if x.execute(context)), None)
+                    enabled_strategy: Strategy = next(
+                        (x for x in self.strategies if x.execute(context)), None
+                    )
                     if enabled_strategy is not None:
                         strategy_result = enabled_strategy.get_result(context)
 
