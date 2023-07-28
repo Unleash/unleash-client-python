@@ -33,9 +33,15 @@ def _create_strategies(
             else:
                 segment_provisioning = []
 
+            if "variants" in strategy.keys():
+                variant_provisioning = strategy["variants"]
+            else:
+                variant_provisioning = []
+
             feature_strategies.append(
                 strategy_mapping[strategy["name"]](
                     constraints=constraint_provisioning,
+                    variants=variant_provisioning,
                     parameters=strategy_provisioning,
                     global_segments=global_segments,
                     segment_ids=segment_provisioning,

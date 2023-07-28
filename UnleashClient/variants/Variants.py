@@ -8,14 +8,14 @@ from UnleashClient.constants import DISABLED_VARIATION
 
 
 class Variants:
-    def __init__(self, variants_list: list, feature_name: str) -> None:
+    def __init__(self, variants_list: list, group_id: str) -> None:
         """
         Represents an A/B test
 
         variants_list = From the strategy document.
         """
         self.variants = variants_list
-        self.feature_name = feature_name
+        self.group_id = group_id
 
     def _apply_overrides(self, context: dict) -> dict:
         """
@@ -94,7 +94,7 @@ class Variants:
             )
             target = utils.normalized_hash(
                 self._get_seed(context, stickiness_selector),
-                self.feature_name,
+                self.group_id,
                 total_weight,
             )
             counter = 0

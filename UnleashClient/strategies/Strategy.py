@@ -1,8 +1,15 @@
 # pylint: disable=invalid-name,dangerous-default-value
 import warnings
-from typing import Iterator
-
+from typing import Iterator, Optional
+from dataclasses import dataclass
 from UnleashClient.constraints import Constraint
+from UnleashClient.variants import Variants
+
+
+@dataclass
+class EvaluationResult:
+    enabled: bool
+    variant: Optional[dict]
 
 
 class Strategy:
@@ -24,9 +31,11 @@ class Strategy:
         parameters: dict = {},
         segment_ids: list = None,
         global_segments: dict = None,
+        variants: list = [],
     ) -> None:
         self.parameters = parameters
         self.constraints = constraints
+        self.variants = variants
         self.segment_ids = segment_ids or []
         self.global_segments = global_segments or {}
         self.parsed_provisioning = self.load_provisioning()
@@ -56,6 +65,15 @@ class Strategy:
 
         return flag_state
 
+    def get_result(self, context) -> EvaluationResult:
+        enabled = self.execute(context)
+        variant = None
+        if self.parsed_variants is not None:
+            variant = self.parsed_variants.get_variant(context)
+
+        result = EvaluationResult(enabled, variant)
+        return result
+
     @property
     def parsed_constraints(self) -> Iterator[Constraint]:
         for constraint_dict in self.constraints:
@@ -65,6 +83,10 @@ class Strategy:
             segment = self.global_segments[segment_id]
             for constraint in segment["constraints"]:
                 yield Constraint(constraint_dict=constraint)
+
+    @property
+    def parsed_variants(self) -> Variants:
+        return Variants(variants_list=self.variants, group_id=self.parameters.get('group_id', ''))
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """
