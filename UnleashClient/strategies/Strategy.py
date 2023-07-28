@@ -31,8 +31,10 @@ class Strategy:
         parameters: dict = {},
         segment_ids: list = None,
         global_segments: dict = None,
-        variants: list = [],
+        variants: list = None,
     ) -> None:
+        if variants is None:
+            variants = []
         self.parameters = parameters
         self.constraints = constraints
         self.variants = variants
@@ -86,7 +88,9 @@ class Strategy:
 
     @property
     def parsed_variants(self) -> Variants:
-        return Variants(variants_list=self.variants, group_id=self.parameters.get('group_id', ''))
+        return Variants(
+            variants_list=self.variants, group_id=self.parameters.get("group_id", "")
+        )
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """
