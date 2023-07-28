@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name,dangerous-default-value
 import warnings
-from typing import Iterator, Optional
 from dataclasses import dataclass
+from typing import Iterator, Optional
+
 from UnleashClient.constraints import Constraint
 from UnleashClient.variants import Variants
 

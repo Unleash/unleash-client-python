@@ -3,9 +3,9 @@ import copy
 from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
+from UnleashClient.strategies import EvaluationResult, Strategy
 from UnleashClient.utils import LOGGER
 from UnleashClient.variants import Variants
-from UnleashClient.strategies import Strategy, EvaluationResult
 
 
 # pylint: disable=dangerous-default-value, broad-except
