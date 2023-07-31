@@ -126,7 +126,7 @@ class Feature:
     def _get_evaluation_result(
         self, context: dict = None, default_value: bool = False
     ) -> EvaluationResult:
-        strategy_result = EvaluationResult(False, DISABLED_VARIATION)
+        strategy_result = EvaluationResult(False, copy.deepcopy(DISABLED_VARIATION))
         if self.enabled:
             try:
                 if self.strategies:
