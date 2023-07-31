@@ -140,9 +140,10 @@ class Feature:
                     # If no strategies are present, should default to true. This isn't possible via UI.
                     strategy_result = EvaluationResult(True, None)
 
-                return strategy_result
             except Exception as evaluation_except:
                 LOGGER.warning("Error getting evaluation result: %s", evaluation_except)
+
+        return strategy_result
 
     @staticmethod
     def metrics_only_feature(feature_name: str):
