@@ -113,12 +113,15 @@ class Feature:
             variant = evaluation_result.variant
             is_feature_enabled = evaluation_result.enabled
 
-        if is_feature_enabled and self.variants is not None and variant is None:
+        if is_feature_enabled and self.variants is not None and (variant is None or variant == DISABLED_VARIATION):
             try:
                 variant = self.variants.get_variant(context)
                 variant["enabled"] = is_feature_enabled
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
+
+        if variant is None:
+            variant = copy.deepcopy(DISABLED_VARIATION)
 
         self._count_variant(cast(str, variant["name"]))
         return variant
@@ -126,7 +129,7 @@ class Feature:
     def _get_evaluation_result(
         self, context: dict = None, default_value: bool = False
     ) -> EvaluationResult:
-        strategy_result = EvaluationResult(False, copy.deepcopy(DISABLED_VARIATION))
+        strategy_result = EvaluationResult(False, None)
         if self.enabled:
             try:
                 if self.strategies:
