@@ -226,10 +226,9 @@ class Constraint:
                     constraint_check = self.check_semver_operators(
                         context_value=context_value
                     )
-            else:
-                # This is a special case in the client spec - so it's getting it's own handler here
-                if self.operator is ConstraintOperators.NOT_IN:  # noqa: PLR5501
-                    constraint_check = True
+            # This is a special case in the client spec - so it's getting it's own handler here
+            elif self.operator is ConstraintOperators.NOT_IN:  # noqa: PLR5501
+                constraint_check = True
 
         except Exception as excep:  # pylint: disable=broad-except
             LOGGER.info(
