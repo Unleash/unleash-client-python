@@ -71,7 +71,7 @@ class Strategy:
     def get_result(self, context) -> EvaluationResult:
         enabled = self.execute(context)
         variant = None
-        if self.parsed_variants is not None:
+        if enabled and self.parsed_variants is not None:
             variant = self.parsed_variants.get_variant(context)
 
         result = EvaluationResult(enabled, variant)
