@@ -113,11 +113,7 @@ class Feature:
             variant = evaluation_result.variant
             is_feature_enabled = evaluation_result.enabled
 
-        if (
-            is_feature_enabled
-            and self.variants is not None
-            and variant is None
-        ):
+        if is_feature_enabled and self.variants is not None and variant is None:
             try:
                 variant = self.variants.get_variant(context)
                 variant["enabled"] = is_feature_enabled
@@ -130,7 +126,7 @@ class Feature:
     def _get_evaluation_result(
         self, context: dict = None, default_value: bool = False
     ) -> EvaluationResult:
-        strategy_result = EvaluationResult(False, None)
+        strategy_result = EvaluationResult(False, DISABLED_VARIATION)
         if self.enabled:
             try:
                 if self.strategies:
