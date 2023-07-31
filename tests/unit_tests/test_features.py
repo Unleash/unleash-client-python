@@ -4,7 +4,7 @@ from tests.utilities import generate_email_list
 from tests.utilities.mocks.mock_variants import VARIANTS, VARIANTS_WITH_STICKINESS
 from tests.utilities.testing_constants import IP_LIST
 from UnleashClient.features import Feature
-from UnleashClient.strategies import Default, RemoteAddress, UserWithId, FlexibleRollout
+from UnleashClient.strategies import Default, FlexibleRollout, RemoteAddress, UserWithId
 from UnleashClient.variants import Variants
 
 (EMAIL_LIST, CONTEXT) = generate_email_list(20)

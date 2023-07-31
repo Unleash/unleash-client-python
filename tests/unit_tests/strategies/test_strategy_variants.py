@@ -1,8 +1,8 @@
 import pytest
 
 from tests.utilities.mocks.mock_variants import VARIANTS, VARIANTS_WITH_STICKINESS
-from UnleashClient.strategies import FlexibleRollout, EvaluationResult
 from UnleashClient.constants import DISABLED_VARIATION
+from UnleashClient.strategies import EvaluationResult, FlexibleRollout
 
 BASE_FLEXIBLE_ROLLOUT_DICT = {
     "name": "flexibleRollout",
