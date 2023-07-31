@@ -44,7 +44,7 @@ def test_feature_strategy_variants():
         FlexibleRollout(
             BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
             BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
-            variants=VARIANTS_WITH_STICKINESS
+            variants=VARIANTS_WITH_STICKINESS,
         )
     ]
     variants = Variants(VARIANTS, "My Feature")
@@ -132,7 +132,12 @@ def test_variant_metrics_feature_has_no_variants(test_feature):
 
 
 def test_strategy_variant_is_returned(test_feature_strategy_variants):
-    context = {"userId": "122", "appName": "test", "environment": "prod", "customField": "1"}
+    context = {
+        "userId": "122",
+        "appName": "test",
+        "environment": "prod",
+        "customField": "1",
+    }
     variant = test_feature_strategy_variants.get_variant(context)
 
     assert variant == {

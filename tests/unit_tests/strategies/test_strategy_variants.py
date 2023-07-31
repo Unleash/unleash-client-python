@@ -22,26 +22,34 @@ def strategy():
     yield FlexibleRollout(
         BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
         BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
-        variants=VARIANTS_WITH_STICKINESS
+        variants=VARIANTS_WITH_STICKINESS,
     )
 
 
 def test_flexiblerollout_satisfies_constraints_returns_variant(strategy):
-    context = {"userId": "122", "appName": "test", "environment": "prod", "customField": "1"}
+    context = {
+        "userId": "122",
+        "appName": "test",
+        "environment": "prod",
+        "customField": "1",
+    }
     result: EvaluationResult = strategy.get_result(context)
     print(result)
-    assert result.enabled;
+    assert result.enabled
     assert result.variant == {
         "name": "VarB",
         "payload": {"type": "string", "value": "Test 2"},
     }
 
 
-
 def test_flexiblerollout_does_not_satisfy_constraints_returns_default_variant(strategy):
-    context = {"userId": "12234", "appName": "test2", "environment": "prod2", "customField": "1"}
+    context = {
+        "userId": "12234",
+        "appName": "test2",
+        "environment": "prod2",
+        "customField": "1",
+    }
     result: EvaluationResult = strategy.get_result(context)
     print(result)
-    assert not result.enabled;
+    assert not result.enabled
     assert result.variant is None
-
