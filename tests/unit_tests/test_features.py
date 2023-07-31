@@ -4,7 +4,7 @@ from tests.utilities import generate_email_list
 from tests.utilities.mocks.mock_variants import VARIANTS, VARIANTS_WITH_STICKINESS
 from tests.utilities.testing_constants import IP_LIST
 from UnleashClient.features import Feature
-from UnleashClient.strategies import Default, RemoteAddress, UserWithId, FlexibleRollout
+from UnleashClient.strategies import Default, FlexibleRollout, RemoteAddress, UserWithId
 from UnleashClient.variants import Variants
 
 (EMAIL_LIST, CONTEXT) = generate_email_list(20)
@@ -44,7 +44,7 @@ def test_feature_strategy_variants():
         FlexibleRollout(
             BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
             BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
-            variants=VARIANTS_WITH_STICKINESS
+            variants=VARIANTS_WITH_STICKINESS,
         )
     ]
     variants = Variants(VARIANTS, "My Feature")
@@ -132,7 +132,12 @@ def test_variant_metrics_feature_has_no_variants(test_feature):
 
 
 def test_strategy_variant_is_returned(test_feature_strategy_variants):
-    context = {"userId": "122", "appName": "test", "environment": "prod", "customField": "1"}
+    context = {
+        "userId": "122",
+        "appName": "test",
+        "environment": "prod",
+        "customField": "1",
+    }
     variant = test_feature_strategy_variants.get_variant(context)
 
     assert variant == {
