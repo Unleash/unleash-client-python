@@ -113,7 +113,11 @@ class Feature:
             variant = evaluation_result.variant
             is_feature_enabled = evaluation_result.enabled
 
-        if is_feature_enabled and self.variants is not None and (variant is None or variant == DISABLED_VARIATION):
+        if (
+            is_feature_enabled
+            and self.variants is not None
+            and (variant is None or variant == DISABLED_VARIATION)
+        ):
             try:
                 variant = self.variants.get_variant(context)
                 variant["enabled"] = is_feature_enabled
