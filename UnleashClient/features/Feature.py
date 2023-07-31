@@ -106,7 +106,7 @@ class Feature:
         :return:
         """
         evaluation_result = self._get_evaluation_result(context)
-        variant = copy.deepcopy(DISABLED_VARIATION)
+        variant = None
         is_feature_enabled = False
 
         if evaluation_result is not None:
@@ -116,7 +116,7 @@ class Feature:
         if (
             is_feature_enabled
             and self.variants is not None
-            and variant == DISABLED_VARIATION
+            and variant is None
         ):
             try:
                 variant = self.variants.get_variant(context)
@@ -130,7 +130,7 @@ class Feature:
     def _get_evaluation_result(
         self, context: dict = None, default_value: bool = False
     ) -> EvaluationResult:
-        strategy_result = EvaluationResult(False, DISABLED_VARIATION)
+        strategy_result = EvaluationResult(False, None)
         if self.enabled:
             try:
                 if self.strategies:
@@ -145,8 +145,8 @@ class Feature:
                     strategy_result = EvaluationResult(True, None)
 
                 return strategy_result
-            except Exception as strategy_except:
-                LOGGER.warning("Error checking feature flag: %s", strategy_except)
+            except Exception as evaluation_except:
+                LOGGER.warning("Error getting evaluation result: %s", evaluation_except)
 
     @staticmethod
     def metrics_only_feature(feature_name: str):
