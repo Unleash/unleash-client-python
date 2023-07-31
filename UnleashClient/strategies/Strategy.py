@@ -23,6 +23,7 @@ class Strategy:
     - ``apply()`` - Your feature provisioning
 
     :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
+    :param variants: List of 'variant' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     :param parameters: The 'parameter' objects from the strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     """
 
