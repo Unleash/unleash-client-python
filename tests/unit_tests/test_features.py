@@ -1,13 +1,25 @@
 import pytest
 
 from tests.utilities import generate_email_list
-from tests.utilities.mocks.mock_variants import VARIANTS
+from tests.utilities.mocks.mock_variants import VARIANTS, VARIANTS_WITH_STICKINESS
 from tests.utilities.testing_constants import IP_LIST
 from UnleashClient.features import Feature
-from UnleashClient.strategies import Default, RemoteAddress, UserWithId
+from UnleashClient.strategies import Default, RemoteAddress, UserWithId, FlexibleRollout
 from UnleashClient.variants import Variants
 
 (EMAIL_LIST, CONTEXT) = generate_email_list(20)
+
+BASE_FLEXIBLE_ROLLOUT_DICT = {
+    "name": "flexibleRollout",
+    "parameters": {"rollout": 50, "stickiness": "userId", "groupId": "AB12A"},
+    "variants": VARIANTS_WITH_STICKINESS,
+    "constraints": [
+        {"contextName": "environment", "operator": "IN", "values": ["staging", "prod"]},
+        {"contextName": "userId", "operator": "IN", "values": ["122", "155", "9"]},
+        {"contextName": "userId", "operator": "NOT_IN", "values": ["4"]},
+        {"contextName": "appName", "operator": "IN", "values": ["test"]},
+    ],
+}
 
 
 @pytest.fixture()
@@ -22,6 +34,19 @@ def test_feature():
 @pytest.fixture()
 def test_feature_variants():
     strategies = [Default()]
+    variants = Variants(VARIANTS, "My Feature")
+    yield Feature("My Feature", True, strategies, variants)
+
+
+@pytest.fixture()
+def test_feature_strategy_variants():
+    strategies = [
+        FlexibleRollout(
+            BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
+            BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
+            variants=VARIANTS_WITH_STICKINESS
+        )
+    ]
     variants = Variants(VARIANTS, "My Feature")
     yield Feature("My Feature", True, strategies, variants)
 
@@ -104,3 +129,13 @@ def test_variant_metrics_feature_has_no_variants(test_feature):
     for iteration in range(1, 7):
         test_feature.get_variant({})
         assert test_feature.variant_counts["disabled"] == iteration
+
+
+def test_strategy_variant_is_returned(test_feature_strategy_variants):
+    context = {"userId": "122", "appName": "test", "environment": "prod", "customField": "1"}
+    variant = test_feature_strategy_variants.get_variant(context)
+
+    assert variant == {
+        "name": "VarB",
+        "payload": {"type": "string", "value": "Test 2"},
+    }

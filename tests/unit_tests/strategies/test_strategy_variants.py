@@ -28,11 +28,6 @@ def strategy():
 
 def test_flexiblerollout_satisfies_constraints_returns_variant(strategy):
     context = {"userId": "122", "appName": "test", "environment": "prod", "customField": "1"}
-    strategy= FlexibleRollout(
-        BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
-        BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
-        variants=VARIANTS_WITH_STICKINESS
-    )
     result: EvaluationResult = strategy.get_result(context)
     print(result)
     assert result.enabled;
@@ -45,11 +40,6 @@ def test_flexiblerollout_satisfies_constraints_returns_variant(strategy):
 
 def test_flexiblerollout_does_not_satisfy_constraints_returns_default_variant(strategy):
     context = {"userId": "12234", "appName": "test2", "environment": "prod2", "customField": "1"}
-    strategy = FlexibleRollout(
-        BASE_FLEXIBLE_ROLLOUT_DICT["constraints"],
-        BASE_FLEXIBLE_ROLLOUT_DICT["parameters"],
-        variants=VARIANTS_WITH_STICKINESS
-    )
     result: EvaluationResult = strategy.get_result(context)
     print(result)
     assert not result.enabled;
