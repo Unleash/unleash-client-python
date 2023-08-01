@@ -35,11 +35,9 @@ class Strategy:
         global_segments: dict = None,
         variants: list = None,
     ) -> None:
-        if variants is None:
-            variants = []
         self.parameters = parameters
         self.constraints = constraints
-        self.variants = variants
+        self.variants = variants or []
         self.segment_ids = segment_ids or []
         self.global_segments = global_segments or {}
         self.parsed_provisioning = self.load_provisioning()
@@ -72,7 +70,7 @@ class Strategy:
     def get_result(self, context) -> EvaluationResult:
         enabled = self.execute(context)
         variant = None
-        if enabled and self.parsed_variants is not None:
+        if enabled:
             variant = self.parsed_variants.get_variant(context)
 
         result = EvaluationResult(enabled, variant)

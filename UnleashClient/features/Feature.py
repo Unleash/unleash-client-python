@@ -87,14 +87,9 @@ class Feature:
         """
         evaluation_result = self._get_evaluation_result(context)
 
-        flag_value = False
+        flag_value = evaluation_result.enabled
 
-        if evaluation_result is not None:
-            flag_value = evaluation_result.enabled
-
-        self.increment_stats(flag_value)
-
-        LOGGER.info("Feature toggle status for feature %s: %s", self.name, flag_value)
+        LOGGER.debug("Feature toggle status for feature %s: %s", self.name, flag_value)
 
         return flag_value
 
@@ -106,26 +101,18 @@ class Feature:
         :return:
         """
         evaluation_result = self._get_evaluation_result(context)
-        variant = None
-        is_feature_enabled = False
-
-        if evaluation_result is not None:
-            variant = evaluation_result.variant
-            is_feature_enabled = evaluation_result.enabled
-
-        if (
-            is_feature_enabled
-            and self.variants is not None
-            and (variant is None or variant == DISABLED_VARIATION)
-        ):
+        is_feature_enabled = evaluation_result.enabled
+        variant = evaluation_result.variant
+        LOGGER.debug("Getting variant from evaluation result: %s", evaluation_result)
+        if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
-                variant = self.variants.get_variant(context)
-                variant["enabled"] = is_feature_enabled
+                LOGGER.debug("Getting variant from feature: %s", self.name)
+                variant = self.variants.get_variant(context) if is_feature_enabled else copy.deepcopy(DISABLED_VARIATION)
+                if 'enabled' not in variant:
+                    variant["enabled"] = is_feature_enabled
+
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
-
-        if variant is None:
-            variant = copy.deepcopy(DISABLED_VARIATION)
 
         self._count_variant(cast(str, variant["name"]))
         return variant
@@ -150,6 +137,8 @@ class Feature:
             except Exception as evaluation_except:
                 LOGGER.warning("Error getting evaluation result: %s", evaluation_except)
 
+        self.increment_stats(strategy_result.enabled)
+        LOGGER.info("%s evaluation result: %s", self.name, strategy_result)
         return strategy_result
 
     @staticmethod
