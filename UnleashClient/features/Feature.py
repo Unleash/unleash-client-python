@@ -107,8 +107,12 @@ class Feature:
         if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
                 LOGGER.debug("Getting variant from feature: %s", self.name)
-                variant = self.variants.get_variant(context) if is_feature_enabled else copy.deepcopy(DISABLED_VARIATION)
-                if 'enabled' not in variant:
+                variant = (
+                    self.variants.get_variant(context)
+                    if is_feature_enabled
+                    else copy.deepcopy(DISABLED_VARIATION)
+                )
+                if "enabled" not in variant:
                     variant["enabled"] = is_feature_enabled
 
             except Exception as variant_exception:
