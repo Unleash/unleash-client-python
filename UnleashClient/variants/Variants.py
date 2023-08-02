@@ -8,7 +8,9 @@ from UnleashClient.constants import DISABLED_VARIATION
 
 
 class Variants:
-    def __init__(self, variants_list: list, group_id: str, is_feature_variants: bool = True) -> None:
+    def __init__(
+        self, variants_list: list, group_id: str, is_feature_variants: bool = True
+    ) -> None:
         """
         Represents an A/B test
 

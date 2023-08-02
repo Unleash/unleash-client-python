@@ -75,9 +75,7 @@ class Feature:
         """
         self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
-    def is_enabled(
-        self, context: dict = None
-    ) -> bool:
+    def is_enabled(self, context: dict = None) -> bool:
         """
         Checks if feature is enabled.
 
@@ -103,9 +101,11 @@ class Feature:
         if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
                 LOGGER.debug("Getting variant from feature: %s", self.name)
-                variant = self.variants.get_variant(context, is_feature_enabled) \
-                    if is_feature_enabled \
+                variant = (
+                    self.variants.get_variant(context, is_feature_enabled)
+                    if is_feature_enabled
                     else copy.deepcopy(DISABLED_VARIATION)
+                )
 
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)

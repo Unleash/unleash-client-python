@@ -91,7 +91,7 @@ class Strategy:
         return Variants(
             variants_list=self.variants,
             group_id=self.parameters.get("groupId"),
-            is_feature_variants=False
+            is_feature_variants=False,
         )
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
