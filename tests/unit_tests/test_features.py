@@ -136,6 +136,7 @@ def test_strategy_variant_is_returned(test_feature_strategy_variants):
     variant = test_feature_strategy_variants.get_variant(context)
 
     assert variant == {
+        "enabled": True,
         "name": "VarB",
         "payload": {"type": "string", "value": "Test 2"},
     }
