@@ -33,7 +33,6 @@ def test_flexiblerollout_satisfies_constraints_returns_variant(strategy):
         "customField": "1",
     }
     result: EvaluationResult = strategy.get_result(context)
-    print(result)
     assert result.enabled
     assert result.variant == {
         "enabled": True,
