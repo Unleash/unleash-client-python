@@ -71,7 +71,7 @@ class Strategy:
         enabled = self.execute(context)
         variant = None
         if enabled:
-            variant = self.parsed_variants.get_variant(context)
+            variant = self.parsed_variants.get_variant(context, enabled)
 
         result = EvaluationResult(enabled, variant)
         return result
@@ -89,7 +89,9 @@ class Strategy:
     @property
     def parsed_variants(self) -> Variants:
         return Variants(
-            variants_list=self.variants, group_id=self.parameters.get("group_id", "")
+            variants_list=self.variants,
+            group_id=self.parameters.get("groupId"),
+            is_feature_variants=False
         )
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use

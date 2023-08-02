@@ -27,29 +27,43 @@ def load_specs():
         return json.load(_f)
 
 
+def get_client(state, test_context = None):
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(state)
+    env = "default"
+    if test_context is not None and "environment" in test_context:
+        env = test_context["environment"]
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        instance_id="pytest_%s" % uuid.uuid4(),
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment=env
+    )
+
+    unleash_client.initialize_client(fetch_toggles=False)
+    return unleash_client
+
 def iter_spec():
     for spec in load_specs():
         name, state, tests, variant_tests = load_spec(spec)
 
-        cache = FileCache("MOCK_CACHE")
-        cache.bootstrap_from_dict(state)
-
-        unleash_client = UnleashClient(
-            url=URL,
-            app_name=APP_NAME,
-            instance_id="pytest_%s" % uuid.uuid4(),
-            disable_metrics=True,
-            disable_registration=True,
-            cache=cache,
-        )
-
-        unleash_client.initialize_client(fetch_toggles=False)
+        unleash_client = get_client(state=state)
 
         for test in tests:
             yield name, test["description"], unleash_client, test, False
 
         for variant_test in variant_tests:
-            yield name, test["description"], unleash_client, variant_test, True
+
+            test_context = {}
+            if "context" in variant_test:
+                test_context = variant_test["context"]
+
+            unleash_client = get_client(state, test_context)
+            yield name, variant_test["description"], unleash_client , variant_test, True
 
         unleash_client.destroy()
 
@@ -77,6 +91,6 @@ def test_spec(spec):
         toggle_name = test_data["toggleName"]
         expected = test_data["expectedResult"]
         context = test_data.get("context")
-
+        print("Test-data context: ", context)
         variant = unleash_client.get_variant(toggle_name, context)
         assert variant == expected

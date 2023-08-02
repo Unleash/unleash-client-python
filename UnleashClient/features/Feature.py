@@ -76,20 +76,17 @@ class Feature:
         self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
     def is_enabled(
-        self, context: dict = None, default_value: bool = False
-    ) -> bool:  # pylint: disable=unused-argument
+        self, context: dict = None
+    ) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
-        :param default_value: Deprecated!  Users should use the fallback_function on the main is_enabled() method.
         :return:
         """
         evaluation_result = self._get_evaluation_result(context)
 
         flag_value = evaluation_result.enabled
-
-        LOGGER.debug("Feature toggle status for feature %s: %s", self.name, flag_value)
 
         return flag_value
 
@@ -102,14 +99,15 @@ class Feature:
         """
         evaluation_result = self._get_evaluation_result(context)
         is_feature_enabled = evaluation_result.enabled
+        print("Getting variant from strategy - is_feature_enabled: ", is_feature_enabled)
+        print("Context", context)
         variant = evaluation_result.variant
-        LOGGER.debug("Getting variant from evaluation result: %s", evaluation_result)
         if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
                 LOGGER.debug("Getting variant from feature: %s", self.name)
-                variant = self.variants.get_variant(context) if is_feature_enabled else copy.deepcopy(DISABLED_VARIATION)
-                if 'enabled' not in variant:
-                    variant["enabled"] = is_feature_enabled
+                variant = self.variants.get_variant(context, is_feature_enabled) \
+                    if is_feature_enabled \
+                    else copy.deepcopy(DISABLED_VARIATION)
 
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
