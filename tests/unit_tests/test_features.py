@@ -13,12 +13,7 @@ BASE_FLEXIBLE_ROLLOUT_DICT = {
     "name": "flexibleRollout",
     "parameters": {"rollout": 50, "stickiness": "userId", "groupId": "AB12A"},
     "variants": VARIANTS_WITH_STICKINESS,
-    "constraints": [
-        {"contextName": "environment", "operator": "IN", "values": ["staging", "prod"]},
-        {"contextName": "userId", "operator": "IN", "values": ["122", "155", "9"]},
-        {"contextName": "userId", "operator": "NOT_IN", "values": ["4"]},
-        {"contextName": "appName", "operator": "IN", "values": ["test"]},
-    ],
+    "constraints": [],
 }
 
 
