@@ -27,7 +27,7 @@ def load_specs():
         return json.load(_f)
 
 
-def get_client(state, test_context = None):
+def get_client(state, test_context=None):
     cache = FileCache("MOCK_CACHE")
     cache.bootstrap_from_dict(state)
     env = "default"
@@ -41,11 +41,12 @@ def get_client(state, test_context = None):
         disable_metrics=True,
         disable_registration=True,
         cache=cache,
-        environment=env
+        environment=env,
     )
 
     unleash_client.initialize_client(fetch_toggles=False)
     return unleash_client
+
 
 def iter_spec():
     for spec in load_specs():
@@ -57,13 +58,12 @@ def iter_spec():
             yield name, test["description"], unleash_client, test, False
 
         for variant_test in variant_tests:
-
             test_context = {}
             if "context" in variant_test:
                 test_context = variant_test["context"]
 
             unleash_client = get_client(state, test_context)
-            yield name, variant_test["description"], unleash_client , variant_test, True
+            yield name, variant_test["description"], unleash_client, variant_test, True
 
         unleash_client.destroy()
 
