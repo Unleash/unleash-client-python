@@ -99,8 +99,6 @@ class Feature:
         """
         evaluation_result = self._get_evaluation_result(context)
         is_feature_enabled = evaluation_result.enabled
-        print("Getting variant from strategy - is_feature_enabled: ", is_feature_enabled)
-        print("Context", context)
         variant = evaluation_result.variant
         if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
