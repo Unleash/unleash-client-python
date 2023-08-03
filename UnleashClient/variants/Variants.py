@@ -1,21 +1,24 @@
 # pylint: disable=invalid-name, too-few-public-methods
 import copy
 import random
-from typing import Dict  # noqa: F401
+from typing import Dict, Optional  # noqa: F401
 
 from UnleashClient import utils
 from UnleashClient.constants import DISABLED_VARIATION
 
 
 class Variants:
-    def __init__(self, variants_list: list, feature_name: str) -> None:
+    def __init__(
+        self, variants_list: list, group_id: str, is_feature_variants: bool = True
+    ) -> None:
         """
         Represents an A/B test
 
         variants_list = From the strategy document.
         """
         self.variants = variants_list
-        self.feature_name = feature_name
+        self.group_id = group_id
+        self.is_feature_variants = is_feature_variants
 
     def _apply_overrides(self, context: dict) -> dict:
         """
@@ -60,20 +63,23 @@ class Variants:
         return seed
 
     @staticmethod
-    def _format_variation(variation: dict) -> dict:
+    def _format_variation(variation: dict, flag_status: Optional[bool] = None) -> dict:
         formatted_variation = copy.deepcopy(variation)
         del formatted_variation["weight"]
         if "overrides" in formatted_variation:
             del formatted_variation["overrides"]
         if "stickiness" in formatted_variation:
             del formatted_variation["stickiness"]
+        if "enabled" not in formatted_variation and flag_status is not None:
+            formatted_variation["enabled"] = flag_status
         return formatted_variation
 
-    def get_variant(self, context: dict) -> dict:
+    def get_variant(self, context: dict, flag_status: Optional[bool] = None) -> dict:
         """
         Determines what variation a user is in.
 
         :param context:
+        :param flag_status:
         :return:
         """
         fallback_variant = copy.deepcopy(DISABLED_VARIATION)
@@ -81,7 +87,7 @@ class Variants:
         if self.variants:
             override_variant = self._apply_overrides(context)
             if override_variant:
-                return self._format_variation(override_variant)
+                return self._format_variation(override_variant, flag_status)
 
             total_weight = sum(x["weight"] for x in self.variants)
             if total_weight <= 0:
@@ -92,9 +98,10 @@ class Variants:
                 if "stickiness" in self.variants[0].keys()
                 else "default"
             )
+
             target = utils.normalized_hash(
                 self._get_seed(context, stickiness_selector),
-                self.feature_name,
+                self.group_id,
                 total_weight,
             )
             counter = 0
@@ -102,7 +109,7 @@ class Variants:
                 counter += variation["weight"]
 
                 if counter >= target:
-                    return self._format_variation(variation)
+                    return self._format_variation(variation, flag_status)
 
         # Catch all return.
         return fallback_variant

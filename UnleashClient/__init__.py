@@ -469,7 +469,8 @@ class UnleashClient:
                 self.features[feature_name] = new_feature
 
                 # Use the feature's get_variant method to count the call
-                return new_feature.get_variant(context)
+                variant_check = new_feature.get_variant(context)
+                return variant_check
         else:
             LOGGER.log(
                 self.unleash_verbose_log_level,

@@ -61,9 +61,8 @@ class RemoteAddress(Strategy):
                     if context_ip == addr_or_range:
                         return_value = True
                         break
-                else:
-                    if context_ip in addr_or_range:  # noqa: PLR5501
-                        return_value = True
-                        break
+                elif context_ip in addr_or_range:  # noqa: PLR5501
+                    return_value = True
+                    break
 
         return return_value

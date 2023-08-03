@@ -1,8 +1,16 @@
 # pylint: disable=invalid-name,dangerous-default-value
 import warnings
-from typing import Iterator
+from dataclasses import dataclass
+from typing import Iterator, Optional
 
 from UnleashClient.constraints import Constraint
+from UnleashClient.variants import Variants
+
+
+@dataclass
+class EvaluationResult:
+    enabled: bool
+    variant: Optional[dict]
 
 
 class Strategy:
@@ -15,6 +23,7 @@ class Strategy:
     - ``apply()`` - Your feature provisioning
 
     :param constraints: List of 'constraints' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
+    :param variants: List of 'variant' objects derived from strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     :param parameters: The 'parameter' objects from the strategy section (...from feature section) of `/api/clients/features` Unleash server response.
     """
 
@@ -24,9 +33,11 @@ class Strategy:
         parameters: dict = {},
         segment_ids: list = None,
         global_segments: dict = None,
+        variants: list = None,
     ) -> None:
         self.parameters = parameters
         self.constraints = constraints
+        self.variants = variants or []
         self.segment_ids = segment_ids or []
         self.global_segments = global_segments or {}
         self.parsed_provisioning = self.load_provisioning()
@@ -56,6 +67,15 @@ class Strategy:
 
         return flag_state
 
+    def get_result(self, context) -> EvaluationResult:
+        enabled = self.execute(context)
+        variant = None
+        if enabled:
+            variant = self.parsed_variants.get_variant(context, enabled)
+
+        result = EvaluationResult(enabled, variant)
+        return result
+
     @property
     def parsed_constraints(self) -> Iterator[Constraint]:
         for constraint_dict in self.constraints:
@@ -65,6 +85,14 @@ class Strategy:
             segment = self.global_segments[segment_id]
             for constraint in segment["constraints"]:
                 yield Constraint(constraint_dict=constraint)
+
+    @property
+    def parsed_variants(self) -> Variants:
+        return Variants(
+            variants_list=self.variants,
+            group_id=self.parameters.get("groupId"),
+            is_feature_variants=False,
+        )
 
     def load_provisioning(self) -> list:  # pylint: disable=no-self-use
         """

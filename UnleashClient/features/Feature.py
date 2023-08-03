@@ -1,7 +1,9 @@
 # pylint: disable=invalid-name
+import copy
 from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
+from UnleashClient.strategies import EvaluationResult, Strategy
 from UnleashClient.utils import LOGGER
 from UnleashClient.variants import Variants
 
@@ -73,33 +75,16 @@ class Feature:
         """
         self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
-    def is_enabled(
-        self, context: dict = None, default_value: bool = False
-    ) -> bool:  # pylint: disable=unused-argument
+    def is_enabled(self, context: dict = None) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
-        :param default_value: Deprecated!  Users should use the fallback_function on the main is_enabled() method.
         :return:
         """
-        flag_value = False
+        evaluation_result = self._get_evaluation_result(context)
 
-        if self.enabled:
-            try:
-                if self.strategies:
-                    strategy_result = any(x.execute(context) for x in self.strategies)
-                else:
-                    # If no strategies are present, should default to true. This isn't possible via UI.
-                    strategy_result = True
-
-                flag_value = strategy_result
-            except Exception as strategy_except:
-                LOGGER.warning("Error checking feature flag: %s", strategy_except)
-
-        self.increment_stats(flag_value)
-
-        LOGGER.info("Feature toggle status for feature %s: %s", self.name, flag_value)
+        flag_value = evaluation_result.enabled
 
         return flag_value
 
@@ -110,18 +95,45 @@ class Feature:
         :param context: Context information
         :return:
         """
-        variant = DISABLED_VARIATION
-        is_feature_enabled = self.is_enabled(context)
-
-        if is_feature_enabled and self.variants is not None:
+        evaluation_result = self._get_evaluation_result(context)
+        is_feature_enabled = evaluation_result.enabled
+        variant = evaluation_result.variant
+        if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
             try:
-                variant = self.variants.get_variant(context)
-                variant["enabled"] = is_feature_enabled
+                LOGGER.debug("Getting variant from feature: %s", self.name)
+                variant = (
+                    self.variants.get_variant(context, is_feature_enabled)
+                    if is_feature_enabled
+                    else copy.deepcopy(DISABLED_VARIATION)
+                )
+
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
 
         self._count_variant(cast(str, variant["name"]))
         return variant
+
+    def _get_evaluation_result(self, context: dict = None) -> EvaluationResult:
+        strategy_result = EvaluationResult(False, None)
+        if self.enabled:
+            try:
+                if self.strategies:
+                    enabled_strategy: Strategy = next(
+                        (x for x in self.strategies if x.execute(context)), None
+                    )
+                    if enabled_strategy is not None:
+                        strategy_result = enabled_strategy.get_result(context)
+
+                else:
+                    # If no strategies are present, should default to true. This isn't possible via UI.
+                    strategy_result = EvaluationResult(True, None)
+
+            except Exception as evaluation_except:
+                LOGGER.warning("Error getting evaluation result: %s", evaluation_except)
+
+        self.increment_stats(strategy_result.enabled)
+        LOGGER.info("%s evaluation result: %s", self.name, strategy_result)
+        return strategy_result
 
     @staticmethod
     def metrics_only_feature(feature_name: str):
