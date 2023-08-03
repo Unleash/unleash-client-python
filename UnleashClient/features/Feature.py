@@ -113,9 +113,7 @@ class Feature:
         self._count_variant(cast(str, variant["name"]))
         return variant
 
-    def _get_evaluation_result(
-        self, context: dict = None
-    ) -> EvaluationResult:
+    def _get_evaluation_result(self, context: dict = None) -> EvaluationResult:
         strategy_result = EvaluationResult(False, None)
         if self.enabled:
             try:
