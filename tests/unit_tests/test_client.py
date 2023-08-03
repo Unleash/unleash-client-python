@@ -476,7 +476,7 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 @responses.activate
 def test_uc_server_error(unleash_client):
     # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
-    unleash_client = unleash_client # noqa
+    unleash_client = unleash_client  # noqa
     # Set up APIs
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
     responses.add(responses.GET, URL + FEATURES_URL, status=500)
