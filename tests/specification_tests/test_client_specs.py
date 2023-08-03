@@ -91,6 +91,5 @@ def test_spec(spec):
         toggle_name = test_data["toggleName"]
         expected = test_data["expectedResult"]
         context = test_data.get("context")
-        print("Test-data context: ", context)
         variant = unleash_client.get_variant(toggle_name, context)
         assert variant == expected

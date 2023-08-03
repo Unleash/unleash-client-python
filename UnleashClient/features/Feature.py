@@ -114,7 +114,7 @@ class Feature:
         return variant
 
     def _get_evaluation_result(
-        self, context: dict = None, default_value: bool = False
+        self, context: dict = None
     ) -> EvaluationResult:
         strategy_result = EvaluationResult(False, None)
         if self.enabled:
