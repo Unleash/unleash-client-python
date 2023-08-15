@@ -1,5 +1,6 @@
 ## Next
 * (Minor) Switch to ruff for linting and black for formatting.
+* (Minor) Constrain the version of `python-dateutil` appropriately to `>=2.8.1` to avoid an import error.  Thanks @felix-hilden!
 
 ## v5.6.0
 * (Major) Add support for event callbacks.
