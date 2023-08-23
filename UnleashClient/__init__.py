@@ -261,7 +261,8 @@ class UnleashClient:
 
                 job_func(**job_args)  # type: ignore
                 # Start periodic jobs
-                self.unleash_scheduler.start()
+                if not self.unleash_scheduler.running:
+                    self.unleash_scheduler.start()
                 self.fl_job = self.unleash_scheduler.add_job(
                     job_func,
                     trigger=IntervalTrigger(
