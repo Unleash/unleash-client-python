@@ -8,7 +8,11 @@ from UnleashClient.utils import LOGGER, log_resp_info
 
 # pylint: disable=broad-except
 def send_metrics(
-    url: str, request_body: dict, custom_headers: dict, custom_options: dict, reqeust_timeout: int = REQUEST_TIMEOUT
+    url: str,
+    request_body: dict,
+    custom_headers: dict,
+    custom_options: dict,
+    reqeust_timeout: int = REQUEST_TIMEOUT,
 ) -> bool:
     """
     Attempts to send metrics to Unleash server

@@ -18,7 +18,7 @@ def get_feature_toggles(
     project: Optional[str] = None,
     cached_etag: str = "",
     reqeust_timeout: int = REQUEST_TIMEOUT,
-    request_retries: int = REQUEST_RETRIES
+    request_retries: int = REQUEST_RETRIES,
 ) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
