@@ -33,10 +33,10 @@ setuptools_scm
 twine
 
 # - Docs
-enum-tools[sphinx]
-m2r2
-sphinx
-sphinx-rtd-theme
+# enum-tools[sphinx]
+# m2r2
+# sphinx
+# sphinx-rtd-theme
 
 # - Typing
 types-requests
