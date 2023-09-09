@@ -1,0 +1,6 @@
+# - Docs
+enum-tools[sphinx]
+m2r2
+sphinx==7.2.5
+sphinx-rtd-theme
+autodocsumm==0.2.11
