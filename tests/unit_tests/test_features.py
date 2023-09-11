@@ -88,7 +88,7 @@ def test_create_feature_exception(test_feature):
 
 def test_select_variation_novariation(test_feature):
     selected_variant = test_feature.get_variant()
-    assert type(selected_variant) == dict
+    assert isinstance(selected_variant, dict)
     assert selected_variant["name"] == "disabled"
 
 
