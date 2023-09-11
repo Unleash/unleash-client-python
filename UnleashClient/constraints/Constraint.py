@@ -125,6 +125,7 @@ class Constraint:
 
         try:
             from dateutil.parser import ParserError
+
             DateUtilParserError = ParserError
         except:
             DateUtilParserError = ValueError
