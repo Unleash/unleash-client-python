@@ -1,100 +1,56 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>FileCache &mdash; unleash-client-python  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="BaseCache" href="basecache.html" />
     <link rel="prev" title="Strategy" href="strategy.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> unleash-client-python
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            unleash-client-python
           </a>
-
-          
-            
-            
               <div class="version">
-                5.8.1.dev1+g528e1f7
+                5.8.1.dev3+g3645ecb
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p><span class="caption-text">Basic Usage</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basic Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 </ul>
-<p><span class="caption-text">Advanced</span></p>
+<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="customstrategies.html">Custom Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customcache.html">Custom Cache</a></li>
@@ -103,91 +59,61 @@
 <li class="toctree-l1"><a class="reference internal" href="wsgi.html">Running with WSGI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="celery.html">Running with Celery</a></li>
 </ul>
-<p><span class="caption-text">API Documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="unleashclient.html">UnleashClient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="strategy.html">Strategy</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">FileCache</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FileCache</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#UnleashClient.cache.FileCache"><code class="docutils literal notranslate"><span class="pre">FileCache</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_dict"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_file"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.bootstrap_from_url"><code class="docutils literal notranslate"><span class="pre">FileCache.bootstrap_from_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.set"><code class="docutils literal notranslate"><span class="pre">FileCache.set()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.mset"><code class="docutils literal notranslate"><span class="pre">FileCache.mset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.get"><code class="docutils literal notranslate"><span class="pre">FileCache.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.exists"><code class="docutils literal notranslate"><span class="pre">FileCache.exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#UnleashClient.cache.FileCache.destroy"><code class="docutils literal notranslate"><span class="pre">FileCache.destroy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="basecache.html">BaseCache</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
 </ul>
-<p><span class="caption-text">Changelog</span></p>
+<p class="caption" role="heading"><span class="caption-text">Changelog</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">unleash-client-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>FileCache</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">FileCache</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
-            
               <a href="https://github.com/unleash/unleash-client-python/blob/main/docs/filecache.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="filecache">
-<h1>FileCache<a class="headerlink" href="#filecache" title="Permalink to this headline">¶</a></h1>
+<h1>FileCache<a class="headerlink" href="#filecache" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="UnleashClient.cache.FileCache">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">UnleashClient.cache.</span></code><code class="sig-name descname"><span class="pre">FileCache</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">UnleashClient.cache.</span></span><span class="sig-name descname"><span class="pre">FileCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache" title="Link to this definition"></a></dt>
 <dd><p>The default cache for UnleashClient.  Uses <a class="reference external" href="https://pypi.org/project/fcache/">fcache</a> behind the scenes.</p>
 <p>You can boostrap the FileCache with initial configuration to improve resiliency on startup.  To do so:</p>
 <ul class="simple">
@@ -219,8 +145,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.bootstrap_from_dict">
-<code class="sig-name descname"><span class="pre">bootstrap_from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.bootstrap_from_dict">
+<span class="sig-name descname"><span class="pre">bootstrap_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_dict" title="Link to this definition"></a></dt>
 <dd><p>Loads initial Unleash configuration from a dictionary.</p>
 <p>Note: Pre-seeded configuration will only be used if UnleashClient is initialized with <cite>bootstrap=true</cite>.</p>
 <dl class="field-list simple">
@@ -231,8 +157,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.bootstrap_from_file">
-<code class="sig-name descname"><span class="pre">bootstrap_from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.bootstrap_from_file">
+<span class="sig-name descname"><span class="pre">bootstrap_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_file" title="Link to this definition"></a></dt>
 <dd><p>Loads initial Unleash configuration from a file.</p>
 <p>Note: Pre-seeded configuration will only be used if UnleashClient is initialized with <cite>bootstrap=true</cite>.</p>
 <dl class="field-list simple">
@@ -243,8 +169,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.bootstrap_from_url">
-<code class="sig-name descname"><span class="pre">bootstrap_from_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config_url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.bootstrap_from_url">
+<span class="sig-name descname"><span class="pre">bootstrap_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_config_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#UnleashClient.cache.FileCache.bootstrap_from_url" title="Link to this definition"></a></dt>
 <dd><p>Loads initial Unleash configuration from a url.</p>
 <p>Note: Pre-seeded configuration will only be used if UnleashClient is initialized with <cite>bootstrap=true</cite>.</p>
 <dl class="field-list simple">
@@ -258,28 +184,28 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.set" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.mset">
-<code class="sig-name descname"><span class="pre">mset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.mset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.mset">
+<span class="sig-name descname"><span class="pre">mset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.mset" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.get" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.exists">
-<code class="sig-name descname"><span class="pre">exists</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.exists" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.exists">
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.exists" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="UnleashClient.cache.FileCache.destroy">
-<code class="sig-name descname"><span class="pre">destroy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.destroy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="UnleashClient.cache.FileCache.destroy">
+<span class="sig-name descname"><span class="pre">destroy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#UnleashClient.cache.FileCache.destroy" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -288,50 +214,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="basecache.html" class="btn btn-neutral float-right" title="BaseCache" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="strategy.html" class="btn btn-neutral float-left" title="Strategy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basecache.html" class="btn btn-neutral float-right" title="BaseCache" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2022 Unleash.
-
-    </p>
+    <p>&#169; Copyright 2022 Unleash.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
