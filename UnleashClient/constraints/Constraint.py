@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Optional, Union
 
 import semver
-from dateutil.parser import ParserError, parse
+from dateutil.parser import parse
 
 from UnleashClient.utils import LOGGER, get_identifier
 
@@ -124,12 +124,18 @@ class Constraint:
         parsing_exception = False
 
         try:
+            from dateutil.parser import ParserError
+            DateUtilParserError = ParserError
+        except:
+            DateUtilParserError = ValueError
+
+        try:
             parsed_date = parse(self.value)
             if isinstance(context_value, str):
                 context_date = parse(context_value)
             else:
                 context_date = context_value
-        except ParserError:
+        except DateUtilParserError:
             LOGGER.error(f"Unable to parse date: {self.value}")
             parsing_exception = True
 
