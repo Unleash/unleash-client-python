@@ -17,6 +17,8 @@ def get_feature_toggles(
     custom_options: dict,
     project: Optional[str] = None,
     cached_etag: str = "",
+    reqeust_timeout: int = REQUEST_TIMEOUT,
+    request_retries: int = REQUEST_RETRIES,
 ) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
@@ -49,7 +51,7 @@ def get_feature_toggles(
             base_params = {"project": project}
 
         adapter = HTTPAdapter(
-            max_retries=Retry(total=REQUEST_RETRIES, status_forcelist=[500, 502, 504])
+            max_retries=Retry(total=request_retries, status_forcelist=[500, 502, 504])
         )
         with requests.Session() as session:
             session.mount("https://", adapter)
@@ -58,7 +60,7 @@ def get_feature_toggles(
                 base_url,
                 headers={**custom_headers, **headers},
                 params=base_params,
-                timeout=REQUEST_TIMEOUT,
+                timeout=reqeust_timeout,
                 **custom_options,
             )
 
