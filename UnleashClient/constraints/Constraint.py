@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import semver
 from dateutil.parser import parse
@@ -123,11 +123,13 @@ class Constraint:
         return_value = False
         parsing_exception = False
 
+        DateUtilParserError: Any
+
         try:
             from dateutil.parser import ParserError
 
             DateUtilParserError = ParserError
-        except:
+        except ImportError:
             DateUtilParserError = ValueError
 
         try:
