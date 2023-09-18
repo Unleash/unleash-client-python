@@ -26,6 +26,9 @@ install:
 	pip install . && \
 	./scripts/get-spec.sh
 
+install-docs: install
+	pip install -U -r requirements-docs.txt
+
 #-----------------------------------------------------------------------
 # Testing & Linting
 #-----------------------------------------------------------------------

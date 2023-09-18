@@ -74,8 +74,14 @@ class FileCache(BaseCache):
     :param directory: Location to create cache.  If empty, will use filecache default.
     """
 
-    def __init__(self, name: str, directory: Optional[str] = None):
+    def __init__(
+        self,
+        name: str,
+        directory: Optional[str] = None,
+        request_timeout: int = REQUEST_TIMEOUT,
+    ):
         self._cache = _FileCache(name, app_cache_dir=directory)
+        self.request_timeout = request_timeout
 
     def bootstrap_from_dict(self, initial_config: dict) -> None:
         """
@@ -101,7 +107,10 @@ class FileCache(BaseCache):
             self.bootstrapped = True
 
     def bootstrap_from_url(
-        self, initial_config_url: str, headers: Optional[dict] = None
+        self,
+        initial_config_url: str,
+        headers: Optional[dict] = None,
+        request_timeout: Optional[int] = None,
     ) -> None:
         """
         Loads initial Unleash configuration from a url.
@@ -111,9 +120,8 @@ class FileCache(BaseCache):
         :param initial_configuration_url: Url that returns document containing initial configuration.  Must return JSON.
         :param headers: Headers to use when GETing the initial configuration URL.
         """
-        response = requests.get(
-            initial_config_url, headers=headers, timeout=REQUEST_TIMEOUT
-        )
+        timeout = request_timeout if request_timeout else self.request_timeout
+        response = requests.get(initial_config_url, headers=headers, timeout=timeout)
         self.set(FEATURES_URL, response.json())
         self.bootstrapped = True
 
