@@ -348,7 +348,10 @@ class UnleashClient:
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
-                feature_check = feature.is_enabled(context)
+                feature_check = (
+                    feature.is_enabled(context)
+                    and self._dependencies_are_satisfied(feature_name, context)
+                )
 
                 if feature.only_for_metrics:
                     return self._get_fallback_value(
@@ -429,6 +432,10 @@ class UnleashClient:
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
+
+                if not self._dependencies_are_satisfied(feature_name, context):
+                    return DISABLED_VARIATION
+
                 variant_check = feature.get_variant(context)
 
                 if self.unleash_event_callback and feature.impression_data:
@@ -483,6 +490,58 @@ class UnleashClient:
                 feature_name,
             )
             return DISABLED_VARIATION
+
+    def _is_dependency_satified(self, dependency: dict, context: dict) -> bool:
+        """
+        Checks a single feature dependency.
+        """
+
+        dependency_name = dependency['feature']
+
+        dependency_feature = self.features[dependency_name]
+
+        if not dependency_feature:
+            LOGGER.warning(
+                "Feature dependency not found. %s", dependency_name
+            )
+            return False
+
+        if dependency_feature.dependencies:
+            LOGGER.warning(
+                "Feature dependency cannot have it's own dependencies. %s", dependency_name
+            )
+            return False
+
+        should_be_enabled = dependency.get('enabled', True)
+        is_enabled = dependency_feature.is_enabled(context)
+
+        if is_enabled != should_be_enabled:
+            return False
+
+        variants = dependency.get('variants')
+        if variants:
+            variant = dependency_feature.get_variant(context)
+            if variant['name'] not in variants:
+                return False
+
+        return True
+
+    def _dependencies_are_satisfied(self, feature_name: str, context: dict) -> bool:
+        """
+        If feature dependencies are satisfied (or non-existent).
+        """
+
+        feature = self.features[feature_name]
+        dependencies = feature.dependencies
+
+        if not dependencies:
+            return True
+
+        for dependency in dependencies:
+            if not self._is_dependency_satified(dependency, context):
+                return False
+
+        return True
 
     def _do_instance_check(self, multiple_instance_mode):
         identifier = self.__get_identifier()

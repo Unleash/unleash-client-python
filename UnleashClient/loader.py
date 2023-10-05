@@ -86,6 +86,7 @@ def _create_feature(
         strategies=parsed_strategies,
         variants=variant,
         impression_data=provisioning.get("impressionData", False),
+        dependencies=provisioning.get("dependencies", []),
     )
 
 
