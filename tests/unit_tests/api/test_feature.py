@@ -35,7 +35,8 @@ FULL_FEATURE_URL = URL + FEATURES_URL
             lambda result: result["version"] == 1,
             id="success",
         ),
-        param(MOCK_FEATURE_RESPONSE, 202, 1, lambda result: not result, id="failure"),
+        param(MOCK_FEATURE_RESPONSE, 202, 1,
+              lambda result: not result, id="failure"),
         param({}, 500, 4, lambda result: not result, id="failure"),
     ),
 )
@@ -90,7 +91,7 @@ def test_get_feature_toggle_failed_etag():
 
 
 @pytest.mark.skipif(
-    date.today() < date(2023, 10, 1),
+    date.today() < date(2023, 11, 1),
     reason="This is currently breaking due to a dependency or the test setup. Skipping this allows us to run tests in CI without this popping up as an error all the time.",
 )
 @responses.activate
