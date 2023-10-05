@@ -35,8 +35,7 @@ FULL_FEATURE_URL = URL + FEATURES_URL
             lambda result: result["version"] == 1,
             id="success",
         ),
-        param(MOCK_FEATURE_RESPONSE, 202, 1,
-              lambda result: not result, id="failure"),
+        param(MOCK_FEATURE_RESPONSE, 202, 1, lambda result: not result, id="failure"),
         param({}, 500, 4, lambda result: not result, id="failure"),
     ),
 )
