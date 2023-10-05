@@ -348,10 +348,9 @@ class UnleashClient:
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
-                feature_check = (
-                    feature.is_enabled(context)
-                    and self._dependencies_are_satisfied(feature_name, context)
-                )
+                feature_check = feature.is_enabled(
+                    context
+                ) and self._dependencies_are_satisfied(feature_name, context)
 
                 if feature.only_for_metrics:
                     return self._get_fallback_value(
@@ -496,32 +495,31 @@ class UnleashClient:
         Checks a single feature dependency.
         """
 
-        dependency_name = dependency['feature']
+        dependency_name = dependency["feature"]
 
         dependency_feature = self.features[dependency_name]
 
         if not dependency_feature:
-            LOGGER.warning(
-                "Feature dependency not found. %s", dependency_name
-            )
+            LOGGER.warning("Feature dependency not found. %s", dependency_name)
             return False
 
         if dependency_feature.dependencies:
             LOGGER.warning(
-                "Feature dependency cannot have it's own dependencies. %s", dependency_name
+                "Feature dependency cannot have it's own dependencies. %s",
+                dependency_name,
             )
             return False
 
-        should_be_enabled = dependency.get('enabled', True)
+        should_be_enabled = dependency.get("enabled", True)
         is_enabled = dependency_feature.is_enabled(context)
 
         if is_enabled != should_be_enabled:
             return False
 
-        variants = dependency.get('variants')
+        variants = dependency.get("variants")
         if variants:
             variant = dependency_feature.get_variant(context)
-            if variant['name'] not in variants:
+            if variant["name"] not in variants:
                 return False
 
         return True
