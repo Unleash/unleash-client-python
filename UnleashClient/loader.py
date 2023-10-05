@@ -151,6 +151,10 @@ def load_features(
             "impressionData", False
         )
 
+        feature_for_update.dependencies = parsed_features[feature].get(
+            "dependencies", []
+        )
+
         # If the feature had previously been added to the features list only for
         # tracking, indicate that it is now a real feature that should be
         # evaluated properly.

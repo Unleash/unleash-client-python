@@ -17,6 +17,7 @@ class Feature:
         strategies: list,
         variants: Optional[Variants] = None,
         impression_data: bool = False,
+        dependencies: list = [],
     ) -> None:
         """
         A representation of a feature object
@@ -43,6 +44,12 @@ class Feature:
 
         # Whether the feature exists only for tracking metrics or not.
         self.only_for_metrics = False
+
+        # Prerequisite state of other features that this feature depends on
+        self.dependencies = dependencies
+        for dependency in self.dependencies:
+            if "enabled" not in dependency:
+                dependency["enabled"] = True
 
     def reset_stats(self) -> None:
         """
