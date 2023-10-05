@@ -156,7 +156,9 @@ def test_strategy_variant_is_returned(test_feature_strategy_variants):
 
 def test_dependencies(test_feature_dependencies):
     assert isinstance(test_feature_dependencies.dependencies, list)
-    assert all(isinstance(item, dict) for item in test_feature_dependencies.dependencies)
+    assert all(
+        isinstance(item, dict) for item in test_feature_dependencies.dependencies
+    )
     assert all("feature" in item for item in test_feature_dependencies.dependencies)
     assert all("enabled" in item for item in test_feature_dependencies.dependencies)
     # if no enabled key is provided, it should default to True
