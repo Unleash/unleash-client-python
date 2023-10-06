@@ -249,6 +249,6 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
             "createdAt": "2023-10-06T12:04:05.667Z",
             "impressionData": False,
             "dependencies": [{"feature": "Child"}],
-        }
+        },
     ],
 }
