@@ -13,6 +13,7 @@ from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
+    MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -353,6 +354,21 @@ def test_uc_not_initialized_isenabled():
     assert unleash_client.is_enabled(
         "ThisFlagDoesn'tExist", fallback_function=lambda x, y: True
     )
+
+
+@responses.activate
+def test_uc_dependency(unleash_client):
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_enabled("Child")
+    assert not unleash_client.is_enabled("WithDisabledDependency")
+    assert unleash_client.is_enabled("ComplexExample")
 
 
 @responses.activate

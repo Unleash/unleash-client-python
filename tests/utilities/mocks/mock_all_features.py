@@ -170,26 +170,5 @@ MOCK_ALL_FEATURES = {
             "createdAt": "2018-10-09T06:04:05.667Z",
             "impressionData": False,
         },
-        {
-            "name": "Parent",
-            "description": "Default feature toggle",
-            "enabled": True,
-            "strategies": [{"name": "default", "parameters": {}}],
-            "createdAt": "2018-10-09T06:04:05.667Z",
-            "impressionData": False,
-        },
-        {
-            "name": "Child",
-            "description": "Feature toggle that depends on Parent feature toggle",
-            "enabled": True,
-            "strategies": [{"name": "default", "parameters": {}}],
-            "createdAt": "2018-10-09T06:04:05.667Z",
-            "impressionData": False,
-            "dependencies": [
-                {
-                    "feature": "Default",
-                }
-            ],
-        },
     ],
 }
