@@ -360,7 +360,10 @@ def test_uc_not_initialized_isenabled():
 def test_uc_dependency(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE, status=200
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+        status=200,
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 

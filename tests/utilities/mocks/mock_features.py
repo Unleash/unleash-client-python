@@ -175,9 +175,9 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
                             "name": "variant1",
                             "weight": 1000,
                             "stickiness": "default",
-                            "weightType": "variable"
+                            "weightType": "variable",
                         }
-                    ]
+                    ],
                 }
             ],
             "createdAt": "2018-10-09T06:04:05.667Z",
@@ -225,15 +225,12 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
             "createdAt": "2023-10-06T12:04:05.667Z",
             "impressionData": False,
             "dependencies": [
-                {
-                    "feature": "Parent",
-                    "variants": ["variant1"]
-                },
+                {"feature": "Parent", "variants": ["variant1"]},
                 {
                     "feature": "Disabled",
                     "enabled": False,
                 },
             ],
-        }
-    ]
+        },
+    ],
 }
