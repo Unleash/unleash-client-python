@@ -372,6 +372,8 @@ def test_uc_dependency(unleash_client):
     assert unleash_client.is_enabled("Child")
     assert not unleash_client.is_enabled("WithDisabledDependency")
     assert unleash_client.is_enabled("ComplexExample")
+    assert not unleash_client.is_enabled("UnlistedDependency")
+    assert not unleash_client.is_enabled("TransitiveDependency")
 
 
 @responses.activate

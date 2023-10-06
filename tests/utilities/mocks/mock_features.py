@@ -232,5 +232,23 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
                 },
             ],
         },
+        {
+            "name": "UnlistedDependency",
+            "description": "Feature toggle that depends on a feature toggle that does not exist",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [{"feature": "DoesNotExist"}],
+        },
+        {
+            "name": "TransitiveDependency",
+            "description": "Feature toggle that depends on a feature toggle that has a dependency",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [{"feature": "Child"}],
+        }
     ],
 }
