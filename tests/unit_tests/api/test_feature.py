@@ -1,6 +1,3 @@
-from datetime import date
-
-import pytest
 import responses
 from pytest import mark, param
 
@@ -89,15 +86,9 @@ def test_get_feature_toggle_failed_etag():
     assert not etag
 
 
-@pytest.mark.skipif(
-    date.today() < date(2023, 10, 1),
-    reason="This is currently breaking due to a dependency or the test setup. Skipping this allows us to run tests in CI without this popping up as an error all the time.",
-)
 @responses.activate
 def test_get_feature_toggle_etag_present():
-    responses.add(
-        responses.GET, PROJECT_URL, json={}, status=304, headers={"etag": ETAG_VALUE}
-    )
+    responses.add(responses.GET, PROJECT_URL, status=304, headers={"etag": ETAG_VALUE})
 
     (result, etag) = get_feature_toggles(
         URL,
