@@ -122,6 +122,22 @@ def unleash_client_toggle_only(cache):
     unleash_client.destroy()
 
 
+@pytest.fixture()
+def unleash_client_bootstrap_dependencies():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+    unleash_client.initialize_client(fetch_toggles=False)
+    yield unleash_client
+
+
 def test_UC_initialize_default():
     client = UnleashClient(URL, APP_NAME)
     assert client.unleash_url == URL
@@ -356,19 +372,8 @@ def test_uc_not_initialized_isenabled():
     )
 
 
-@responses.activate
-def test_uc_dependency(unleash_client):
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(
-        responses.GET,
-        URL + FEATURES_URL,
-        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
-        status=200,
-    )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    unleash_client.initialize_client()
-    time.sleep(1)
+def test_uc_dependency(unleash_client_bootstrap_dependencies):
+    unleash_client = unleash_client_bootstrap_dependencies
     assert unleash_client.is_enabled("Child")
     assert not unleash_client.is_enabled("WithDisabledDependency")
     assert unleash_client.is_enabled("ComplexExample")

@@ -46,10 +46,10 @@ class Feature:
         self.only_for_metrics = False
 
         # Prerequisite state of other features that this feature depends on
-        self.dependencies = dependencies
-        for dependency in self.dependencies:
-            if "enabled" not in dependency:
-                dependency["enabled"] = True
+        self.dependencies = [
+            dict(dependency, enabled=dependency.get("enabled", True))
+            for dependency in dependencies or []
+        ]
 
     def reset_stats(self) -> None:
         """
