@@ -17,7 +17,7 @@ class Feature:
         strategies: list,
         variants: Optional[Variants] = None,
         impression_data: bool = False,
-        dependencies: list = [],
+        dependencies: list = None,
     ) -> None:
         """
         A representation of a feature object
