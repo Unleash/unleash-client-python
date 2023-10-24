@@ -82,20 +82,20 @@ class Feature:
         """
         self.variant_counts[variant_name] = self.variant_counts.get(variant_name, 0) + 1
 
-    def is_enabled(self, context: dict = None) -> bool:
+    def is_enabled(self, context: dict = None, skip_stats: bool = False) -> bool:
         """
         Checks if feature is enabled.
 
         :param context: Context information
         :return:
         """
-        evaluation_result = self._get_evaluation_result(context)
+        evaluation_result = self._get_evaluation_result(context, skip_stats)
 
         flag_value = evaluation_result.enabled
 
         return flag_value
 
-    def get_variant(self, context: dict = None) -> dict:
+    def get_variant(self, context: dict = None, skip_stats: bool = False) -> dict:
         """
         Checks if feature is enabled and, if so, get the variant.
 
@@ -116,11 +116,13 @@ class Feature:
 
             except Exception as variant_exception:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
-
-        self._count_variant(cast(str, variant["name"]))
+        if not skip_stats:
+            self._count_variant(cast(str, variant["name"]))
         return variant
 
-    def _get_evaluation_result(self, context: dict = None) -> EvaluationResult:
+    def _get_evaluation_result(
+        self, context: dict = None, skip_stats: bool = False
+    ) -> EvaluationResult:
         strategy_result = EvaluationResult(False, None)
         if self.enabled:
             try:
@@ -138,7 +140,8 @@ class Feature:
             except Exception as evaluation_except:
                 LOGGER.warning("Error getting evaluation result: %s", evaluation_except)
 
-        self.increment_stats(strategy_result.enabled)
+        if not skip_stats:
+            self.increment_stats(strategy_result.enabled)
         LOGGER.info("%s evaluation result: %s", self.name, strategy_result)
         return strategy_result
 

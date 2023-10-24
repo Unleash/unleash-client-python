@@ -511,14 +511,14 @@ class UnleashClient:
             return False
 
         should_be_enabled = dependency.get("enabled", True)
-        is_enabled = dependency_feature.is_enabled(context)
+        is_enabled = dependency_feature.is_enabled(context, skip_stats=True)
 
         if is_enabled != should_be_enabled:
             return False
 
         variants = dependency.get("variants")
         if variants:
-            variant = dependency_feature.get_variant(context)
+            variant = dependency_feature.get_variant(context, skip_stats=True)
             if variant["name"] not in variants:
                 return False
 

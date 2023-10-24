@@ -458,6 +458,27 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
 
 
 @responses.activate
+def test_uc_metrics_dependencies(unleash_client):
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+        status=200,
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_enabled("Child")
+
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"]["Child"]["yes"] == 1
+    assert "Parent" not in request["bucket"]["toggles"]
+
+
+@responses.activate
 def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
