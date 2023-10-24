@@ -158,3 +158,97 @@ MOCK_FEATURE_RESPONSE_PROJECT = {
         }
     ],
 }
+
+MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
+    "version": 1,
+    "features": [
+        {
+            "name": "Parent",
+            "description": "Dependency on Child feature toggle",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "variants": [
+                        {
+                            "name": "variant1",
+                            "weight": 1000,
+                            "stickiness": "default",
+                            "weightType": "variable",
+                        }
+                    ],
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+        {
+            "name": "Child",
+            "description": "Feature toggle that depends on Parent feature toggle",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [
+                {
+                    "feature": "Parent",
+                }
+            ],
+        },
+        {
+            "name": "Disabled",
+            "description": "Disabled feature toggle",
+            "enabled": False,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T11:53:02.161Z",
+            "impressionData": False,
+        },
+        {
+            "name": "WithDisabledDependency",
+            "description": "Feature toggle that depends on Parent feature toggle",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [
+                {
+                    "feature": "Disabled",
+                }
+            ],
+        },
+        {
+            "name": "ComplexExample",
+            "description": "Feature toggle that depends on multiple feature toggles",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [
+                {"feature": "Parent", "variants": ["variant1"]},
+                {
+                    "feature": "Disabled",
+                    "enabled": False,
+                },
+            ],
+        },
+        {
+            "name": "UnlistedDependency",
+            "description": "Feature toggle that depends on a feature toggle that does not exist",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [{"feature": "DoesNotExist"}],
+        },
+        {
+            "name": "TransitiveDependency",
+            "description": "Feature toggle that depends on a feature toggle that has a dependency",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}}],
+            "createdAt": "2023-10-06T12:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [{"feature": "Child"}],
+        },
+    ],
+}

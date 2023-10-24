@@ -46,6 +46,18 @@ def test_feature_strategy_variants():
     yield Feature("My Feature", True, strategies, variants)
 
 
+@pytest.fixture()
+def test_feature_dependencies():
+    strategies = [Default()]
+    variants = Variants(VARIANTS, "My Feature")
+    dependencies = [
+        {"feature": "prerequisite"},
+        {"feature": "disabledDependency", "enabled": False},
+        {"feature": "withVariants", "variants": ["VarA", "VarB"]},
+    ]
+    yield Feature("My Feature", True, strategies, variants, dependencies=dependencies)
+
+
 def test_create_feature_true(test_feature):
     my_feature = test_feature
 
@@ -140,3 +152,14 @@ def test_strategy_variant_is_returned(test_feature_strategy_variants):
         "name": "VarB",
         "payload": {"type": "string", "value": "Test 2"},
     }
+
+
+def test_dependencies(test_feature_dependencies):
+    assert isinstance(test_feature_dependencies.dependencies, list)
+    assert all(
+        isinstance(item, dict) for item in test_feature_dependencies.dependencies
+    )
+    assert all("feature" in item for item in test_feature_dependencies.dependencies)
+    assert all("enabled" in item for item in test_feature_dependencies.dependencies)
+    # if no enabled key is provided, it should default to True
+    assert test_feature_dependencies.dependencies[0]["enabled"]

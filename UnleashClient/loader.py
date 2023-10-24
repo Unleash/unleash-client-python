@@ -86,6 +86,7 @@ def _create_feature(
         strategies=parsed_strategies,
         variants=variant,
         impression_data=provisioning.get("impressionData", False),
+        dependencies=provisioning.get("dependencies", []),
     )
 
 
@@ -149,6 +150,10 @@ def load_features(
 
         feature_for_update.impression_data = parsed_features[feature].get(
             "impressionData", False
+        )
+
+        feature_for_update.dependencies = parsed_features[feature].get(
+            "dependencies", []
         )
 
         # If the feature had previously been added to the features list only for

@@ -13,6 +13,7 @@ from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
+    MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -119,6 +120,22 @@ def unleash_client_toggle_only(cache):
     )
     yield unleash_client
     unleash_client.destroy()
+
+
+@pytest.fixture()
+def unleash_client_bootstrap_dependencies():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+    unleash_client.initialize_client(fetch_toggles=False)
+    yield unleash_client
 
 
 def test_UC_initialize_default():
@@ -355,6 +372,15 @@ def test_uc_not_initialized_isenabled():
     )
 
 
+def test_uc_dependency(unleash_client_bootstrap_dependencies):
+    unleash_client = unleash_client_bootstrap_dependencies
+    assert unleash_client.is_enabled("Child")
+    assert not unleash_client.is_enabled("WithDisabledDependency")
+    assert unleash_client.is_enabled("ComplexExample")
+    assert not unleash_client.is_enabled("UnlistedDependency")
+    assert not unleash_client.is_enabled("TransitiveDependency")
+
+
 @responses.activate
 def test_uc_get_variant():
     # Set up API
@@ -429,6 +455,27 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+
+
+@responses.activate
+def test_uc_metrics_dependencies(unleash_client):
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+        status=200,
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    unleash_client.initialize_client()
+    time.sleep(1)
+    assert unleash_client.is_enabled("Child")
+
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"]["Child"]["yes"] == 1
+    assert "Parent" not in request["bucket"]["toggles"]
 
 
 @responses.activate
