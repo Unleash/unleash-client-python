@@ -1,4 +1,24 @@
-## Next
+## v5.9.1
+* (Minor) Add support for Semver 3 while maintaining backwards compatibility.  Thanks @@chaitanya-parsana!
+
+## v5.9.0
+* (Major) Support for dependent features.  Thanks @Tymek!
+* (Major) Add request timeout and request retrie paremeters/overides.  Thanks @snosratiershad!
+* (Bugfixes) Make `check_date_operators` works with dateutil < 2.9.1.
+* (Bugfixes) Update responses mock for etag test.  Thanks @yjabri!
+* (Bugfix) Fix broken link in client spec ddocs.  Thanks @sjaanus!
+
+## v5.8.0
+* (Major) Added support for Strategy Variants.
+
+## v5.7.1
+* (Bugfix) Fix dependency issue.
+
+## v5.7.0
+* (Major) Metrics are now recorded for each variant whenever get_variant is called.
+* (Major) Track metrics for unknown features and their variants.
+* (Minor) Add docstring for the Unleash client's disable_registration option. Thanks @Lujeni!
+* (Minor) Fix a typo in the Cache docstring.
 * (Minor) Switch to ruff for linting and black for formatting.
 
 ## v5.6.0
