@@ -3,7 +3,12 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Optional, Union
 
-import semver
+try:
+    from semver import VersionInfo
+except ImportError:
+    # https://python-semver.readthedocs.io/en/latest/migration/migratetosemver3.html
+    from semver.version import Version as VersionInfo
+
 from dateutil.parser import parse
 
 from UnleashClient.utils import LOGGER, get_identifier
@@ -153,17 +158,17 @@ class Constraint:
     def check_semver_operators(self, context_value: str) -> bool:
         return_value = False
         parsing_exception = False
-        target_version: Optional[semver.VersionInfo] = None
-        context_version: Optional[semver.VersionInfo] = None
+        target_version: Optional[VersionInfo] = None
+        context_version: Optional[VersionInfo] = None
 
         try:
-            target_version = semver.VersionInfo.parse(self.value)
+            target_version = VersionInfo.parse(self.value)
         except ValueError:
             LOGGER.error(f"Unable to parse server semver: {self.value}")
             parsing_exception = True
 
         try:
-            context_version = semver.VersionInfo.parse(context_value)
+            context_version = VersionInfo.parse(context_value)
         except ValueError:
             LOGGER.error(f"Unable to parse context semver: {context_value}")
             parsing_exception = True
