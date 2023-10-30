@@ -8,6 +8,7 @@ from UnleashClient.constants import DISABLED_VARIATION
 
 VARIANT_HASH_SEED = 86028157
 
+
 class Variants:
     def __init__(
         self, variants_list: list, group_id: str, is_feature_variants: bool = True
@@ -104,7 +105,7 @@ class Variants:
                 self._get_seed(context, stickiness_selector),
                 self.group_id,
                 total_weight,
-                seed=VARIANT_HASH_SEED
+                seed=VARIANT_HASH_SEED,
             )
             counter = 0
             for variation in self.variants:
