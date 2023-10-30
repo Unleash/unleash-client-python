@@ -6,6 +6,8 @@ from typing import Dict, Optional  # noqa: F401
 from UnleashClient import utils
 from UnleashClient.constants import DISABLED_VARIATION
 
+VARIANT_HASH_SEED = 86028157
+
 
 class Variants:
     def __init__(
@@ -103,6 +105,7 @@ class Variants:
                 self._get_seed(context, stickiness_selector),
                 self.group_id,
                 total_weight,
+                seed=VARIANT_HASH_SEED,
             )
             counter = 0
             for variation in self.variants:

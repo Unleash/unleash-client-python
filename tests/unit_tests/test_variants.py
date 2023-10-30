@@ -55,7 +55,7 @@ def test_variation_selectvariation_happypath(variations):
     variant = variations.get_variant({"userId": "2"})
     assert variant
     assert "payload" in variant
-    assert variant["name"] == "VarC"
+    assert variant["name"] == "VarA"
 
 
 def test_variation_customvariation(variations_with_stickiness):

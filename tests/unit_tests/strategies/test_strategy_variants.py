@@ -36,8 +36,8 @@ def test_flexiblerollout_satisfies_constraints_returns_variant(strategy):
     assert result.enabled
     assert result.variant == {
         "enabled": True,
-        "name": "VarB",
-        "payload": {"type": "string", "value": "Test 2"},
+        "name": "VarC",
+        "payload": {"type": "string", "value": "Test 3"},
     }
 
 
