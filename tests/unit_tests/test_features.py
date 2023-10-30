@@ -107,12 +107,12 @@ def test_select_variation_novariation(test_feature):
 def test_select_variation_variation(test_feature_variants):
     selected_variant = test_feature_variants.get_variant({"userId": "2"})
     assert selected_variant["enabled"]
-    assert selected_variant["name"] == "VarB"
+    assert selected_variant["name"] == "VarC"
 
 
 def test_variant_metrics_are_reset(test_feature_variants):
     test_feature_variants.get_variant({"userId": "2"})
-    assert test_feature_variants.variant_counts["VarB"] == 1
+    assert test_feature_variants.variant_counts["VarC"] == 1
 
     test_feature_variants.reset_stats()
     assert not test_feature_variants.variant_counts
@@ -149,8 +149,8 @@ def test_strategy_variant_is_returned(test_feature_strategy_variants):
 
     assert variant == {
         "enabled": True,
-        "name": "VarB",
-        "payload": {"type": "string", "value": "Test 2"},
+        "name": "VarC",
+        "payload": {"type": "string", "value": "Test 3"},
     }
 
 
