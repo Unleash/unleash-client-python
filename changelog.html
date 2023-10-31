@@ -34,7 +34,7 @@
             unleash-client-python
           </a>
               <div class="version">
-                0.1.dev1+g1ef714c
+                0.1.dev1+g2ddb217
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -69,6 +69,7 @@
 <p class="caption" role="heading"><span class="caption-text">Changelog</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v5-9-2">v5.9.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v5-9-1">v5.9.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v5-9-0">v5.9.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v5-8-0">v5.8.0</a></li>
@@ -148,6 +149,12 @@
              
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<section id="v5-9-2">
+<h2>v5.9.2<a class="headerlink" href="#v5-9-2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>(Bugfix) Update variants to use a seed value for their hash.  This fixes an issue with variant distribution &amp; gradual rollouts where users were seeing very non-random distributions.</p></li>
+</ul>
+</section>
 <section id="v5-9-1">
 <h2>v5.9.1<a class="headerlink" href="#v5-9-1" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -159,8 +166,8 @@
 <ul class="simple">
 <li><p>(Major) Support for dependent features.  Thanks &#64;Tymek!</p></li>
 <li><p>(Major) Add request timeout and request retrie paremeters/overides.  Thanks &#64;snosratiershad!</p></li>
-<li><p>(Bugfixes) Make <code class="docutils literal notranslate"><span class="pre">check_date_operators</span></code> works with dateutil &lt; 2.9.1.</p></li>
-<li><p>(Bugfixes) Update responses mock for etag test.  Thanks &#64;yjabri!</p></li>
+<li><p>(Bugfix) Make <code class="docutils literal notranslate"><span class="pre">check_date_operators</span></code> works with dateutil &lt; 2.9.1.</p></li>
+<li><p>(Bugfix) Update responses mock for etag test.  Thanks &#64;yjabri!</p></li>
 <li><p>(Bugfix) Fix broken link in client spec ddocs.  Thanks &#64;sjaanus!</p></li>
 </ul>
 </section>
