@@ -1,11 +1,14 @@
+## v5.9.2
+* (Bugfix) Update variants to use a seed value for their hash.  This fixes an issue with variant distribution & gradual rollouts where users were seeing very non-random distributions.
+
 ## v5.9.1
 * (Minor) Add support for Semver 3 while maintaining backwards compatibility.  Thanks @@chaitanya-parsana!
 
 ## v5.9.0
 * (Major) Support for dependent features.  Thanks @Tymek!
 * (Major) Add request timeout and request retrie paremeters/overides.  Thanks @snosratiershad!
-* (Bugfixes) Make `check_date_operators` works with dateutil < 2.9.1.
-* (Bugfixes) Update responses mock for etag test.  Thanks @yjabri!
+* (Bugfix) Make `check_date_operators` works with dateutil < 2.9.1.
+* (Bugfix) Update responses mock for etag test.  Thanks @yjabri!
 * (Bugfix) Fix broken link in client spec ddocs.  Thanks @sjaanus!
 
 ## v5.8.0
