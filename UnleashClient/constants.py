@@ -13,7 +13,7 @@ APPLICATION_HEADERS = {
     "Content-Type": "application/json",
     "Unleash-Client-Spec": CLIENT_SPEC_VERSION,
 }
-DISABLED_VARIATION = {"name": "disabled", "enabled": False}
+DISABLED_VARIATION = {"name": "disabled", "enabled": False, "is_feature_enabled": False}
 
 # Paths
 REGISTER_URL = "/client/register"
