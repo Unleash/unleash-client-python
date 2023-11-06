@@ -92,5 +92,5 @@ def test_spec(spec):
         expected = test_data["expectedResult"]
         context = test_data.get("context")
         variant = unleash_client.get_variant(toggle_name, context)
-        del variant['is_feature_enabled']
+        del variant["is_feature_enabled"]
         assert variant == expected

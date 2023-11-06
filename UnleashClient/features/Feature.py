@@ -118,8 +118,8 @@ class Feature:
                 LOGGER.warning("Error selecting variant: %s", variant_exception)
         if not skip_stats:
             self._count_variant(cast(str, variant["name"]))
-        
-        variant['is_feature_enabled'] = is_feature_enabled
+
+        variant["is_feature_enabled"] = is_feature_enabled
         return variant
 
     def _get_evaluation_result(
