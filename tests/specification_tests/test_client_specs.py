@@ -93,5 +93,7 @@ def test_spec(spec):
         context = test_data.get("context")
         variant = unleash_client.get_variant(toggle_name, context)
         # Remove the feature_enabled key from the variant, as it is not part of the expected result in the spec
-        variant_without_feature_enabled = {k: v for k, v in variant.items() if k != "feature_enabled"}
+        variant_without_feature_enabled = {
+            k: v for k, v in variant.items() if k != "feature_enabled"
+        }
         assert variant_without_feature_enabled == expected
