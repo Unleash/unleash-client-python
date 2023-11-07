@@ -399,13 +399,13 @@ def test_uc_get_variant():
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
     assert variant["enabled"]
-    assert variant["is_feature_enabled"]
+    assert variant["feature_enabled"]
 
     # If feature flag is not.
     variant = unleash_client.get_variant("testVariations", context={"userId": "3"})
     assert variant["name"] == "disabled"
     assert not variant["enabled"]
-    assert not variant["is_feature_enabled"]
+    assert not variant["feature_enabled"]
 
     unleash_client.destroy()
 
@@ -424,11 +424,11 @@ def test_uc_get_variant_feature_enabled_no_variants():
     unleash_client.initialize_client()
 
     time.sleep(1)
-    # If feature is enabled but has no variants, should return disabled variant with is_feature_enabled=True
+    # If feature is enabled but has no variants, should return disabled variant with feature_enabled=True
     variant = unleash_client.get_variant("testFlag")
     assert variant["name"] == "disabled"
     assert not variant["enabled"]
-    assert variant["is_feature_enabled"]
+    assert variant["feature_enabled"]
 
     unleash_client.destroy()
 
@@ -439,7 +439,7 @@ def test_uc_not_initialized_getvariant():
     variant = unleash_client.get_variant("ThisFlagDoesn'tExist")
     assert not variant["enabled"]
     assert variant["name"] == "disabled"
-    assert not variant["is_feature_enabled"]
+    assert not variant["feature_enabled"]
 
 
 @responses.activate
