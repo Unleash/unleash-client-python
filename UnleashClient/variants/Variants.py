@@ -84,8 +84,6 @@ class Variants:
         :param flag_status:
         :return:
         """
-        fallback_variant = copy.deepcopy(DISABLED_VARIATION)
-
         if self.variants:
             override_variant = self._apply_overrides(context)
             if override_variant:
@@ -93,7 +91,7 @@ class Variants:
 
             total_weight = sum(x["weight"] for x in self.variants)
             if total_weight <= 0:
-                return fallback_variant
+                return DISABLED_VARIATION
 
             stickiness_selector = (
                 self.variants[0]["stickiness"]
@@ -115,4 +113,4 @@ class Variants:
                     return self._format_variation(variation, flag_status)
 
         # Catch all return.
-        return fallback_variant
+        return DISABLED_VARIATION
