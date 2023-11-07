@@ -1,5 +1,4 @@
 # pylint: disable=invalid-name
-import copy
 import random
 import string
 import uuid
@@ -428,14 +427,13 @@ class UnleashClient:
         """
         context = context or {}
         context.update(self.unleash_static_context)
-        disabled_variation = copy.deepcopy(DISABLED_VARIATION)
 
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
 
                 if not self._dependencies_are_satisfied(feature_name, context):
-                    return disabled_variation
+                    return DISABLED_VARIATION
 
                 variant_check = feature.get_variant(context)
 
@@ -490,7 +488,7 @@ class UnleashClient:
                 "Attempted to get feature flag/variation %s, but client wasn't initialized!",
                 feature_name,
             )
-            return disabled_variation
+            return DISABLED_VARIATION
 
     def _is_dependency_satified(self, dependency: dict, context: dict) -> bool:
         """

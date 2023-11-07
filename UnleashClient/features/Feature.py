@@ -1,5 +1,4 @@
 # pylint: disable=invalid-name
-import copy
 from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
@@ -111,7 +110,7 @@ class Feature:
                 variant = (
                     self.variants.get_variant(context, is_feature_enabled)
                     if is_feature_enabled
-                    else copy.deepcopy(DISABLED_VARIATION)
+                    else DISABLED_VARIATION
                 )
 
             except Exception as variant_exception:
