@@ -252,3 +252,22 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
         },
     ],
 }
+
+MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE = {
+    "version": 1,
+    "features": [
+        {
+            "name": "EnabledNoVariants",
+            "description": "Enabled with no variants",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+    ],
+}

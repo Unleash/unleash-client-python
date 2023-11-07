@@ -11,6 +11,7 @@ from blinker import signal
 
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from tests.utilities.mocks.mock_features import (
+    MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE,
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
@@ -412,20 +413,20 @@ def test_uc_get_variant():
 
 @responses.activate
 def test_uc_get_variant_feature_enabled_no_variants():
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE)
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    unleash_client.initialize_client(fetch_toggles=False)
 
-    unleash_client = UnleashClient(URL, APP_NAME)
-    # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-
-    time.sleep(1)
     # If feature is enabled but has no variants, should return disabled variant with feature_enabled=True
-    variant = unleash_client.get_variant("testFlag")
+    variant = unleash_client.get_variant("EnabledNoVariants")
     assert variant["name"] == "disabled"
     assert not variant["enabled"]
     assert variant["feature_enabled"]
