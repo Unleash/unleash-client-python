@@ -119,7 +119,7 @@ class Feature:
         if not skip_stats:
             self._count_variant(cast(str, variant["name"]))
 
-        variant["is_feature_enabled"] = is_feature_enabled
+        return {**variant, "is_feature_enabled": is_feature_enabled}
 
     def _get_evaluation_result(
         self, context: dict = None, skip_stats: bool = False
