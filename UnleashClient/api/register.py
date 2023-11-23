@@ -23,7 +23,7 @@ def register_client(
     custom_headers: dict,
     custom_options: dict,
     supported_strategies: dict,
-    reqeust_timeout=REQUEST_TIMEOUT,
+    request_timeout=REQUEST_TIMEOUT,
 ) -> bool:
     """
     Attempts to register client with unleash server.
@@ -58,7 +58,7 @@ def register_client(
             url + REGISTER_URL,
             data=json.dumps(registation_request),
             headers={**custom_headers, **APPLICATION_HEADERS},
-            timeout=reqeust_timeout,
+            timeout=request_timeout,
             **custom_options,
         )
 

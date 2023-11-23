@@ -12,7 +12,7 @@ def send_metrics(
     request_body: dict,
     custom_headers: dict,
     custom_options: dict,
-    reqeust_timeout: int = REQUEST_TIMEOUT,
+    request_timeout: int = REQUEST_TIMEOUT,
 ) -> bool:
     """
     Attempts to send metrics to Unleash server
@@ -34,7 +34,7 @@ def send_metrics(
             url + METRICS_URL,
             data=json.dumps(request_body),
             headers={**custom_headers, **APPLICATION_HEADERS},
-            timeout=reqeust_timeout,
+            timeout=request_timeout,
             **custom_options,
         )
 
