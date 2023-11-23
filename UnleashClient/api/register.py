@@ -7,7 +7,6 @@ from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, Missin
 from UnleashClient.constants import (
     APPLICATION_HEADERS,
     REGISTER_URL,
-    REQUEST_TIMEOUT,
     SDK_NAME,
     SDK_VERSION,
 )
@@ -23,7 +22,7 @@ def register_client(
     custom_headers: dict,
     custom_options: dict,
     supported_strategies: dict,
-    request_timeout=REQUEST_TIMEOUT,
+    request_timeout: int,
 ) -> bool:
     """
     Attempts to register client with unleash server.
@@ -39,6 +38,7 @@ def register_client(
     :param custom_headers:
     :param custom_options:
     :param supported_strategies:
+    :param request_timeout:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
     registation_request = {

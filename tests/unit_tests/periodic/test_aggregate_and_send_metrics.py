@@ -55,7 +55,7 @@ def test_aggregate_and_send_metrics():
     features = {"My Feature1": my_feature1, "My Feature 2": my_feature2}
 
     aggregate_and_send_metrics(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache, 30
     )
 
     assert len(responses.calls) == 1
@@ -88,7 +88,7 @@ def test_no_metrics():
     features = {"My Feature1": my_feature1}
 
     aggregate_and_send_metrics(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache, 30
     )
 
     assert len(responses.calls) == 0

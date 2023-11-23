@@ -27,7 +27,7 @@ FULL_METRICS_URL = URL + METRICS_URL
 def test_send_metrics(payload, status, expected):
     responses.add(responses.POST, FULL_METRICS_URL, **payload, status=status)
 
-    result = send_metrics(URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS)
+    result = send_metrics(URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS, 30)
 
     assert len(responses.calls) == 1
     assert expected(result)

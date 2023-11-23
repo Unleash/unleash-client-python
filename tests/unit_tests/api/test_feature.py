@@ -46,7 +46,7 @@ def test_get_feature_toggle(response, status, calls, expected):
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, 30, 3
     )
 
     assert len(responses.calls) == calls
@@ -64,7 +64,7 @@ def test_get_feature_toggle_project():
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, 30, 1, PROJECT_NAME
     )
 
     assert len(responses.calls) == 1
@@ -79,7 +79,7 @@ def test_get_feature_toggle_failed_etag():
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME
+        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, 30, 3, PROJECT_NAME,
     )
 
     assert len(responses.calls) == 4
@@ -96,6 +96,8 @@ def test_get_feature_toggle_etag_present():
         INSTANCE_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
+        30,
+        1,
         PROJECT_NAME,
         ETAG_VALUE,
     )
@@ -123,6 +125,8 @@ def test_get_feature_toggle_retries():
         INSTANCE_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
+        30,
+        1,
         PROJECT_NAME,
         ETAG_VALUE,
     )

@@ -9,6 +9,8 @@ from UnleashClient.utils import LOGGER
 
 def fetch_and_load_features(
     url: str,
+    request_timeout: int,
+    request_retries: int,
     app_name: str,
     instance_id: str,
     custom_headers: dict,
@@ -24,6 +26,8 @@ def fetch_and_load_features(
         instance_id,
         custom_headers,
         custom_options,
+        request_timeout,
+        request_retries,
         project,
         cache.get(ETAG),
     )

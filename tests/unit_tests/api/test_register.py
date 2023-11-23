@@ -42,6 +42,7 @@ def test_register_client(payload, status, expected):
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         DEFAULT_STRATEGY_MAPPING,
+        30
     )
 
     assert len(responses.calls) == 1

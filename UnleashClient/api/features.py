@@ -4,7 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from UnleashClient.constants import FEATURES_URL, REQUEST_RETRIES, REQUEST_TIMEOUT
+from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER, log_resp_info
 
 
@@ -15,10 +15,10 @@ def get_feature_toggles(
     instance_id: str,
     custom_headers: dict,
     custom_options: dict,
+    request_timeout: int,
+    request_retries: int,
     project: Optional[str] = None,
     cached_etag: str = "",
-    request_timeout: int = REQUEST_TIMEOUT,
-    request_retries: int = REQUEST_RETRIES,
 ) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
@@ -32,6 +32,8 @@ def get_feature_toggles(
     :param instance_id:
     :param custom_headers:
     :param custom_options:
+    :param request_timeout:
+    :param request_retries:
     :param project:
     :param cached_etag:
     :return: (Feature flags, etag) if successful, ({},'') if not

@@ -37,6 +37,8 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
+        30,
+        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -61,6 +63,8 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
+        30,
+        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -86,6 +90,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
+        30,
+        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -101,6 +107,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
+        30,
+        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
