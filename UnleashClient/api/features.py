@@ -17,7 +17,7 @@ def get_feature_toggles(
     custom_options: dict,
     project: Optional[str] = None,
     cached_etag: str = "",
-    reqeust_timeout: int = REQUEST_TIMEOUT,
+    request_timeout: int = REQUEST_TIMEOUT,
     request_retries: int = REQUEST_RETRIES,
 ) -> Tuple[dict, str]:
     """
@@ -60,7 +60,7 @@ def get_feature_toggles(
                 base_url,
                 headers={**custom_headers, **headers},
                 params=base_params,
-                timeout=reqeust_timeout,
+                timeout=request_timeout,
                 **custom_options,
             )
 
