@@ -14,6 +14,8 @@ from tests.utilities.testing_constants import (
     PROJECT_NAME,
     PROJECT_URL,
     URL,
+    REQUEST_TIMEOUT,
+    REQUEST_RETRIES
 )
 from UnleashClient.constants import ETAG, FEATURES_URL
 from UnleashClient.features import Feature
@@ -37,8 +39,6 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
-        30,
-        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -46,6 +46,8 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     assert isinstance(in_memory_features["testFlag"], Feature)
@@ -63,8 +65,6 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
-        30,
-        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -72,6 +72,8 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
         PROJECT_NAME,
     )
 
@@ -90,8 +92,6 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
-        30,
-        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -99,6 +99,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     # Fail next request
@@ -107,8 +109,6 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
 
     fetch_and_load_features(
         URL,
-        30,
-        1,
         APP_NAME,
         INSTANCE_ID,
         CUSTOM_HEADERS,
@@ -116,6 +116,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     assert isinstance(in_memory_features["testFlag"], Feature)

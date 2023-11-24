@@ -9,8 +9,6 @@ from UnleashClient.utils import LOGGER
 
 def fetch_and_load_features(
     url: str,
-    request_timeout: int,
-    request_retries: int,
     app_name: str,
     instance_id: str,
     custom_headers: dict,
@@ -18,6 +16,8 @@ def fetch_and_load_features(
     cache: BaseCache,
     features: dict,
     strategy_mapping: dict,
+    request_timeout: int,
+    request_retries: int,
     project: Optional[str] = None,
 ) -> None:
     (feature_provisioning, etag) = get_feature_toggles(

@@ -249,8 +249,6 @@ class UnleashClient:
                 if fetch_toggles:
                     job_args = {
                         "url": self.unleash_url,
-                        "request_timeout": self.unleash_request_timeout,
-                        "request_retries": self.unleash_request_retries,
                         "app_name": self.unleash_app_name,
                         "instance_id": self.unleash_instance_id,
                         "custom_headers": self.unleash_custom_headers,
@@ -258,6 +256,8 @@ class UnleashClient:
                         "cache": self.cache,
                         "features": self.features,
                         "strategy_mapping": self.strategy_mapping,
+                        "request_timeout": self.unleash_request_timeout,
+                        "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
                     }
                     job_func: Callable = fetch_and_load_features
