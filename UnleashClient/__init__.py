@@ -13,7 +13,13 @@ from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from UnleashClient.api import register_client
-from UnleashClient.constants import DISABLED_VARIATION, ETAG, METRIC_LAST_SENT_TIME, REQUEST_TIMEOUT, REQUEST_RETRIES
+from UnleashClient.constants import (
+    DISABLED_VARIATION,
+    ETAG,
+    METRIC_LAST_SENT_TIME,
+    REQUEST_RETRIES,
+    REQUEST_TIMEOUT,
+)
 from UnleashClient.events import UnleashEvent, UnleashEventType
 from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
@@ -230,7 +236,7 @@ class UnleashClient:
                     "custom_options": self.unleash_custom_options,
                     "features": self.features,
                     "cache": self.cache,
-                    "request_timeout": self.unleash_request_timeout
+                    "request_timeout": self.unleash_request_timeout,
                 }
 
                 # Register app
@@ -243,7 +249,7 @@ class UnleashClient:
                         self.unleash_custom_headers,
                         self.unleash_custom_options,
                         self.strategy_mapping,
-                        self.unleash_request_timeout
+                        self.unleash_request_timeout,
                     )
 
                 if fetch_toggles:

@@ -13,9 +13,9 @@ from tests.utilities.testing_constants import (
     INSTANCE_ID,
     PROJECT_NAME,
     PROJECT_URL,
-    URL,
+    REQUEST_RETRIES,
     REQUEST_TIMEOUT,
-    REQUEST_RETRIES
+    URL,
 )
 from UnleashClient.constants import ETAG, FEATURES_URL
 from UnleashClient.features import Feature

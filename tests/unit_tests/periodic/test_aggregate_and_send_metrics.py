@@ -10,8 +10,8 @@ from tests.utilities.testing_constants import (
     CUSTOM_OPTIONS,
     INSTANCE_ID,
     IP_LIST,
+    REQUEST_TIMEOUT,
     URL,
-    REQUEST_TIMEOUT
 )
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import METRIC_LAST_SENT_TIME, METRICS_URL
@@ -56,7 +56,14 @@ def test_aggregate_and_send_metrics():
     features = {"My Feature1": my_feature1, "My Feature 2": my_feature2}
 
     aggregate_and_send_metrics(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache, REQUEST_TIMEOUT
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        features,
+        cache,
+        REQUEST_TIMEOUT,
     )
 
     assert len(responses.calls) == 1
@@ -89,7 +96,14 @@ def test_no_metrics():
     features = {"My Feature1": my_feature1}
 
     aggregate_and_send_metrics(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, features, cache, REQUEST_TIMEOUT
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        features,
+        cache,
+        REQUEST_TIMEOUT,
     )
 
     assert len(responses.calls) == 0

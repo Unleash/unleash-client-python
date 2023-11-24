@@ -31,9 +31,9 @@ from tests.utilities.testing_constants import (
     PROJECT_URL,
     REFRESH_INTERVAL,
     REFRESH_JITTER,
-    URL,
+    REQUEST_RETRIES,
     REQUEST_TIMEOUT,
-    REQUEST_RETRIES
+    URL,
 )
 from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
@@ -163,7 +163,7 @@ def test_UC_initialize_full():
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         REQUEST_TIMEOUT,
-        REQUEST_RETRIES
+        REQUEST_RETRIES,
     )
     assert client.unleash_instance_id == INSTANCE_ID
     assert client.unleash_refresh_interval == REFRESH_INTERVAL
