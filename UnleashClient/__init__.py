@@ -13,7 +13,13 @@ from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from UnleashClient.api import register_client
-from UnleashClient.constants import DISABLED_VARIATION, ETAG, METRIC_LAST_SENT_TIME
+from UnleashClient.constants import (
+    DISABLED_VARIATION,
+    ETAG,
+    METRIC_LAST_SENT_TIME,
+    REQUEST_RETRIES,
+    REQUEST_TIMEOUT,
+)
 from UnleashClient.events import UnleashEvent, UnleashEventType
 from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
@@ -49,6 +55,8 @@ class UnleashClient:
     :param environment: Name of the environment using the unleash client, optional & defaults to "default".
     :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
     :param refresh_interval: Provisioning refresh interval in seconds, optional & defaults to 15 seconds
+    :params request_timeout: Timeout for requests to unleash server in seconds, optional & defaults to 30 seconds
+    :params request_retries: Number of retries for requests to unleash server, optional & defaults to 3
     :param refresh_jitter: Provisioning refresh interval jitter in seconds, optional & defaults to None
     :param metrics_interval: Metrics refresh interval in seconds, optional & defaults to 60 seconds
     :param metrics_jitter: Metrics refresh interval jitter in seconds, optional & defaults to None
@@ -80,6 +88,8 @@ class UnleashClient:
         disable_registration: bool = False,
         custom_headers: Optional[dict] = None,
         custom_options: Optional[dict] = None,
+        request_timeout: int = REQUEST_TIMEOUT,
+        request_retries: int = REQUEST_RETRIES,
         custom_strategies: Optional[dict] = None,
         cache_directory: Optional[str] = None,
         project_name: Optional[str] = None,
@@ -100,6 +110,8 @@ class UnleashClient:
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval
+        self.unleash_request_timeout = request_timeout
+        self.unleash_request_retries = request_retries
         self.unleash_refresh_jitter = (
             int(refresh_jitter) if refresh_jitter is not None else None
         )
@@ -224,6 +236,7 @@ class UnleashClient:
                     "custom_options": self.unleash_custom_options,
                     "features": self.features,
                     "cache": self.cache,
+                    "request_timeout": self.unleash_request_timeout,
                 }
 
                 # Register app
@@ -236,6 +249,7 @@ class UnleashClient:
                         self.unleash_custom_headers,
                         self.unleash_custom_options,
                         self.strategy_mapping,
+                        self.unleash_request_timeout,
                     )
 
                 if fetch_toggles:
@@ -248,6 +262,8 @@ class UnleashClient:
                         "cache": self.cache,
                         "features": self.features,
                         "strategy_mapping": self.strategy_mapping,
+                        "request_timeout": self.unleash_request_timeout,
+                        "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
                     }
                     job_func: Callable = fetch_and_load_features

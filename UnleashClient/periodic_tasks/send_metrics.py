@@ -15,6 +15,7 @@ def aggregate_and_send_metrics(
     custom_options: dict,
     features: dict,
     cache: BaseCache,
+    request_timeout: int,
 ) -> None:
     feature_stats_list = []
 
@@ -44,7 +45,9 @@ def aggregate_and_send_metrics(
     }
 
     if feature_stats_list:
-        send_metrics(url, metrics_request, custom_headers, custom_options)
+        send_metrics(
+            url, metrics_request, custom_headers, custom_options, request_timeout
+        )
         cache.set(METRIC_LAST_SENT_TIME, datetime.now(timezone.utc))
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")

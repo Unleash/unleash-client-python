@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from UnleashClient.constants import APPLICATION_HEADERS, METRICS_URL, REQUEST_TIMEOUT
+from UnleashClient.constants import APPLICATION_HEADERS, METRICS_URL
 from UnleashClient.utils import LOGGER, log_resp_info
 
 
@@ -12,7 +12,7 @@ def send_metrics(
     request_body: dict,
     custom_headers: dict,
     custom_options: dict,
-    request_timeout: int = REQUEST_TIMEOUT,
+    request_timeout: int,
 ) -> bool:
     """
     Attempts to send metrics to Unleash server
@@ -24,6 +24,7 @@ def send_metrics(
     :param request_body:
     :param custom_headers:
     :param custom_options:
+    :param request_timeout:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
     try:

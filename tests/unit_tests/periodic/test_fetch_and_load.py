@@ -13,6 +13,8 @@ from tests.utilities.testing_constants import (
     INSTANCE_ID,
     PROJECT_NAME,
     PROJECT_URL,
+    REQUEST_RETRIES,
+    REQUEST_TIMEOUT,
     URL,
 )
 from UnleashClient.constants import ETAG, FEATURES_URL
@@ -44,6 +46,8 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     assert isinstance(in_memory_features["testFlag"], Feature)
@@ -68,6 +72,8 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
         PROJECT_NAME,
     )
 
@@ -93,6 +99,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     # Fail next request
@@ -108,6 +116,8 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         temp_cache,
         in_memory_features,
         DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     assert isinstance(in_memory_features["testFlag"], Feature)

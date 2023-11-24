@@ -13,6 +13,8 @@ from tests.utilities.testing_constants import (
     INSTANCE_ID,
     PROJECT_NAME,
     PROJECT_URL,
+    REQUEST_RETRIES,
+    REQUEST_TIMEOUT,
     URL,
 )
 from UnleashClient.api import get_feature_toggles
@@ -46,7 +48,13 @@ def test_get_feature_toggle(response, status, calls, expected):
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
     )
 
     assert len(responses.calls) == calls
@@ -64,7 +72,14 @@ def test_get_feature_toggle_project():
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
+        PROJECT_NAME,
     )
 
     assert len(responses.calls) == 1
@@ -79,7 +94,14 @@ def test_get_feature_toggle_failed_etag():
     )
 
     (result, etag) = get_feature_toggles(
-        URL, APP_NAME, INSTANCE_ID, CUSTOM_HEADERS, CUSTOM_OPTIONS, PROJECT_NAME
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
+        PROJECT_NAME,
     )
 
     assert len(responses.calls) == 4
@@ -96,6 +118,8 @@ def test_get_feature_toggle_etag_present():
         INSTANCE_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
         PROJECT_NAME,
         ETAG_VALUE,
     )
@@ -123,6 +147,8 @@ def test_get_feature_toggle_retries():
         INSTANCE_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
+        REQUEST_TIMEOUT,
+        REQUEST_RETRIES,
         PROJECT_NAME,
         ETAG_VALUE,
     )

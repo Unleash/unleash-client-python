@@ -3,7 +3,12 @@ from pytest import mark, param
 from requests import ConnectionError
 
 from tests.utilities.mocks.mock_metrics import MOCK_METRICS_REQUEST
-from tests.utilities.testing_constants import CUSTOM_HEADERS, CUSTOM_OPTIONS, URL
+from tests.utilities.testing_constants import (
+    CUSTOM_HEADERS,
+    CUSTOM_OPTIONS,
+    REQUEST_TIMEOUT,
+    URL,
+)
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import METRICS_URL
 
@@ -27,7 +32,9 @@ FULL_METRICS_URL = URL + METRICS_URL
 def test_send_metrics(payload, status, expected):
     responses.add(responses.POST, FULL_METRICS_URL, **payload, status=status)
 
-    result = send_metrics(URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS)
+    result = send_metrics(
+        URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS, REQUEST_TIMEOUT
+    )
 
     assert len(responses.calls) == 1
     assert expected(result)

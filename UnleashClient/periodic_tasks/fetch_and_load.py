@@ -16,6 +16,8 @@ def fetch_and_load_features(
     cache: BaseCache,
     features: dict,
     strategy_mapping: dict,
+    request_timeout: int,
+    request_retries: int,
     project: Optional[str] = None,
 ) -> None:
     (feature_provisioning, etag) = get_feature_toggles(
@@ -24,6 +26,8 @@ def fetch_and_load_features(
         instance_id,
         custom_headers,
         custom_options,
+        request_timeout,
+        request_retries,
         project,
         cache.get(ETAG),
     )
