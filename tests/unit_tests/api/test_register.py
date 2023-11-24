@@ -10,6 +10,7 @@ from tests.utilities.testing_constants import (
     INSTANCE_ID,
     METRICS_INTERVAL,
     URL,
+    REQUEST_TIMEOUT
 )
 from UnleashClient.api import register_client
 from UnleashClient.constants import REGISTER_URL
@@ -42,7 +43,7 @@ def test_register_client(payload, status, expected):
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         DEFAULT_STRATEGY_MAPPING,
-        30
+        REQUEST_TIMEOUT
     )
 
     assert len(responses.calls) == 1
