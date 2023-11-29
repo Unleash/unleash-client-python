@@ -120,16 +120,38 @@ However, there are some caveats to this method. There is no easy way to run a si
 
 First, make sure you have pip or pip3 installed.
 
-Then run:
+Then setup your viritual environment:
+
+Linux & Mac:
 
 ```
-pip3 install -r requirements.txt
-pip3 install UnleashClient
+python3 -m venv venv
+source venv/bin/activate 
 ```
 
+Windows + cmd:
+
 ```
-cd tests/specification_tests
-git clone https://github.com/Unleash/client-specification
+python -m venv venv
+venv\Scripts\activate.bat
+```
+
+Powershell: 
+
+```
+python -m venv venv
+venv\Scripts\activate.bat
+```
+
+Once you've done your setup, run:
+```
+pip install -r requirements.txt
+pip install UnleashClient
+```
+
+Run the get-spec script to download the client specifications tests:
+```
+./scripts/get-spec.sh
 ```
 
 Now you can run the tests by running `pytest` in the root directory.
