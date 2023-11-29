@@ -109,7 +109,7 @@ For development, you'll need to setup the environment to run the tests. This rep
 tox to run the test suite to test against multiple versions of Python. Running the tests is as simple as running this command in the makefile:
 
 ```
-make tox
+tox -e py311
 ```
 
 This command will take care of downloading the client specifications and putting them in the correct place in the repository, and install all the dependencies you need.
