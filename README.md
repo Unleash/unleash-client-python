@@ -105,7 +105,7 @@ For more information about variants, see the [Variant documentation](https://doc
 
 ## Developing
 
-For development, you'll need to setup the environment to run the tests. This repository is using 
+For development, you'll need to setup the environment to run the tests. This repository is using
 tox to run the test suite to test against multiple versions of Python. Running the tests is as simple as running this command in the makefile:
 
 ```
@@ -120,7 +120,7 @@ However, there are some caveats to this method. There is no easy way to run a si
 
 First, make sure you have pip or pip3 installed.
 
-Then run: 
+Then run:
 
 ```
 pip3 install -r requirements.txt
@@ -134,7 +134,7 @@ git clone https://github.com/Unleash/client-specification
 
 Now you can run the tests by running `pytest` in the root directory.
 
-In order to run a single test, run the following command: 
+In order to run a single test, run the following command:
 
 ```
 pytest testfile.py::function_name
@@ -149,4 +149,3 @@ In order to lint all the files you can run the following command:
 ```
 make fmt
 ```
-
