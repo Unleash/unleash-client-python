@@ -102,3 +102,51 @@ print(variant)
 ```
 
 For more information about variants, see the [Variant documentation](https://docs.getunleash.io/advanced/toggle_variants).
+
+## Developing
+
+For development, you'll need to setup the environment to run the tests. This repository is using 
+tox to run the test suite to test against multiple versions of Python. Running the tests is as simple as running this command in the makefile:
+
+```
+make tox
+```
+
+This command will take care of downloading the client specifications and putting them in the correct place in the repository, and install all the dependencies you need.
+
+However, there are some caveats to this method. There is no easy way to run a single test, and running the entire test suite can be slow.
+
+### Manual setup
+
+First, make sure you have pip or pip3 installed.
+
+Then run: 
+
+```
+pip3 install -r requirements.txt
+pip3 install UnleashClient
+```
+
+```
+cd tests/specification_tests
+git clone https://github.com/Unleash/client-specification
+```
+
+Now you can run the tests by running `pytest` in the root directory.
+
+In order to run a single test, run the following command: 
+
+```
+pytest testfile.py::function_name
+
+# example: pytest test_client.py::test_consistent_results
+```
+
+### Linting
+
+In order to lint all the files you can run the following command:
+
+```
+make fmt
+```
+
