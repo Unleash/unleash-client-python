@@ -240,6 +240,29 @@ def test_uc_is_enabled(unleash_client):
 
 
 @responses.activate
+def test_consistent_results(unleash_client):
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    unleash_client.initialize_client()
+
+    results = [unleash_client.is_enabled("testFlag2") for i in range(1000)]
+    true_count = results.count(True)
+    false_count = results.count(False)
+
+    # Due to murmur hash variations on smaller datasets, we allow a 10% discrepancy
+    discrepancy = 100  # 10% of 1000
+    assert (
+        500 - discrepancy <= true_count <= 500 + discrepancy
+    ), "True count is outside acceptable range"
+    assert (
+        500 - discrepancy <= false_count <= 500 + discrepancy
+    ), "False count is outside acceptable range"
+
+
+@responses.activate
 def test_uc_project(unleash_client_project):
     unleash_client = unleash_client_project
 

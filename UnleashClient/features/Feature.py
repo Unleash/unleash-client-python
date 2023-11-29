@@ -2,7 +2,7 @@
 from typing import Dict, Optional, cast
 
 from UnleashClient.constants import DISABLED_VARIATION
-from UnleashClient.strategies import EvaluationResult, Strategy
+from UnleashClient.strategies import EvaluationResult
 from UnleashClient.utils import LOGGER
 from UnleashClient.variants import Variants
 
@@ -127,11 +127,11 @@ class Feature:
         if self.enabled:
             try:
                 if self.strategies:
-                    enabled_strategy: Strategy = next(
-                        (x for x in self.strategies if x.execute(context)), None
-                    )
-                    if enabled_strategy is not None:
-                        strategy_result = enabled_strategy.get_result(context)
+                    for strategy in self.strategies:
+                        r = strategy.get_result(context)
+                        if r.enabled:
+                            strategy_result = r
+                            break
 
                 else:
                     # If no strategies are present, should default to true. This isn't possible via UI.
