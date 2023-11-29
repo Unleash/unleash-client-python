@@ -139,7 +139,7 @@ In order to run a single test, run the following command:
 ```
 pytest testfile.py::function_name
 
-# example: pytest test_client.py::test_consistent_results
+# example: pytest tests/unit_tests/test_client.py::test_consistent_results
 ```
 
 ### Linting
