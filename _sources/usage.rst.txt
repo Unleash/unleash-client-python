@@ -125,3 +125,4 @@ If using `unleash-client-python` with Gitlab's feature flags, we recommend initi
         instance_id="myinstanceid",
         disable_metrics=True,
         disable_registration=True
+    )
