@@ -234,6 +234,7 @@ def test_uc_is_enabled(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
+
 @responses.activate
 def test_consistent_results(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
@@ -246,11 +247,15 @@ def test_consistent_results(unleash_client):
     results = [unleash_client.is_enabled("testFlag2") for i in range(1000)]
     true_count = results.count(True)
     false_count = results.count(False)
-    
+
     # Due to murmur hash variations on smaller datasets, we allow a 10% discrepancy
     discrepancy = 100  # 10% of 1000
-    assert 500 - discrepancy <= true_count <= 500 + discrepancy, "True count is outside acceptable range"
-    assert 500 - discrepancy <= false_count <= 500 + discrepancy, "False count is outside acceptable range"
+    assert (
+        500 - discrepancy <= true_count <= 500 + discrepancy
+    ), "True count is outside acceptable range"
+    assert (
+        500 - discrepancy <= false_count <= 500 + discrepancy
+    ), "False count is outside acceptable range"
 
 
 @responses.activate
@@ -864,4 +869,3 @@ def test_signals_feature_flag(cache):
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
-
