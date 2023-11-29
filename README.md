@@ -146,7 +146,6 @@ venv\Scripts\activate.bat
 Once you've done your setup, run:
 ```
 pip install -r requirements.txt
-pip install UnleashClient
 ```
 
 Run the get-spec script to download the client specifications tests:
