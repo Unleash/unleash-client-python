@@ -1,6 +1,6 @@
 ## v5.11.1
 * (Minor) Add missing parenthesis
-* (Bugfix) Fix/double execution result 
+* (Bugfix) Fix/double execution result
 * (Documentation) Update readme with developer instructions
 
 ## v5.11.0
@@ -8,7 +8,7 @@
 
 ## v5.10.1
 * (Minor) Typos in request timeout
-* (Minor) Bump client spec 
+* (Minor) Bump client spec
 
 ## v5.10.0
 * (Minor) add is_feature_enabled to variant response
