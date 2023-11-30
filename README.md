@@ -175,7 +175,8 @@ make fmt
 
 Follow these steps to create a new release of this package:
 
-* Update changelog.md with the version and changes, follow the conventions in the file
+* Update changelog.md with the version and changes, follow the conventions in the file. Commit the 
+changes to main before moving to the next steps.
 * Create a new annotated tag on main with the version number in the following format: `git tag -a v1.0.0 -m "v1.0.0"`
 * Push the tag to the repository: `git push --tags`
 * Create a new release on the github repository based on the tag you just pushed in order to trigger the package release workflow in github actions
