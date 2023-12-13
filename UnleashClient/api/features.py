@@ -4,6 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
+from UnleashClient.api.backoff import BackoffStrategy
 from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER, log_resp_info
 
@@ -19,6 +20,7 @@ def get_feature_toggles(
     request_retries: int,
     project: Optional[str] = None,
     cached_etag: str = "",
+    backoff_strategy: Optional[BackoffStrategy] = None,
 ) -> Tuple[dict, str]:
     """
     Retrieves feature flags from unleash central server.
@@ -36,9 +38,15 @@ def get_feature_toggles(
     :param request_retries:
     :param project:
     :param cached_etag:
+    :param backoff_strategy:
     :return: (Feature flags, etag) if successful, ({},'') if not
     """
     try:
+        backoff_strategy = backoff_strategy or BackoffStrategy() # TODO creating it here doesn't make sense
+        if not backoff_strategy.performAction():
+            backoff_strategy.skipped()
+            return {}, ""
+
         LOGGER.info("Getting feature flag.")
 
         headers = {"UNLEASH-APPNAME": app_name, "UNLEASH-INSTANCEID": instance_id}
@@ -66,6 +74,7 @@ def get_feature_toggles(
                 **custom_options,
             )
 
+        backoff_strategy.handle_response(base_url, resp.status_code)
         if resp.status_code not in [200, 304]:
             log_resp_info(resp)
             LOGGER.warning(

@@ -1,6 +1,7 @@
 import json
 
 import requests
+from UnleashClient.api.backoff import BackoffStrategy
 
 from UnleashClient.constants import APPLICATION_HEADERS, METRICS_URL
 from UnleashClient.utils import LOGGER, log_resp_info
@@ -13,6 +14,7 @@ def send_metrics(
     custom_headers: dict,
     custom_options: dict,
     request_timeout: int,
+    backoff_strategy: BackoffStrategy,
 ) -> bool:
     """
     Attempts to send metrics to Unleash server
@@ -39,6 +41,7 @@ def send_metrics(
             **custom_options,
         )
 
+        backoff_strategy.handle_response(url + METRICS_URL, resp.status_code)
         if resp.status_code != 202:
             log_resp_info(resp)
             LOGGER.warning("Unleash CLient metrics submission failed.")

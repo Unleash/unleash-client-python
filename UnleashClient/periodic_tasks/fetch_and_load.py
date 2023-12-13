@@ -1,6 +1,7 @@
 from typing import Optional
 
 from UnleashClient.api import get_feature_toggles
+from UnleashClient.api.backoff import BackoffStrategy
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
 from UnleashClient.loader import load_features
@@ -19,6 +20,7 @@ def fetch_and_load_features(
     request_timeout: int,
     request_retries: int,
     project: Optional[str] = None,
+    backoff_strategy: Optional[BackoffStrategy] = BackoffStrategy(),
 ) -> None:
     (feature_provisioning, etag) = get_feature_toggles(
         url,
@@ -30,6 +32,7 @@ def fetch_and_load_features(
         request_retries,
         project,
         cache.get(ETAG),
+        backoff_strategy,
     )
 
     if feature_provisioning:

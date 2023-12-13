@@ -13,6 +13,7 @@ from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from UnleashClient.api import register_client
+from UnleashClient.api.backoff import BackoffStrategy
 from UnleashClient.constants import (
     DISABLED_VARIATION,
     ETAG,
@@ -45,6 +46,14 @@ from .utils import LOGGER, InstanceAllowType, InstanceCounter
 INSTANCES = InstanceCounter()
 
 
+class BackoffStrategies:
+    def __init__(
+        self, refresh_strategy=BackoffStrategy(), metrics_strategy=BackoffStrategy()
+    ):
+        self.refresh_strategy = refresh_strategy
+        self.metrics_strategy = metrics_strategy
+
+
 # pylint: disable=dangerous-default-value
 class UnleashClient:
     """
@@ -55,6 +64,7 @@ class UnleashClient:
     :param environment: Name of the environment using the unleash client, optional & defaults to "default".
     :param instance_id: Unique identifier for unleash client instance, optional & defaults to "unleash-client-python"
     :param refresh_interval: Provisioning refresh interval in seconds, optional & defaults to 15 seconds
+    :param backoff_strategies: Encapsulates 2 backoff strategies for refresh and metrics, optional & defaults BackoffStrategy for both
     :params request_timeout: Timeout for requests to unleash server in seconds, optional & defaults to 30 seconds
     :params request_retries: Number of retries for requests to unleash server, optional & defaults to 3
     :param refresh_jitter: Provisioning refresh interval jitter in seconds, optional & defaults to None
@@ -99,6 +109,7 @@ class UnleashClient:
         scheduler_executor: Optional[str] = None,
         multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
         event_callback: Optional[Callable[[UnleashEvent], None]] = None,
+        backoff_strategies: BackoffStrategies = BackoffStrategies(),
     ) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
@@ -110,6 +121,7 @@ class UnleashClient:
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
         self.unleash_refresh_interval = refresh_interval
+        self.unleash_refresh_backoff = backoff_strategies.refresh_strategy
         self.unleash_request_timeout = request_timeout
         self.unleash_request_retries = request_retries
         self.unleash_refresh_jitter = (
@@ -119,6 +131,7 @@ class UnleashClient:
         self.unleash_metrics_jitter = (
             int(metrics_jitter) if metrics_jitter is not None else None
         )
+        self.unleash_metrics_backoff = backoff_strategies.metrics_strategy
         self.unleash_disable_metrics = disable_metrics
         self.unleash_disable_registration = disable_registration
         self.unleash_custom_headers = custom_headers
@@ -237,6 +250,7 @@ class UnleashClient:
                     "features": self.features,
                     "cache": self.cache,
                     "request_timeout": self.unleash_request_timeout,
+                    "backoff_strategy": self.unleash_metrics_backoff,
                 }
 
                 # Register app
@@ -265,6 +279,7 @@ class UnleashClient:
                         "request_timeout": self.unleash_request_timeout,
                         "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
+                        "backoff_strategy": self.unleash_refresh_backoff,
                     }
                     job_func: Callable = fetch_and_load_features
                 else:

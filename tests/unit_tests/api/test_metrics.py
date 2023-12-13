@@ -1,6 +1,7 @@
 import responses
 from pytest import mark, param
 from requests import ConnectionError
+from UnleashClient.api.backoff import BackoffStrategy
 
 from tests.utilities.mocks.mock_metrics import MOCK_METRICS_REQUEST
 from tests.utilities.testing_constants import (
@@ -33,7 +34,7 @@ def test_send_metrics(payload, status, expected):
     responses.add(responses.POST, FULL_METRICS_URL, **payload, status=status)
 
     result = send_metrics(
-        URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS, REQUEST_TIMEOUT
+        URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS, REQUEST_TIMEOUT, BackoffStrategy()
     )
 
     assert len(responses.calls) == 1
