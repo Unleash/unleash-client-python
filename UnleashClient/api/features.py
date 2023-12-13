@@ -42,7 +42,9 @@ def get_feature_toggles(
     :return: (Feature flags, etag) if successful, ({},'') if not
     """
     try:
-        backoff_strategy = backoff_strategy or BackoffStrategy() # TODO creating it here doesn't make sense
+        backoff_strategy = (
+            backoff_strategy or BackoffStrategy()
+        )  # TODO creating it here doesn't make sense
         if not backoff_strategy.performAction():
             backoff_strategy.skipped()
             return {}, ""

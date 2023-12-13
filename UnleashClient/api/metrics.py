@@ -1,8 +1,8 @@
 import json
 
 import requests
-from UnleashClient.api.backoff import BackoffStrategy
 
+from UnleashClient.api.backoff import BackoffStrategy
 from UnleashClient.constants import APPLICATION_HEADERS, METRICS_URL
 from UnleashClient.utils import LOGGER, log_resp_info
 
