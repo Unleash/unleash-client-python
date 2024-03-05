@@ -538,6 +538,29 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    # Check a flag that doesn't exist
+    unleash_client.get_variant("nonexistent-flag")
+
+    # Verify that the metrics are serialized
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+    assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+
+
+@responses.activate
+def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
         responses.GET,
         URL + FEATURES_URL,
         json=MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES,
@@ -559,30 +582,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     assert request["bucket"]["toggles"]["Child"]["yes"] == 2
     assert request["bucket"]["toggles"]["Child"]["variants"]["child-variant"] == 1
     assert request["bucket"]["toggles"]["Parent"]["yes"] == 0
-    assert request["bucket"]["toggles"]["Parent"]["variants"]["parent-variant"] == 0
-
-
-@responses.activate
-def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
-    # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
-    responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
-    )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-
-    # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
-
-    # Check a flag that doesn't exist
-    unleash_client.get_variant("nonexistent-flag")
-
-    # Verify that the metrics are serialized
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+    assert len(request["bucket"]["toggles"]["Parent"]["variants"]) == 0
 
 
 @responses.activate
