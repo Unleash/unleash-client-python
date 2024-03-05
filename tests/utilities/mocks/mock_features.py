@@ -271,3 +271,52 @@ MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE = {
         },
     ],
 }
+
+MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES = {
+    "version": 1,
+    "features": [
+        {
+            "name": "Parent",
+            "description": "Dependency of Child feature toggle",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "variants": [
+                        {
+                            "name": "parent-variant",
+                            "weight": 1000,
+                            "stickiness": "default",
+                            "weightType": "variable",
+                        }
+                    ],
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+        {
+            "name": "Child",
+            "description": "Feature toggle that depends on Parent feature toggle",
+            "enabled": True,
+            "strategies": [{"name": "default", "parameters": {}, "variants": [
+                        {
+                            "name": "child-variant",
+                            "weight": 1000,
+                            "stickiness": "default",
+                            "weightType": "variable",
+                        }
+                    ],
+}],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+            "dependencies": [
+                {
+                    "feature": "Parent",
+                    "variants": ["parent-variant"],
+                }
+            ],
+        },
+    ],
+}
