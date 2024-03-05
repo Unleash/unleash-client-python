@@ -12,7 +12,7 @@ semver
 black
 coveralls
 isort
-mimesis
+mimesis==11.1.0
 mypy
 pylint
 pytest
