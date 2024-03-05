@@ -15,7 +15,6 @@ from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
-    MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -563,7 +562,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     responses.add(
         responses.GET,
         URL + FEATURES_URL,
-        json=MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
@@ -572,15 +571,16 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
 
+    child = "ChildWithVariant"
     # Check a flag that depends on a parent
-    unleash_client.is_enabled("Child")
-    unleash_client.get_variant("Child")
+    unleash_client.is_enabled(child)
+    unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
     time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["Child"]["yes"] == 2
-    assert request["bucket"]["toggles"]["Child"]["variants"]["child-variant"] == 1
+    assert request["bucket"]["toggles"][child]["yes"] == 2
+    assert request["bucket"]["toggles"][child]["variants"]["childVariant"] == 1
     assert "Parent" not in request["bucket"]["toggles"]
 
 
