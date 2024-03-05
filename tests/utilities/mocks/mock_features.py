@@ -198,7 +198,7 @@ MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE = {
         },
         {
             "name": "ChildWithVariant",
-            "description": "Feature toggle with variant that depends on Parent feature toggle",
+            "description": "Feature toggle with variant that depends on a specific variant of the Parent feature toggle",
             "enabled": True,
             "strategies": [
                 {
