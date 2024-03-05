@@ -581,7 +581,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"]["Child"]["yes"] == 2
     assert request["bucket"]["toggles"]["Child"]["variants"]["child-variant"] == 1
-    assert not "Parent" in request["bucket"]["toggles"]
+    assert "Parent" not in request["bucket"]["toggles"]
 
 
 @responses.activate
