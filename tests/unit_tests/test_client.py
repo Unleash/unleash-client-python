@@ -538,7 +538,10 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
-        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES, status=200
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES,
+        status=200,
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
@@ -557,6 +560,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     assert request["bucket"]["toggles"]["Child"]["variants"]["child-variant"] == 1
     assert request["bucket"]["toggles"]["Parent"]["yes"] == 0
     assert request["bucket"]["toggles"]["Parent"]["variants"]["parent-variant"] == 0
+
 
 @responses.activate
 def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):

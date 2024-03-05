@@ -300,7 +300,11 @@ MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES = {
             "name": "Child",
             "description": "Feature toggle that depends on Parent feature toggle",
             "enabled": True,
-            "strategies": [{"name": "default", "parameters": {}, "variants": [
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "variants": [
                         {
                             "name": "child-variant",
                             "weight": 1000,
@@ -308,7 +312,8 @@ MOCK_FEATURE_WITH_VARIANT_DEPENDENCIES = {
                             "weightType": "variable",
                         }
                     ],
-}],
+                }
+            ],
             "createdAt": "2018-10-09T06:04:05.667Z",
             "impressionData": False,
             "dependencies": [
