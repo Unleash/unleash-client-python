@@ -68,7 +68,6 @@ select = [
     "YTT", # flake8-2020
     "I"    # isort
 ]
-
 ignore = ["E501", "PLR2004"]
 
 fixable = ["I"]
