@@ -59,8 +59,8 @@ addopts= """
 """
 log_file_level="INFO"
 
-[tool.ruff]
-lint.select = [
+[tool.ruff.lint]
+select = [
     "E",   # pycodestyle, error
     "W",   # pycodestyle, warning
     "F",   # pyflakes
@@ -69,9 +69,9 @@ lint.select = [
     "I"    # isort
 ]
 
-lint.ignore = ["E501", "PLR2004"]
+ignore = ["E501", "PLR2004"]
 
-lint.fixable = ["I"]
+fixable = ["I"]
 
 [tool.ruff.lint.pylint]
 max-args = 25
