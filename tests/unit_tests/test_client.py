@@ -556,6 +556,35 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
 
 
 @responses.activate
+def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+        status=200,
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    child = "ChildWithVariant"
+    # Check a flag that depends on a parent
+    unleash_client.is_enabled(child)
+    unleash_client.get_variant(child)
+
+    # Verify that the parent doesn't have any metrics registered
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    assert request["bucket"]["toggles"][child]["yes"] == 2
+    assert request["bucket"]["toggles"][child]["variants"]["childVariant"] == 1
+    assert "Parent" not in request["bucket"]["toggles"]
+
+
+@responses.activate
 def test_uc_disabled_registration(unleash_client_toggle_only):
     unleash_client = unleash_client_toggle_only
     # Set up APIs

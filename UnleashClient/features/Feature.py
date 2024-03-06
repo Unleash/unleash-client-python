@@ -101,7 +101,7 @@ class Feature:
         :param context: Context information
         :return:
         """
-        evaluation_result = self._get_evaluation_result(context)
+        evaluation_result = self._get_evaluation_result(context, skip_stats)
         is_feature_enabled = evaluation_result.enabled
         variant = evaluation_result.variant
         if variant is None or (is_feature_enabled and variant == DISABLED_VARIATION):
