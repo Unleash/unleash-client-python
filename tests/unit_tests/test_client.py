@@ -610,7 +610,6 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     # Verify that the parent doesn't have any metrics registered
     time.sleep(12)
     request = json.loads(responses.calls[-1].request.body)
-    print(enabled, variant, request)
     assert request["bucket"]["toggles"][child]["no"] == 2
     assert request["bucket"]["toggles"][child]["variants"]["disabled"] == 1
     assert parent not in request["bucket"]["toggles"]
