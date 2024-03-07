@@ -495,7 +495,6 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -518,7 +517,6 @@ def test_uc_metrics_dependencies(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     unleash_client.initialize_client()
     time.sleep(1)
@@ -536,7 +534,6 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -560,7 +557,6 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -589,7 +585,6 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
