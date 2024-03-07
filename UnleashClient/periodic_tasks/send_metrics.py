@@ -6,6 +6,7 @@ from UnleashClient.cache import BaseCache
 from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
 
+
 def aggregate_metrics(
     features: dict,
 ) -> dict:
@@ -26,6 +27,7 @@ def aggregate_metrics(
         feature_stats_list.append(feature_stats)
 
     return dict(ChainMap(*feature_stats_list))
+
 
 def aggregate_and_send_metrics(
     url: str,
