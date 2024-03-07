@@ -41,6 +41,7 @@ from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
 from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
+from UnleashClient.periodic_tasks import aggregate_metrics
 
 
 class EnvironmentStrategy(Strategy):
@@ -484,9 +485,8 @@ def test_uc_metrics(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["testFlag"]["yes"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["testFlag"]["yes"] == 1
 
 
 @responses.activate
@@ -506,9 +506,8 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     unleash_client.is_enabled("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["nonexistent-flag"]["no"] == 1
 
 
 @responses.activate
@@ -526,10 +525,9 @@ def test_uc_metrics_dependencies(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("Child")
 
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["Child"]["yes"] == 1
-    assert "Parent" not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["Child"]["yes"] == 1
+    assert "Parent" not in metrics
 
 
 @responses.activate
@@ -548,11 +546,9 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
 
-    # Verify that the metrics are serialized
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["nonexistent-flag"]["no"] == 1
+    assert metrics["nonexistent-flag"]["variants"]["disabled"] == 1
 
 
 @responses.activate
@@ -578,11 +574,10 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"][child]["yes"] == 2
-    assert request["bucket"]["toggles"][child]["variants"]["childVariant"] == 1
-    assert parent not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics[child]["yes"] == 2
+    assert metrics[child]["variants"]["childVariant"] == 1
+    assert parent not in metrics
 
 
 @responses.activate
@@ -608,11 +603,10 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    time.sleep(METRICS_INTERVAL)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"][child]["no"] == 2
-    assert request["bucket"]["toggles"][child]["variants"]["disabled"] == 1
-    assert parent not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics[child]["no"] == 2
+    assert metrics[child]["variants"]["disabled"] == 1
+    assert parent not in metrics
 
 
 @responses.activate
