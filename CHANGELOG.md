@@ -1,3 +1,6 @@
+## v5.11.2
+* (Bugfix) Metrics counting for dependent feature flags (the previous implementation was incorrect) ([#300](https://github.com/Unleash/unleash-client-python/pull/300) and [#304](https://github.com/Unleash/unleash-client-python/pull/304))
+
 ## v5.11.1
 * (Minor) Add missing parenthesis
 * (Bugfix) Fix/double execution result
