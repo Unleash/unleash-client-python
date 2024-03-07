@@ -1,4 +1,3 @@
-import json
 import time
 import warnings
 from pathlib import Path
@@ -39,6 +38,7 @@ from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
+from UnleashClient.periodic_tasks import aggregate_metrics
 from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
 
@@ -210,7 +210,7 @@ def test_uc_lifecycle(unleash_client):
         status=304,
         headers={"etag": ETAG_VALUE},
     )
-    time.sleep(16)
+    time.sleep(REFRESH_INTERVAL + 1)
 
     # Simulate server provisioning change
     responses.add(
@@ -220,7 +220,7 @@ def test_uc_lifecycle(unleash_client):
         status=200,
         headers={"etag": "W/somethingelse"},
     )
-    time.sleep(30)
+    time.sleep(REFRESH_INTERVAL * 2)
     assert len(unleash_client.features) >= 9
 
 
@@ -329,13 +329,13 @@ def test_uc_dirty_cache(unleash_client_nodestroy):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(5)
+    time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
     unleash_client.unleash_scheduler.shutdown()
 
     # Check that everything works if previous cache exists.
     unleash_client.initialize_client()
-    time.sleep(5)
+    time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -484,9 +484,8 @@ def test_uc_metrics(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["testFlag"]["yes"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["testFlag"]["yes"] == 1
 
 
 @responses.activate
@@ -496,7 +495,6 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -506,9 +504,8 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     unleash_client.is_enabled("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["nonexistent-flag"]["no"] == 1
 
 
 @responses.activate
@@ -520,16 +517,14 @@ def test_uc_metrics_dependencies(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_enabled("Child")
 
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["Child"]["yes"] == 1
-    assert "Parent" not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["Child"]["yes"] == 1
+    assert "Parent" not in metrics
 
 
 @responses.activate
@@ -539,7 +534,6 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -548,11 +542,9 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
 
-    # Verify that the metrics are serialized
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["no"] == 1
-    assert request["bucket"]["toggles"]["nonexistent-flag"]["variants"]["disabled"] == 1
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics["nonexistent-flag"]["no"] == 1
+    assert metrics["nonexistent-flag"]["variants"]["disabled"] == 1
 
 
 @responses.activate
@@ -565,7 +557,6 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -578,11 +569,10 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"][child]["yes"] == 2
-    assert request["bucket"]["toggles"][child]["variants"]["childVariant"] == 1
-    assert parent not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics[child]["yes"] == 2
+    assert metrics[child]["variants"]["childVariant"] == 1
+    assert parent not in metrics
 
 
 @responses.activate
@@ -595,7 +585,6 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
         json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
         status=200,
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
@@ -608,11 +597,10 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    time.sleep(12)
-    request = json.loads(responses.calls[-1].request.body)
-    assert request["bucket"]["toggles"][child]["no"] == 2
-    assert request["bucket"]["toggles"][child]["variants"]["disabled"] == 1
-    assert parent not in request["bucket"]["toggles"]
+    metrics = aggregate_metrics(unleash_client.features)
+    assert metrics[child]["no"] == 2
+    assert metrics[child]["variants"]["disabled"] == 1
+    assert parent not in metrics
 
 
 @responses.activate
@@ -627,7 +615,7 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 
     unleash_client.initialize_client()
     unleash_client.is_enabled("testFlag")
-    time.sleep(20)
+    time.sleep(REFRESH_INTERVAL * 2)
     assert unleash_client.is_enabled("testFlag")
 
     for api_call in responses.calls:
@@ -650,7 +638,7 @@ def test_uc_server_error(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    time.sleep(20)
+    time.sleep(REFRESH_INTERVAL * 2)
     assert unleash_client.is_enabled("testFlag")
 
 

@@ -7,16 +7,9 @@ from UnleashClient.constants import METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
 
 
-def aggregate_and_send_metrics(
-    url: str,
-    app_name: str,
-    instance_id: str,
-    custom_headers: dict,
-    custom_options: dict,
+def aggregate_metrics(
     features: dict,
-    cache: BaseCache,
-    request_timeout: int,
-) -> None:
+) -> dict:
     feature_stats_list = []
 
     for feature_name in features.keys():
@@ -31,8 +24,25 @@ def aggregate_and_send_metrics(
             }
         }
 
-        features[feature_name].reset_stats()
         feature_stats_list.append(feature_stats)
+
+    return dict(ChainMap(*feature_stats_list))
+
+
+def aggregate_and_send_metrics(
+    url: str,
+    app_name: str,
+    instance_id: str,
+    custom_headers: dict,
+    custom_options: dict,
+    features: dict,
+    cache: BaseCache,
+    request_timeout: int,
+) -> None:
+    feature_stats_dict = aggregate_metrics(features)
+
+    for feature_name in features.keys():
+        features[feature_name].reset_stats()
 
     metrics_request = {
         "appName": app_name,
@@ -40,11 +50,11 @@ def aggregate_and_send_metrics(
         "bucket": {
             "start": cache.get(METRIC_LAST_SENT_TIME).isoformat(),
             "stop": datetime.now(timezone.utc).isoformat(),
-            "toggles": dict(ChainMap(*feature_stats_list)),
+            "toggles": feature_stats_dict,
         },
     }
 
-    if feature_stats_list:
+    if feature_stats_dict:
         send_metrics(
             url, metrics_request, custom_headers, custom_options, request_timeout
         )
