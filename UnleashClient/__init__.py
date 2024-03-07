@@ -364,7 +364,9 @@ class UnleashClient:
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
-                dependency_check = self._dependencies_are_satisfied(feature_name, context)
+                dependency_check = self._dependencies_are_satisfied(
+                    feature_name, context
+                )
 
                 if dependency_check:
                     feature_check = feature.is_enabled(context)
