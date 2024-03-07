@@ -364,9 +364,15 @@ class UnleashClient:
         if self.unleash_bootstrapped or self.is_initialized:
             try:
                 feature = self.features[feature_name]
-                feature_check = feature.is_enabled(
-                    context
-                ) and self._dependencies_are_satisfied(feature_name, context)
+                dependency_check = self._dependencies_are_satisfied(
+                    feature_name, context
+                )
+
+                if dependency_check:
+                    feature_check = feature.is_enabled(context)
+                else:
+                    feature.increment_stats(False)
+                    feature_check = False
 
                 if feature.only_for_metrics:
                     return self._get_fallback_value(
@@ -449,6 +455,8 @@ class UnleashClient:
                 feature = self.features[feature_name]
 
                 if not self._dependencies_are_satisfied(feature_name, context):
+                    feature.increment_stats(False)
+                    feature._count_variant("disabled")
                     return DISABLED_VARIATION
 
                 variant_check = feature.get_variant(context)
