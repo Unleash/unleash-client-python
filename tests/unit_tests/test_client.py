@@ -603,9 +603,9 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
 
     child = "WithDisabledDependency"
     parent = "Disabled"
-    # Check a flag that depends on a parent
-    enabled = unleash_client.is_enabled(child)
-    variant = unleash_client.get_variant(child)
+    # Check a flag that depends on a disabled parent
+    unleash_client.is_enabled(child)
+    unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
     time.sleep(12)
