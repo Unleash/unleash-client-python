@@ -572,6 +572,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     time.sleep(1)
 
     child = "ChildWithVariant"
+    parent = "Parent"
     # Check a flag that depends on a parent
     unleash_client.is_enabled(child)
     unleash_client.get_variant(child)
@@ -581,7 +582,38 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     request = json.loads(responses.calls[-1].request.body)
     assert request["bucket"]["toggles"][child]["yes"] == 2
     assert request["bucket"]["toggles"][child]["variants"]["childVariant"] == 1
-    assert "Parent" not in request["bucket"]["toggles"]
+    assert parent not in request["bucket"]["toggles"]
+
+
+@responses.activate
+def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET,
+        URL + FEATURES_URL,
+        json=MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+        status=200,
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    child = "WithDisabledDependency"
+    parent = "Disabled"
+    # Check a flag that depends on a parent
+    enabled = unleash_client.is_enabled(child)
+    variant = unleash_client.get_variant(child)
+
+    # Verify that the parent doesn't have any metrics registered
+    time.sleep(12)
+    request = json.loads(responses.calls[-1].request.body)
+    print(enabled, variant, request)
+    assert request["bucket"]["toggles"][child]["no"] == 2
+    assert request["bucket"]["toggles"][child]["variants"]["disabled"] == 1
+    assert parent not in request["bucket"]["toggles"]
 
 
 @responses.activate
