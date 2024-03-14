@@ -21,8 +21,8 @@ RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
 ENV PYENV_ROOT="/home/vscode/.pyenv"
 ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
-RUN pyenv install 3.7 3.8 3.9 3.10 3.11
-RUN pyenv local 3.7 3.8 3.9 3.10 3.11
+RUN pyenv install 3.7 3.8 3.9 3.10 3.11 3.12
+RUN pyenv local 3.7 3.8 3.9 3.10 3.11 3.12
 RUN pyenv global ${VARIANT}
 
 # Set up pyenv-virtualenv
