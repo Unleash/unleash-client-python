@@ -1,3 +1,6 @@
+## v5.12.0
+* (Minor) Switch back to mmh3 for Python 3.12 support.
+
 ## v5.11.2
 * (Bugfix) Metrics counting for dependent feature flags (the previous implementation was incorrect) ([#300](https://github.com/Unleash/unleash-client-python/pull/300) and [#304](https://github.com/Unleash/unleash-client-python/pull/304))
 
