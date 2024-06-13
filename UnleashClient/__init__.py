@@ -347,7 +347,7 @@ class UnleashClient:
 
         Notes:
 
-        * If client hasn't been initialized yet or an error occurs, flat will default to false.
+        * If client hasn't been initialized yet or an error occurs, flag will default to false.
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
@@ -441,7 +441,7 @@ class UnleashClient:
 
         Notes:
 
-        * If client hasn't been initialized yet or an error occurs, flat will default to false.
+        * If client hasn't been initialized yet or an error occurs, flag will default to false.
 
         :param feature_name: Name of the feature
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
