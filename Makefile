@@ -38,7 +38,7 @@ fmt:
 
 lint:
 	black . --check && \
-	ruff UnleashClient tests docs && \
+	ruff check UnleashClient tests docs && \
 	mypy ${PROJECT_NAME} --install-types --non-interactive;
 
 pytest:
