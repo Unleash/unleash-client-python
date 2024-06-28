@@ -66,7 +66,7 @@ def test_uc_customstrategy_happypath(recwarn):
 
     # Check warning on deprecated strategy.
     assert len(recwarn) >= 1
-    assert any([x.category == DeprecationWarning for x in recwarn])
+    assert any([x.category is DeprecationWarning for x in recwarn])
 
 
 @responses.activate
