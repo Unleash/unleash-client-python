@@ -80,6 +80,6 @@ max-args = 25
 include-package-data = true
 
 [tool.setuptools.packages]
-find = {}
+find = {exclude = ["tests*"]}
 
 [tool.setuptools_scm]
