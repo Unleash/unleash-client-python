@@ -15,9 +15,9 @@ from tests.utilities.testing_constants import (
 )
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import (
+    CLIENT_SPEC_VERSION,
     METRIC_LAST_SENT_TIME,
     METRICS_URL,
-    CLIENT_SPEC_VERSION,
 )
 from UnleashClient.features import Feature
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics

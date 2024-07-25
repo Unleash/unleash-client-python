@@ -4,7 +4,7 @@ from platform import python_implementation, python_version
 
 from UnleashClient.api import send_metrics
 from UnleashClient.cache import BaseCache
-from UnleashClient.constants import METRIC_LAST_SENT_TIME, CLIENT_SPEC_VERSION
+from UnleashClient.constants import CLIENT_SPEC_VERSION, METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
 
 

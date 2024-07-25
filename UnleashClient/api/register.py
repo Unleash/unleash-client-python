@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timezone
-
 from platform import python_implementation, python_version
+
 import requests
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 

@@ -1,4 +1,5 @@
 import json
+
 import responses
 from pytest import mark, param
 from requests import ConnectionError
@@ -14,7 +15,7 @@ from tests.utilities.testing_constants import (
     URL,
 )
 from UnleashClient.api import register_client
-from UnleashClient.constants import REGISTER_URL, CLIENT_SPEC_VERSION
+from UnleashClient.constants import CLIENT_SPEC_VERSION, REGISTER_URL
 
 FULL_REGISTER_URL = URL + REGISTER_URL
 
