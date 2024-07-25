@@ -1,11 +1,13 @@
 import json
 from datetime import datetime, timezone
 
+from platform import python_implementation, python_version
 import requests
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 
 from UnleashClient.constants import (
     APPLICATION_HEADERS,
+    CLIENT_SPEC_VERSION,
     REGISTER_URL,
     SDK_NAME,
     SDK_VERSION,
@@ -48,6 +50,10 @@ def register_client(
         "strategies": [*supported_strategies],
         "started": datetime.now(timezone.utc).isoformat(),
         "interval": metrics_interval,
+        "platformName": python_implementation(),
+        "platformVersion": python_version(),
+        "yggdrasilVersion": None,
+        "specVersion": CLIENT_SPEC_VERSION,
     }
 
     try:
