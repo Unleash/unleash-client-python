@@ -1,3 +1,4 @@
+import json
 import responses
 from pytest import mark, param
 from requests import ConnectionError
@@ -13,7 +14,7 @@ from tests.utilities.testing_constants import (
     URL,
 )
 from UnleashClient.api import register_client
-from UnleashClient.constants import REGISTER_URL
+from UnleashClient.constants import REGISTER_URL, CLIENT_SPEC_VERSION
 
 FULL_REGISTER_URL = URL + REGISTER_URL
 
@@ -48,3 +49,27 @@ def test_register_client(payload, status, expected):
 
     assert len(responses.calls) == 1
     assert result is expected
+
+
+@responses.activate
+def test_register_includes_metadata():
+    responses.add(responses.POST, FULL_REGISTER_URL, json={}, status=202)
+
+    register_client(
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        METRICS_INTERVAL,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        DEFAULT_STRATEGY_MAPPING,
+        REQUEST_TIMEOUT,
+    )
+
+    assert len(responses.calls) == 1
+    request = json.loads(responses.calls[0].request.body)
+
+    assert request["yggdrasilVersion"] is None
+    assert request["specVersion"] == CLIENT_SPEC_VERSION
+    assert request["platformName"] is not None
+    assert request["platformVersion"] is not None
