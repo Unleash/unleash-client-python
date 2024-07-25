@@ -1,11 +1,13 @@
 import json
 from datetime import datetime, timezone
+from platform import python_implementation, python_version
 
 import requests
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 
 from UnleashClient.constants import (
     APPLICATION_HEADERS,
+    CLIENT_SPEC_VERSION,
     REGISTER_URL,
     SDK_NAME,
     SDK_VERSION,
@@ -41,22 +43,26 @@ def register_client(
     :param request_timeout:
     :return: true if registration successful, false if registration unsuccessful or exception.
     """
-    registation_request = {
+    registration_request = {
         "appName": app_name,
         "instanceId": instance_id,
         "sdkVersion": f"{SDK_NAME}:{SDK_VERSION}",
         "strategies": [*supported_strategies],
         "started": datetime.now(timezone.utc).isoformat(),
         "interval": metrics_interval,
+        "platformName": python_implementation(),
+        "platformVersion": python_version(),
+        "yggdrasilVersion": None,
+        "specVersion": CLIENT_SPEC_VERSION,
     }
 
     try:
         LOGGER.info("Registering unleash client with unleash @ %s", url)
-        LOGGER.info("Registration request information: %s", registation_request)
+        LOGGER.info("Registration request information: %s", registration_request)
 
         resp = requests.post(
             url + REGISTER_URL,
-            data=json.dumps(registation_request),
+            data=json.dumps(registration_request),
             headers={**custom_headers, **APPLICATION_HEADERS},
             timeout=request_timeout,
             **custom_options,

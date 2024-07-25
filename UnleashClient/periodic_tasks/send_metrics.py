@@ -1,9 +1,10 @@
 from collections import ChainMap
 from datetime import datetime, timezone
+from platform import python_implementation, python_version
 
 from UnleashClient.api import send_metrics
 from UnleashClient.cache import BaseCache
-from UnleashClient.constants import METRIC_LAST_SENT_TIME
+from UnleashClient.constants import CLIENT_SPEC_VERSION, METRIC_LAST_SENT_TIME
 from UnleashClient.utils import LOGGER
 
 
@@ -52,6 +53,10 @@ def aggregate_and_send_metrics(
             "stop": datetime.now(timezone.utc).isoformat(),
             "toggles": feature_stats_dict,
         },
+        "platformName": python_implementation(),
+        "platformVersion": python_version(),
+        "yggdrasilVersion": None,
+        "specVersion": CLIENT_SPEC_VERSION,
     }
 
     if feature_stats_dict:

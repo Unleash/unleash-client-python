@@ -14,7 +14,11 @@ from tests.utilities.testing_constants import (
     URL,
 )
 from UnleashClient.cache import FileCache
-from UnleashClient.constants import METRIC_LAST_SENT_TIME, METRICS_URL
+from UnleashClient.constants import (
+    CLIENT_SPEC_VERSION,
+    METRIC_LAST_SENT_TIME,
+    METRICS_URL,
+)
 from UnleashClient.features import Feature
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics
 from UnleashClient.strategies import Default, RemoteAddress
@@ -107,3 +111,34 @@ def test_no_metrics():
     )
 
     assert len(responses.calls) == 0
+
+
+@responses.activate
+def test_metrics_metadata_is_sent():
+    responses.add(responses.POST, FULL_METRICS_URL, json={}, status=200)
+
+    cache = FileCache("TestCache")
+
+    to_make_sure_metrics_fires = Feature("My Feature1", True, None)
+    to_make_sure_metrics_fires.yes_count = 1
+
+    features = {"Something": to_make_sure_metrics_fires}
+
+    aggregate_and_send_metrics(
+        URL,
+        APP_NAME,
+        INSTANCE_ID,
+        CUSTOM_HEADERS,
+        CUSTOM_OPTIONS,
+        features,
+        cache,
+        REQUEST_TIMEOUT,
+    )
+
+    assert len(responses.calls) == 1
+    request = json.loads(responses.calls[0].request.body)
+
+    assert request["yggdrasilVersion"] is None
+    assert request["specVersion"] == CLIENT_SPEC_VERSION
+    assert request["platformName"] is not None
+    assert request["platformVersion"] is not None
