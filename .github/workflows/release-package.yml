@@ -24,8 +24,8 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.pypi_password }}
       - name: Build docs
         run: |
-          cd docs
           make install-docs
+          cd docs
           make html
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3
