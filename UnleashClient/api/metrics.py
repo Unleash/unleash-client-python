@@ -41,7 +41,7 @@ def send_metrics(
 
         if resp.status_code != 202:
             log_resp_info(resp)
-            LOGGER.warning("Unleash CLient metrics submission failed.")
+            LOGGER.warning("Unleash Client metrics submission failed.")
             return False
 
         LOGGER.info("Unleash Client metrics successfully sent!")
