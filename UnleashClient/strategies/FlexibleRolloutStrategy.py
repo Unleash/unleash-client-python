@@ -8,7 +8,7 @@ from UnleashClient.utils import normalized_hash
 class FlexibleRollout(Strategy):
     @staticmethod
     def random_hash() -> int:
-        return random.randint(1, 100)
+        return random.randint(1, 10000)
 
     def apply(self, context: dict = None) -> bool:
         """
