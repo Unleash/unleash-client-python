@@ -7,15 +7,17 @@ from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
 from UnleashClient.strategies import FlexibleRollout, GradualRolloutUserId, UserWithId
 from UnleashClient.variants import Variants
+from yggdrasil_engine.engine import UnleashEngine
 
 
 def test_loader_initialization(cache_full):  # noqa: F811
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_full
+    engine = UnleashEngine()
 
     # Tests
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
     assert isinstance(in_memory_features["GradualRolloutUserID"], Feature)
     assert isinstance(
         in_memory_features["GradualRolloutUserID"].strategies[0], GradualRolloutUserId
@@ -46,15 +48,16 @@ def test_loader_refresh_strategies(cache_full):  # noqa: F811
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_full
+    engine = UnleashEngine()
 
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
 
     # Simulate update mutation
     mock_updated = copy.deepcopy(MOCK_ALL_FEATURES)
     mock_updated["features"][4]["strategies"][0]["parameters"]["percentage"] = 60
     temp_cache.set(FEATURES_URL, mock_updated)
 
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
 
     assert (
         in_memory_features["GradualRolloutUserID"]
@@ -69,15 +72,16 @@ def test_loader_refresh_variants(cache_full):  # noqa: F811
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_full
+    engine = UnleashEngine()
 
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
 
     # Simulate update mutation
     mock_updated = copy.deepcopy(MOCK_ALL_FEATURES)
     mock_updated["features"][8]["variants"][0]["name"] = "VariantA"
     temp_cache.set(FEATURES_URL, mock_updated)
 
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
 
     assert in_memory_features["Variations"].variants.variants[0]["name"] == "VariantA"
 
@@ -86,9 +90,10 @@ def test_loader_initialization_failure(cache_custom):  # noqa: F811
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_custom
+    engine = UnleashEngine()
 
     # Tests
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
     assert isinstance(in_memory_features["UserWithId"], Feature)
 
 
@@ -96,8 +101,9 @@ def test_loader_segments(cache_segments):
     # Set up variables
     in_memory_features = {}
     temp_cache = cache_segments
+    engine = UnleashEngine()
 
-    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING)
+    load_features(temp_cache, in_memory_features, DEFAULT_STRATEGY_MAPPING, engine)
     feature = in_memory_features["Test"]
     loaded_constraints = list(feature.strategies[0].parsed_constraints)
     assert len(loaded_constraints) == 2

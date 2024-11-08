@@ -5,6 +5,7 @@ import uuid
 import warnings
 from datetime import datetime, timezone
 from typing import Callable, Optional
+from yggdrasil_engine.engine import UnleashEngine
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
@@ -137,6 +138,7 @@ class UnleashClient:
         self.features: dict = {}
         self.fl_job: Job = None
         self.metric_job: Job = None
+        self.engine = UnleashEngine()
 
         self.cache = cache or FileCache(
             self.unleash_app_name, directory=cache_directory
@@ -195,6 +197,7 @@ class UnleashClient:
                 cache=self.cache,
                 feature_toggles=self.features,
                 strategy_mapping=self.strategy_mapping,
+                engine=self.engine,
             )
 
     def initialize_client(self, fetch_toggles: bool = True) -> None:
@@ -260,6 +263,7 @@ class UnleashClient:
                         "custom_headers": self.unleash_custom_headers,
                         "custom_options": self.unleash_custom_options,
                         "cache": self.cache,
+                        "engine": self.engine,
                         "features": self.features,
                         "strategy_mapping": self.strategy_mapping,
                         "request_timeout": self.unleash_request_timeout,
@@ -270,6 +274,7 @@ class UnleashClient:
                 else:
                     job_args = {
                         "cache": self.cache,
+                        "engine": self.engine,
                         "feature_toggles": self.features,
                         "strategy_mapping": self.strategy_mapping,
                     }

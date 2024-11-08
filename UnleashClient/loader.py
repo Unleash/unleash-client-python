@@ -5,6 +5,7 @@ from UnleashClient.constants import FAILED_STRATEGIES, FEATURES_URL
 from UnleashClient.features.Feature import Feature
 from UnleashClient.utils import LOGGER
 from UnleashClient.variants.Variants import Variants
+from yggdrasil_engine.engine import UnleashEngine
 
 
 # pylint: disable=broad-except
@@ -94,6 +95,7 @@ def load_features(
     cache: BaseCache,
     feature_toggles: dict,
     strategy_mapping: dict,
+    engine: UnleashEngine,
     global_segments: Optional[dict] = None,
 ) -> None:
     """

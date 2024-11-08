@@ -5,7 +5,7 @@ from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
 from UnleashClient.loader import load_features
 from UnleashClient.utils import LOGGER
-
+from yggdrasil_engine.engine import UnleashEngine
 
 def fetch_and_load_features(
     url: str,
@@ -18,6 +18,7 @@ def fetch_and_load_features(
     strategy_mapping: dict,
     request_timeout: int,
     request_retries: int,
+    engine: UnleashEngine,
     project: Optional[str] = None,
 ) -> None:
     (feature_provisioning, etag) = get_feature_toggles(
@@ -42,4 +43,4 @@ def fetch_and_load_features(
     if etag:
         cache.set(ETAG, etag)
 
-    load_features(cache, features, strategy_mapping)
+    load_features(cache, features, strategy_mapping, engine)
