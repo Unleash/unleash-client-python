@@ -53,7 +53,7 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
         engine,
     )
 
-    assert isinstance(in_memory_features["testFlag"], Feature)
+    assert engine.is_enabled("testFlag", {})
     assert temp_cache.get(ETAG) == ETAG_VALUE
 
 
@@ -82,8 +82,7 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
         PROJECT_NAME,
     )
 
-    assert len(in_memory_features.keys()) == 1
-    # assert isinstance(in_memory_features["ivan-project"], Feature)
+    assert engine.is_enabled("ivan-project", {})
 
 
 @responses.activate
@@ -128,4 +127,4 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         engine,
     )
 
-    assert isinstance(in_memory_features["testFlag"], Feature)
+    assert engine.is_enabled("testFlag", {})

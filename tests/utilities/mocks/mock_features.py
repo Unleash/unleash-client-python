@@ -14,7 +14,7 @@ MOCK_FEATURE_RESPONSE = {
             "description": "Test flag 2",
             "enabled": True,
             "strategies": [
-                {"name": "gradualRolloutRandom", "parameters": {"percentage": 50}}
+                {"name": "gradualRolloutRandom", "parameters": {"percentage": "50"}}
             ],
             "createdAt": "2018-10-04T11:03:56.062Z",
             "impressionData": False,
