@@ -82,7 +82,7 @@ def get_feature_toggles(
         if resp.status_code == 304:
             return None, etag
 
-        return resp.json(), etag
+        return resp.text, etag
     except Exception as exc:
         LOGGER.exception(
             "Unleash Client feature fetch failed due to exception: %s", exc

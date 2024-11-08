@@ -16,7 +16,7 @@ def load_spec(spec):
         data = json.load(_f)
         return (
             data["name"],
-            data["state"],
+            json.dumps(data["state"]),
             data.get("tests") or [],
             data.get("variantTests") or [],
         )

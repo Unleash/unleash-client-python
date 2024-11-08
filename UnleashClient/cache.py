@@ -41,6 +41,10 @@ class BaseCache(abc.ABC):
     def destroy(self):
         pass
 
+class YggdrasilCache(BaseCache):
+    def __init__(self, cache: dict):
+        self.cache = cache
+
 
 class FileCache(BaseCache):
     """

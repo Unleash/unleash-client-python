@@ -1,4 +1,5 @@
 # pylint: disable=invalid-name
+from dataclasses import asdict
 import random
 import string
 import uuid
@@ -195,8 +196,6 @@ class UnleashClient:
         if self.unleash_bootstrapped:
             load_features(
                 cache=self.cache,
-                feature_toggles=self.features,
-                strategy_mapping=self.strategy_mapping,
                 engine=self.engine,
             )
 
@@ -275,8 +274,6 @@ class UnleashClient:
                     job_args = {
                         "cache": self.cache,
                         "engine": self.engine,
-                        "feature_toggles": self.features,
-                        "strategy_mapping": self.strategy_mapping,
                     }
                     job_func = load_features
 
@@ -366,78 +363,35 @@ class UnleashClient:
         base_context.update(context)
         context = base_context
 
-        if self.unleash_bootstrapped or self.is_initialized:
-            try:
-                feature = self.features[feature_name]
-                dependency_check = self._dependencies_are_satisfied(
-                    feature_name, context
+        impression_data = False
+
+        feature_enabled = self.engine.is_enabled(feature_name, context)
+
+        if feature_enabled is None:
+            feature_enabled = self._get_fallback_value(
+                fallback_function, feature_name, context
+            )
+
+        self.engine.count_toggle(feature_name, feature_enabled)
+        try:
+            if self.unleash_event_callback and impression_data:
+                event = UnleashEvent(
+                    event_type=UnleashEventType.FEATURE_FLAG,
+                    event_id=uuid.uuid4(),
+                    context=context,
+                    enabled=feature_enabled,
+                    feature_name=feature_name,
                 )
 
-                if dependency_check:
-                    feature_check = feature.is_enabled(context)
-                else:
-                    feature.increment_stats(False)
-                    feature_check = False
-
-                if feature.only_for_metrics:
-                    return self._get_fallback_value(
-                        fallback_function, feature_name, context
-                    )
-
-                try:
-                    if self.unleash_event_callback and feature.impression_data:
-                        event = UnleashEvent(
-                            event_type=UnleashEventType.FEATURE_FLAG,
-                            event_id=uuid.uuid4(),
-                            context=context,
-                            enabled=feature_check,
-                            feature_name=feature_name,
-                        )
-
-                        self.unleash_event_callback(event)
-                except Exception as excep:
-                    LOGGER.log(
-                        self.unleash_verbose_log_level,
-                        "Error in event callback: %s",
-                        excep,
-                    )
-                    return feature_check
-
-                return feature_check
-            except Exception as excep:
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Returning default value for feature: %s",
-                    feature_name,
-                )
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Error checking feature flag: %s",
-                    excep,
-                )
-                # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature.metrics_only_feature(feature_name)
-                self.features[feature_name] = new_feature
-
-                # Use the feature's is_enabled method to count the call
-                new_feature.is_enabled(context)
-
-                return self._get_fallback_value(
-                    fallback_function, feature_name, context
-                )
-
-        else:
+                self.unleash_event_callback(event)
+        except Exception as excep:
             LOGGER.log(
                 self.unleash_verbose_log_level,
-                "Returning default value for feature: %s",
-                feature_name,
+                "Error in event callback: %s",
+                excep,
             )
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Attempted to get feature_flag %s, but client wasn't initialized!",
-                feature_name,
-            )
-            return self._get_fallback_value(fallback_function, feature_name, context)
+
+        return feature_enabled
 
     # pylint: disable=broad-except
     def get_variant(self, feature_name: str, context: Optional[dict] = None) -> dict:
@@ -455,69 +409,52 @@ class UnleashClient:
         context = context or {}
         context.update(self.unleash_static_context)
 
-        if self.unleash_bootstrapped or self.is_initialized:
+        impression_data = False
+
+        variant = self._resolve_variant(feature_name, context)
+
+        if variant:
+            self.engine.count_toggle(feature_name, variant["feature_enabled"])
+        else:
+            if self.unleash_bootstrapped or self.is_initialized:
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Attempted to get feature flag/variation %s, but client wasn't initialized!",
+                    feature_name,
+                )
+            variant = DISABLED_VARIATION
+
+        self.engine.count_variant(feature_name, variant["name"])
+
+        if self.unleash_event_callback and impression_data:
             try:
-                feature = self.features[feature_name]
+                event = UnleashEvent(
+                    event_type=UnleashEventType.VARIANT,
+                    event_id=uuid.uuid4(),
+                    context=context,
+                    enabled=variant["enabled"],
+                    feature_name=feature_name,
+                    variant=variant["name"],
+                )
 
-                if not self._dependencies_are_satisfied(feature_name, context):
-                    feature.increment_stats(False)
-                    feature._count_variant("disabled")
-                    return DISABLED_VARIATION
-
-                variant_check = feature.get_variant(context)
-
-                if self.unleash_event_callback and feature.impression_data:
-                    try:
-                        event = UnleashEvent(
-                            event_type=UnleashEventType.VARIANT,
-                            event_id=uuid.uuid4(),
-                            context=context,
-                            enabled=variant_check["enabled"],
-                            feature_name=feature_name,
-                            variant=variant_check["name"],
-                        )
-
-                        self.unleash_event_callback(event)
-                    except Exception as excep:
-                        LOGGER.log(
-                            self.unleash_verbose_log_level,
-                            "Error in event callback: %s",
-                            excep,
-                        )
-                        return variant_check
-
-                return variant_check
+                self.unleash_event_callback(event)
             except Exception as excep:
                 LOGGER.log(
                     self.unleash_verbose_log_level,
-                    "Returning default flag/variation for feature: %s",
-                    feature_name,
-                )
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Error checking feature flag variant: %s",
+                    "Error in event callback: %s",
                     excep,
                 )
 
-                # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature.metrics_only_feature(feature_name)
-                self.features[feature_name] = new_feature
+        return variant
 
-                # Use the feature's get_variant method to count the call
-                variant_check = new_feature.get_variant(context)
-                return variant_check
-        else:
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Returning default flag/variation for feature: %s",
-                feature_name,
-            )
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Attempted to get feature flag/variation %s, but client wasn't initialized!",
-                feature_name,
-            )
-            return DISABLED_VARIATION
+    def _resolve_variant(self, feature_name: str, context: dict) -> dict:
+        """
+        Resolves a feature variant.
+        """
+        variant = self.engine.get_variant(feature_name, context)
+        if variant:
+            return {k: v for k, v in asdict(variant).items() if v is not None}
+        return None
 
     def _is_dependency_satified(self, dependency: dict, context: dict) -> bool:
         """
