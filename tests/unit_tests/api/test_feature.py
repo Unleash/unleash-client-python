@@ -1,3 +1,4 @@
+import json
 import responses
 from pytest import mark, param
 
@@ -31,7 +32,7 @@ FULL_FEATURE_URL = URL + FEATURES_URL
             MOCK_FEATURE_RESPONSE,
             200,
             1,
-            lambda result: result["version"] == 1,
+            lambda result: json.loads(result)["version"] == 1,
             id="success",
         ),
         param(MOCK_FEATURE_RESPONSE, 202, 1, lambda result: not result, id="failure"),
@@ -56,7 +57,6 @@ def test_get_feature_toggle(response, status, calls, expected):
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
     )
-
     assert len(responses.calls) == calls
     assert expected(result)
 
@@ -83,7 +83,7 @@ def test_get_feature_toggle_project():
     )
 
     assert len(responses.calls) == 1
-    assert len(result["features"]) == 1
+    assert len(json.loads(result)["features"]) == 1
     assert etag == ETAG_VALUE
 
 
@@ -154,5 +154,5 @@ def test_get_feature_toggle_retries():
     )
 
     assert len(responses.calls) == 2
-    assert len(result["features"]) == 1
+    assert len(json.loads(result)["features"]) == 1
     assert etag == ETAG_VALUE
