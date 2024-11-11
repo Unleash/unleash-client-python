@@ -1,4 +1,5 @@
 import responses
+import pytest
 
 from tests.utilities.mocks import MOCK_CUSTOM_STRATEGY
 from tests.utilities.old_code.StrategyV2 import StrategyOldV2
@@ -8,11 +9,11 @@ from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.strategies import Strategy
 
 
-class CatTest(Strategy):
-    def load_provisioning(self) -> list:
-        return [x.strip() for x in self.parameters["sound"].split(",")]
+class CatTest:
+    def load_provisioning(self, parameters) -> list:
+        return [x.strip() for x in parameters["sound"].split(",")]
 
-    def apply(self, context: dict = None) -> bool:
+    def apply(self, parameters: dict, context: dict = None) -> bool:
         """
         Turn on if I'm a cat.
 
@@ -20,17 +21,17 @@ class CatTest(Strategy):
         """
         default_value = False
 
+        parameters = self.load_provisioning(parameters)
+
         if "sound" in context.keys():
-            default_value = context["sound"] in self.parsed_provisioning
+            default_value = context["sound"] in parameters
 
         return default_value
 
 
 class DogTest(StrategyOldV2):
-    def load_provisioning(self) -> list:
-        return [x.strip() for x in self.parameters["sound"].split(",")]
 
-    def _call_(self, context: dict = None) -> bool:
+    def apply(self, parameters: dict, context: dict = None) -> bool:
         """
         Turn on if I'm a dog.
 
@@ -38,8 +39,10 @@ class DogTest(StrategyOldV2):
         """
         default_value = False
 
+        parameters = [x.strip() for x in parameters["sound"].split(",")]
+
         if "sound" in context.keys():
-            default_value = context["sound"] in self.parsed_provisioning
+            default_value = context["sound"] in parameters
 
         return default_value
 
@@ -52,7 +55,7 @@ def test_uc_customstrategy_happypath(recwarn):
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    custom_strategies_dict = {"amIACat": CatTest, "amIADog": DogTest}
+    custom_strategies_dict = {"amIACat": CatTest()}
 
     unleash_client = UnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
@@ -64,13 +67,9 @@ def test_uc_customstrategy_happypath(recwarn):
     assert unleash_client.is_enabled("CustomToggle", {"sound": "meow"})
     assert not unleash_client.is_enabled("CustomToggle", {"sound": "bark"})
 
-    # Check warning on deprecated strategy.
-    assert len(recwarn) >= 1
-    assert any([x.category is DeprecationWarning for x in recwarn])
-
 
 @responses.activate
-def test_uc_customstrategy_depredationwarning():
+def test_uc_customstrategy_deprecation_error():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200
@@ -79,14 +78,10 @@ def test_uc_customstrategy_depredationwarning():
 
     custom_strategies_dict = {"amIACat": CatTest, "amIADog": DogTest}
 
-    unleash_client = UnleashClient(
-        URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
-    )
-
-    unleash_client.initialize_client()
-
-    # Check a toggle that contains an outdated custom strategy
-    assert unleash_client.is_enabled("CustomToggleWarning", {"sound": "meow"})
+    with pytest.raises(ValueError):
+        UnleashClient(
+            URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
+        )
 
 
 @responses.activate
@@ -97,7 +92,7 @@ def test_uc_customstrategy_safemulti():
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    custom_strategies_dict = {"amIACat": CatTest, "amIADog": DogTest}
+    custom_strategies_dict = {"amIACat": CatTest(), "amIADog": DogTest()}
 
     unleash_client = UnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict

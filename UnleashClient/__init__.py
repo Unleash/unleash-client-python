@@ -183,6 +183,7 @@ class UnleashClient:
         }
 
         if custom_strategies:
+            self.engine.register_custom_strategies(custom_strategies)
             strategy_v2xx_deprecation_check(
                 [x for x in custom_strategies.values()]
             )  # pylint: disable=R1721
@@ -237,7 +238,7 @@ class UnleashClient:
                     "custom_headers": self.unleash_custom_headers,
                     "custom_options": self.unleash_custom_options,
                     "request_timeout": self.unleash_request_timeout,
-                    "engine": self.engine
+                    "engine": self.engine,
                 }
 
                 # Register app
