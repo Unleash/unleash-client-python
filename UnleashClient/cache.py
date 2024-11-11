@@ -41,6 +41,7 @@ class BaseCache(abc.ABC):
     def destroy(self):
         pass
 
+
 class YggdrasilCache(BaseCache):
     def __init__(self, cache: dict):
         self.cache = cache
@@ -95,7 +96,7 @@ class FileCache(BaseCache):
 
         :param initial_config: Dictionary that contains initial configuration.
         """
-        self.set(FEATURES_URL, initial_config)
+        self.set(FEATURES_URL, json.dumps(initial_config))
         self.bootstrapped = True
 
     def bootstrap_from_file(self, initial_config_file: Path) -> None:
@@ -107,7 +108,7 @@ class FileCache(BaseCache):
         :param initial_configuration_file: Path to document containing initial configuration.  Must be JSON.
         """
         with open(initial_config_file, "r", encoding="utf8") as bootstrap_file:
-            self.set(FEATURES_URL, json.loads(bootstrap_file.read()))
+            self.set(FEATURES_URL, bootstrap_file.read())
             self.bootstrapped = True
 
     def bootstrap_from_url(
@@ -126,7 +127,7 @@ class FileCache(BaseCache):
         """
         timeout = request_timeout if request_timeout else self.request_timeout
         response = requests.get(initial_config_url, headers=headers, timeout=timeout)
-        self.set(FEATURES_URL, response.json())
+        self.set(FEATURES_URL, response.text)
         self.bootstrapped = True
 
     def set(self, key: str, value: Any):
