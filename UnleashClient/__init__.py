@@ -314,6 +314,28 @@ class UnleashClient:
                 "Attempted to initialize an Unleash Client instance that has already been initialized."
             )
 
+    def feature_definitions(self) -> dict:
+        """
+        Returns a dict containing all feature definitions known to the SDK at the time of calling.
+        Normally this would be a pared down version of the response from the Unleash API but this
+        can also be as a result of bootstrapping or loading from backup.
+
+        Example response:
+
+        {
+            "feature1": {
+                "project": "default",
+                "type": "release",
+            }
+        }
+        """
+
+        toggles = self.engine.list_known_toggles()
+        return {
+            toggle.name: {"type": toggle.type, "project": toggle.project}
+            for toggle in toggles
+        }
+
     def destroy(self) -> None:
         """
         Gracefully shuts down the Unleash client by stopping jobs, stopping the scheduler, and deleting the cache.
