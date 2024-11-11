@@ -435,9 +435,7 @@ class UnleashClient:
 
         variant = self._resolve_variant(feature_name, context)
 
-        if variant:
-            self.engine.count_toggle(feature_name, variant["feature_enabled"])
-        else:
+        if not variant:
             if self.unleash_bootstrapped or self.is_initialized:
                 LOGGER.log(
                     self.unleash_verbose_log_level,
@@ -447,6 +445,7 @@ class UnleashClient:
             variant = DISABLED_VARIATION
 
         self.engine.count_variant(feature_name, variant["name"])
+        self.engine.count_toggle(feature_name, variant["feature_enabled"])
 
         if self.unleash_event_callback and impression_data:
             try:
