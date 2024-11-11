@@ -55,7 +55,10 @@ MOCK_ALL_FEATURES = {
             "strategies": [
                 {
                     "name": "gradualRolloutUserId",
-                    "parameters": {"percentage": "50", "groupId": "GradualRolloutUserID"},
+                    "parameters": {
+                        "percentage": "50",
+                        "groupId": "GradualRolloutUserID",
+                    },
                 }
             ],
             "createdAt": "2018-10-09T06:07:17.520Z",

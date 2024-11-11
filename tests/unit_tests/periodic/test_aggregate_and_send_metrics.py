@@ -1,7 +1,11 @@
 import json
-import responses
 
+import responses
 from yggdrasil_engine.engine import UnleashEngine
+
+from tests.utilities.mocks.mock_features import (
+    MOCK_FEATURE_RESPONSE,
+)
 from tests.utilities.mocks.mock_variants import VARIANTS
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -17,9 +21,6 @@ from UnleashClient.constants import (
     METRICS_URL,
 )
 from UnleashClient.periodic_tasks import aggregate_and_send_metrics
-from tests.utilities.mocks.mock_features import (
-    MOCK_FEATURE_RESPONSE,
-)
 
 FULL_METRICS_URL = URL + METRICS_URL
 print(FULL_METRICS_URL)

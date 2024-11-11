@@ -1,5 +1,5 @@
-import responses
 import pytest
+import responses
 
 from tests.utilities.mocks import MOCK_CUSTOM_STRATEGY
 from tests.utilities.old_code.StrategyV2 import StrategyOldV2

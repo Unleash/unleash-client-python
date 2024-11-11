@@ -1,18 +1,18 @@
 # pylint: disable=invalid-name
-from dataclasses import asdict
 import random
 import string
 import uuid
 import warnings
+from dataclasses import asdict
 from datetime import datetime, timezone
 from typing import Callable, Optional
-from yggdrasil_engine.engine import UnleashEngine
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.api import register_client
 from UnleashClient.constants import (

@@ -1,9 +1,10 @@
 from platform import python_implementation, python_version
 
+from yggdrasil_engine.engine import UnleashEngine
+
 from UnleashClient.api import send_metrics
 from UnleashClient.constants import CLIENT_SPEC_VERSION
 from UnleashClient.utils import LOGGER
-from yggdrasil_engine.engine import UnleashEngine
 
 
 def aggregate_and_send_metrics(
@@ -13,7 +14,7 @@ def aggregate_and_send_metrics(
     custom_headers: dict,
     custom_options: dict,
     request_timeout: int,
-    engine: UnleashEngine
+    engine: UnleashEngine,
 ) -> None:
     metrics_bucket = engine.get_metrics()
 
