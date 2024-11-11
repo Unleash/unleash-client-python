@@ -385,8 +385,6 @@ class UnleashClient:
         base_context.update(context)
         context = base_context
 
-        impression_data = False
-
         feature_enabled = self.engine.is_enabled(feature_name, context)
 
         if feature_enabled is None:
@@ -396,7 +394,10 @@ class UnleashClient:
 
         self.engine.count_toggle(feature_name, feature_enabled)
         try:
-            if self.unleash_event_callback and impression_data:
+            if (
+                self.unleash_event_callback
+                and self.engine.should_emit_impression_event(feature_name)
+            ):
                 event = UnleashEvent(
                     event_type=UnleashEventType.FEATURE_FLAG,
                     event_id=uuid.uuid4(),
@@ -431,8 +432,6 @@ class UnleashClient:
         context = context or {}
         context.update(self.unleash_static_context)
 
-        impression_data = False
-
         variant = self._resolve_variant(feature_name, context)
 
         if not variant:
@@ -447,7 +446,9 @@ class UnleashClient:
         self.engine.count_variant(feature_name, variant["name"])
         self.engine.count_toggle(feature_name, variant["feature_enabled"])
 
-        if self.unleash_event_callback and impression_data:
+        if self.unleash_event_callback and self.engine.should_emit_impression_event(
+            feature_name
+        ):
             try:
                 event = UnleashEvent(
                     event_type=UnleashEventType.VARIANT,
