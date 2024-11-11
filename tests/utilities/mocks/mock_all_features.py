@@ -27,7 +27,7 @@ MOCK_ALL_FEATURES = {
             "description": "Gradual Rollout Random example",
             "enabled": True,
             "strategies": [
-                {"name": "gradualRolloutRandom", "parameters": {"percentage": 50}}
+                {"name": "gradualRolloutRandom", "parameters": {"percentage": "50"}}
             ],
             "createdAt": "2018-10-09T06:05:37.637Z",
             "impressionData": False,
@@ -40,7 +40,7 @@ MOCK_ALL_FEATURES = {
                 {
                     "name": "gradualRolloutSessionId",
                     "parameters": {
-                        "percentage": 50,
+                        "percentage": "50",
                         "groupId": "GradualRolloutSessionId",
                     },
                 }
@@ -55,7 +55,7 @@ MOCK_ALL_FEATURES = {
             "strategies": [
                 {
                     "name": "gradualRolloutUserId",
-                    "parameters": {"percentage": 50, "groupId": "GradualRolloutUserID"},
+                    "parameters": {"percentage": "50", "groupId": "GradualRolloutUserID"},
                 }
             ],
             "createdAt": "2018-10-09T06:07:17.520Z",
