@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name, too-few-public-methods, use-a-generator
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional, Union
 
@@ -125,6 +125,11 @@ class Constraint:
         return return_value
 
     def check_date_operators(self, context_value: Union[datetime, str]) -> bool:
+        if isinstance(context_value, datetime) and context_value.tzinfo is None:
+            raise ValueError(
+                "If context_value is a datetime object, it must be timezone (offset) aware."
+            )
+
         return_value = False
         parsing_exception = False
 
@@ -139,8 +144,16 @@ class Constraint:
 
         try:
             parsed_date = parse(self.value)
+
+            # If parsed date is timezone-naive, assume it is UTC
+            if parsed_date.tzinfo is None:
+                parsed_date = parsed_date.replace(tzinfo=timezone.utc)
+
             if isinstance(context_value, str):
                 context_date = parse(context_value)
+                # If parsed date is timezone-naive, assume it is UTC
+                if context_date.tzinfo is None:
+                    context_date = context_date.replace(tzinfo=timezone.utc)
             else:
                 context_date = context_value
         except DateUtilParserError:
@@ -197,7 +210,8 @@ class Constraint:
 
             # Set currentTime if not specified
             if self.context_name == "currentTime" and not context_value:
-                context_value = datetime.now()
+                # Use the current system time in the local timezone (tz-aware)
+                context_value = datetime.now(timezone.utc).astimezone()
 
             if context_value is not None:
                 if self.operator in [

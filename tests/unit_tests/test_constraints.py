@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 import pytz
@@ -183,15 +183,61 @@ def test_constraints_DATE_BEFORE():
     assert constraint.apply({"currentTime": datetime(2022, 1, 21, tzinfo=pytz.UTC)})
 
 
-def test_constraints_default():
-    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_BEFORE)
+def test_constraints_DATE_AFTER_default():
+    constraint = Constraint(
+        constraint_dict={
+            **mock_constraints.CONSTRAINT_DATE_AFTER,
+            "value": (datetime.now(pytz.UTC) - timedelta(days=1)).isoformat(),
+        }
+    )
+
+    assert constraint.apply({})
+
+    constraint = Constraint(
+        constraint_dict={
+            **mock_constraints.CONSTRAINT_DATE_AFTER,
+            "value": (datetime.now(pytz.UTC) + timedelta(days=1)).isoformat(),
+        }
+    )
 
     assert not constraint.apply({})
 
 
+def test_constraints_DATE_BEFORE_default():
+    constraint = Constraint(
+        constraint_dict={
+            **mock_constraints.CONSTRAINT_DATE_BEFORE,
+            "value": (datetime.now(pytz.UTC) + timedelta(days=1)).isoformat(),
+        }
+    )
+
+    assert constraint.apply({})
+
+    constraint = Constraint(
+        constraint_dict={
+            **mock_constraints.CONSTRAINT_DATE_BEFORE,
+            "value": (datetime.now(pytz.UTC) - timedelta(days=1)).isoformat(),
+        }
+    )
+
+    assert not constraint.apply({})
+
+
+def test_constraints_tz_naive():
+    constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_TZ_NAIVE)
+
+    assert constraint.apply(
+        {"currentTime": datetime(2022, 1, 22, 0, 10, tzinfo=pytz.UTC)}
+    )
+    assert not constraint.apply({"currentTime": datetime(2022, 1, 22, tzinfo=pytz.UTC)})
+    assert not constraint.apply(
+        {"currentTime": datetime(2022, 1, 21, 23, 50, tzinfo=pytz.UTC)}
+    )
+
+
 def test_constraints_date_error():
     constraint = Constraint(constraint_dict=mock_constraints.CONSTRAINT_DATE_ERROR)
-    assert not constraint.apply({"currentTime": datetime(2022, 1, 23)})
+    assert not constraint.apply({"currentTime": datetime(2022, 1, 23, tzinfo=pytz.UTC)})
 
 
 def test_constraints_SEMVER_EQ():
