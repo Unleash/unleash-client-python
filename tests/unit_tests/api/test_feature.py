@@ -57,6 +57,7 @@ def test_get_feature_toggle(response, status, calls, expected):
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
     )
+
     assert len(responses.calls) == calls
     assert expected(result)
 

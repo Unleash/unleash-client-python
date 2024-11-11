@@ -42,11 +42,6 @@ class BaseCache(abc.ABC):
         pass
 
 
-class YggdrasilCache(BaseCache):
-    def __init__(self, cache: dict):
-        self.cache = cache
-
-
 class FileCache(BaseCache):
     """
     The default cache for UnleashClient.  Uses `fcache <https://pypi.org/project/fcache/>`_ behind the scenes.

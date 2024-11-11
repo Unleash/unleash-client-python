@@ -221,8 +221,6 @@ def test_uc_lifecycle(unleash_client):
         headers={"etag": "W/somethingelse"},
     )
     time.sleep(REFRESH_INTERVAL * 2)
-    print("My features", unleash_client.feature_definitions())
-
     assert len(unleash_client.feature_definitions()) >= 9
 
 
