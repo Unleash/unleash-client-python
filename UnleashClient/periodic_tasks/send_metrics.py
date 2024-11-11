@@ -24,7 +24,7 @@ def aggregate_and_send_metrics(
         "bucket": metrics_bucket,
         "platformName": python_implementation(),
         "platformVersion": python_version(),
-        "yggdrasilVersion": None,
+        "yggdrasilVersion": "0.14.0",
         "specVersion": CLIENT_SPEC_VERSION,
     }
 

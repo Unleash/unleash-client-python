@@ -65,7 +65,7 @@ def test_metrics_metadata_is_sent():
     assert len(responses.calls) == 1
     request = json.loads(responses.calls[0].request.body)
 
-    assert request["yggdrasilVersion"] is None
+    assert request["yggdrasilVersion"] is not None
     assert request["specVersion"] == CLIENT_SPEC_VERSION
     assert request["platformName"] is not None
     assert request["platformVersion"] is not None
