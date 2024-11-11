@@ -236,9 +236,8 @@ class UnleashClient:
                     "instance_id": self.unleash_instance_id,
                     "custom_headers": self.unleash_custom_headers,
                     "custom_options": self.unleash_custom_options,
-                    "features": self.features,
-                    "cache": self.cache,
                     "request_timeout": self.unleash_request_timeout,
+                    "engine": self.engine
                 }
 
                 # Register app

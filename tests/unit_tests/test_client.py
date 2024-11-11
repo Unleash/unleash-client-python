@@ -38,7 +38,6 @@ from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
-from UnleashClient.periodic_tasks import aggregate_metrics
 from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
 
@@ -486,7 +485,7 @@ def test_uc_metrics(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["testFlag"]["yes"] == 1
 
 
@@ -506,7 +505,7 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     unleash_client.is_enabled("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["nonexistent-flag"]["no"] == 1
 
 
@@ -524,7 +523,7 @@ def test_uc_metrics_dependencies(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("Child")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["Child"]["yes"] == 1
     assert "Parent" not in metrics
 
@@ -544,7 +543,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["nonexistent-flag"]["no"] == 1
     assert metrics["nonexistent-flag"]["variants"]["disabled"] == 1
 
@@ -571,7 +570,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics[child]["yes"] == 2
     assert metrics[child]["variants"]["childVariant"] == 1
     assert parent not in metrics
@@ -599,7 +598,7 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics[child]["no"] == 2
     assert metrics[child]["variants"]["disabled"] == 1
     assert parent not in metrics
@@ -675,7 +674,7 @@ def test_uc_multiple_initializations(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
 
     with warnings.catch_warnings(record=True) as w:
         # Try and initialize client again.
@@ -709,14 +708,14 @@ def test_uc_cache_bootstrap_dict(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) == 1
+    assert len(unleash_client.feature_definitions()) == 1
     assert unleash_client.is_enabled("ivan-project")
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -740,7 +739,7 @@ def test_uc_cache_bootstrap_file(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) >= 1
+    assert len(unleash_client.feature_definitions()) >= 1
     assert unleash_client.is_enabled("ivan-project")
 
 
@@ -766,7 +765,7 @@ def test_uc_cache_bootstrap_url(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -801,7 +800,7 @@ def test_uc_custom_scheduler():
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
 
     # Simulate caching
     responses.add(
@@ -822,7 +821,7 @@ def test_uc_custom_scheduler():
         headers={"etag": "W/somethingelse"},
     )
     time.sleep(6)
-    assert len(unleash_client.features) >= 9
+    assert len(unleash_client.feature_definitions()) >= 9
 
 
 def test_multiple_instances_blocks_client_instantiation():
