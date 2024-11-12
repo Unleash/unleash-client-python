@@ -23,7 +23,7 @@ def fetch_and_load_features(
     engine: UnleashEngine,
     project: Optional[str] = None,
 ) -> None:
-    (feature_toggle_json, etag) = get_feature_toggles(
+    (state, etag) = get_feature_toggles(
         url,
         app_name,
         instance_id,
@@ -35,8 +35,8 @@ def fetch_and_load_features(
         cache.get(ETAG),
     )
 
-    if feature_toggle_json:
-        cache.set(FEATURES_URL, feature_toggle_json)
+    if state:
+        cache.set(FEATURES_URL, state)
     else:
         LOGGER.debug(
             "No feature provisioning returned from server, using cached provisioning."

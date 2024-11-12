@@ -19,7 +19,7 @@ def get_feature_toggles(
     request_retries: int,
     project: Optional[str] = None,
     cached_etag: str = "",
-) -> Tuple[dict, str]:
+) -> Tuple[str, str]:
     """
     Retrieves feature flags from unleash central server.
 
