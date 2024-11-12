@@ -17,7 +17,7 @@ def load_features(
     Caching
 
     :param cache: Should be the cache class variable from UnleashClient
-    :param feature_toggles: Should a JSON string containing the feature toggles, equivalent to the response from Unleash API
+    :param feature_toggles: Should be a JSON string containing the feature toggles, equivalent to the response from Unleash API
     :return:
     """
     # Pull raw provisioning from cache.
