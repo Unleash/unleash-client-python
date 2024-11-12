@@ -318,7 +318,7 @@ class UnleashClient:
         """
         Returns a dict containing all feature definitions known to the SDK at the time of calling.
         Normally this would be a pared down version of the response from the Unleash API but this
-        can also be as a result of bootstrapping or loading from backup.
+        may also be a result from bootstrapping or loading from backup.
 
         Example response:
 
