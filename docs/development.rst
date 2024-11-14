@@ -23,7 +23,7 @@ Running Tox locally
 #######################################
 1. Install Python versions for each supported version.
 2. Deactivate your local virtualenv (if it's activated).
-3. Run ``pyenv local 3.13.X 3.12.X 3.111.X 3.10.X 3.9.Y 3.8.Z`` (inserting appropriate patch versions).
+3. Run ``pyenv local 3.13.X 3.12.X 3.11.X 3.10.X 3.9.Y 3.8.Z`` (inserting appropriate patch versions).
 4. Run ``make install`` to get latest local dependencies.
 5. Run ``make tox`` to run tox.
 
