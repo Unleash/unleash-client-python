@@ -23,25 +23,13 @@ from UnleashClient.constants import (
     REQUEST_TIMEOUT,
 )
 from UnleashClient.events import UnleashEvent, UnleashEventType
-from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
     fetch_and_load_features,
 )
-from UnleashClient.strategies import (
-    ApplicationHostname,
-    Default,
-    FlexibleRollout,
-    GradualRolloutRandom,
-    GradualRolloutSessionId,
-    GradualRolloutUserId,
-    RemoteAddress,
-    UserWithId,
-)
 
 from .cache import BaseCache, FileCache
-from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .utils import LOGGER, InstanceAllowType, InstanceCounter
 
 INSTANCES = InstanceCounter()
@@ -170,25 +158,10 @@ class UnleashClient:
             executors = {self.unleash_executor_name: ThreadPoolExecutor()}
             self.unleash_scheduler = BackgroundScheduler(executors=executors)
 
-        # Mappings
-        default_strategy_mapping = {
-            "applicationHostname": ApplicationHostname,
-            "default": Default,
-            "gradualRolloutRandom": GradualRolloutRandom,
-            "gradualRolloutSessionId": GradualRolloutSessionId,
-            "gradualRolloutUserId": GradualRolloutUserId,
-            "remoteAddress": RemoteAddress,
-            "userWithId": UserWithId,
-            "flexibleRollout": FlexibleRollout,
-        }
-
         if custom_strategies:
             self.engine.register_custom_strategies(custom_strategies)
-            strategy_v2xx_deprecation_check(
-                [x for x in custom_strategies.values()]
-            )  # pylint: disable=R1721
 
-        self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
+        self.strategy_mapping = {**custom_strategies}
 
         # Client status
         self.is_initialized = False

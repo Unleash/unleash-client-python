@@ -38,7 +38,6 @@ from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
-from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
 
 

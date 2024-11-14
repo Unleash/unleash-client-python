@@ -6,7 +6,6 @@ from tests.utilities.old_code.StrategyV2 import StrategyOldV2
 from tests.utilities.testing_constants import APP_NAME, URL
 from UnleashClient import UnleashClient
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
-from UnleashClient.strategies import Strategy
 
 
 class CatTest:
@@ -29,7 +28,7 @@ class CatTest:
         return default_value
 
 
-class DogTest(StrategyOldV2):
+class DogTest:
 
     def apply(self, parameters: dict, context: dict = None) -> bool:
         """

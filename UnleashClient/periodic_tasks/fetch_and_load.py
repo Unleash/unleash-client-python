@@ -5,8 +5,8 @@ from yggdrasil_engine.engine import UnleashEngine
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
-from UnleashClient.loader import load_features
 from UnleashClient.utils import LOGGER
+from UnleashClient.loader import load_features
 
 
 def fetch_and_load_features(
