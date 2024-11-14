@@ -2,7 +2,6 @@ import pytest
 import responses
 
 from tests.utilities.mocks import MOCK_CUSTOM_STRATEGY
-from tests.utilities.old_code.StrategyV2 import StrategyOldV2
 from tests.utilities.testing_constants import APP_NAME, URL
 from UnleashClient import UnleashClient
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
