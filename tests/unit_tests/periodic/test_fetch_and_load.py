@@ -26,7 +26,6 @@ FULL_FEATURE_URL = URL + FEATURES_URL
 @responses.activate
 def test_fetch_and_load(cache_empty):  # noqa: F811
     # Set up for tests
-    in_memory_features = {}
     engine = UnleashEngine()
     responses.add(
         responses.GET,
@@ -44,8 +43,6 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         temp_cache,
-        in_memory_features,
-        {},
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
         engine,
@@ -58,7 +55,6 @@ def test_fetch_and_load(cache_empty):  # noqa: F811
 @responses.activate
 def test_fetch_and_load_project(cache_empty):  # noqa: F811
     # Set up for tests
-    in_memory_features = {}
     engine = UnleashEngine()
     responses.add(
         responses.GET, PROJECT_URL, json=MOCK_FEATURE_RESPONSE_PROJECT, status=200
@@ -72,8 +68,6 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         temp_cache,
-        in_memory_features,
-        {},
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
         engine,
@@ -86,7 +80,6 @@ def test_fetch_and_load_project(cache_empty):  # noqa: F811
 @responses.activate
 def test_fetch_and_load_failure(cache_empty):  # noqa: F811
     # Set up for tests
-    in_memory_features = {}
     engine = UnleashEngine()
     responses.add(
         responses.GET, FULL_FEATURE_URL, json=MOCK_FEATURE_RESPONSE, status=200
@@ -100,8 +93,6 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         temp_cache,
-        in_memory_features,
-        {},
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
         engine,
@@ -118,8 +109,6 @@ def test_fetch_and_load_failure(cache_empty):  # noqa: F811
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         temp_cache,
-        in_memory_features,
-        {},
         REQUEST_TIMEOUT,
         REQUEST_RETRIES,
         engine,
