@@ -16,8 +16,6 @@ def fetch_and_load_features(
     custom_headers: dict,
     custom_options: dict,
     cache: BaseCache,
-    features: dict,
-    strategy_mapping: dict,
     request_timeout: int,
     request_retries: int,
     engine: UnleashEngine,

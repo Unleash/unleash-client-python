@@ -8,7 +8,6 @@ from tests.utilities.testing_constants import (
     APP_NAME,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
-    DEFAULT_STRATEGY_MAPPING,
     INSTANCE_ID,
     METRICS_INTERVAL,
     REQUEST_TIMEOUT,
@@ -44,7 +43,7 @@ def test_register_client(payload, status, expected):
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
-        DEFAULT_STRATEGY_MAPPING,
+        {},
         REQUEST_TIMEOUT,
     )
 
@@ -63,7 +62,7 @@ def test_register_includes_metadata():
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
-        DEFAULT_STRATEGY_MAPPING,
+        {},
         REQUEST_TIMEOUT,
     )
 

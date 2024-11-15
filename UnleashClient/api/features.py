@@ -88,4 +88,4 @@ def get_feature_toggles(
             "Unleash Client feature fetch failed due to exception: %s", exc
         )
 
-    return {}, ""
+    return None, ""
