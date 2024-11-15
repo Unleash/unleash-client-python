@@ -1,5 +1,6 @@
 from platform import python_implementation, python_version
 
+import yggdrasil_engine
 from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.api import send_metrics
@@ -24,7 +25,7 @@ def aggregate_and_send_metrics(
         "bucket": metrics_bucket,
         "platformName": python_implementation(),
         "platformVersion": python_version(),
-        "yggdrasilVersion": "0.14.0",
+        "yggdrasilVersion": yggdrasil_engine.__yggdrasil_core_version__,
         "specVersion": CLIENT_SPEC_VERSION,
     }
 

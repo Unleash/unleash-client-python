@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timezone
 from platform import python_implementation, python_version
+import yggdrasil_engine
 
 import requests
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
@@ -52,7 +53,7 @@ def register_client(
         "interval": metrics_interval,
         "platformName": python_implementation(),
         "platformVersion": python_version(),
-        "yggdrasilVersion": "0.14.0",
+        "yggdrasilVersion": yggdrasil_engine.__yggdrasil_core_version__,
         "specVersion": CLIENT_SPEC_VERSION,
     }
 
