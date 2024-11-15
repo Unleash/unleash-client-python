@@ -3,16 +3,11 @@ import json
 import responses
 from yggdrasil_engine.engine import UnleashEngine
 
-from tests.utilities.mocks.mock_features import (
-    MOCK_FEATURE_RESPONSE,
-)
-from tests.utilities.mocks.mock_variants import VARIANTS
 from tests.utilities.testing_constants import (
     APP_NAME,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
     INSTANCE_ID,
-    IP_LIST,
     REQUEST_TIMEOUT,
     URL,
 )

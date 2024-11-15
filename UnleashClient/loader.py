@@ -1,12 +1,8 @@
-from typing import Optional
-
 from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.cache import BaseCache
-from UnleashClient.constants import FAILED_STRATEGIES, FEATURES_URL
-from UnleashClient.features.Feature import Feature
+from UnleashClient.constants import FEATURES_URL
 from UnleashClient.utils import LOGGER
-from UnleashClient.variants.Variants import Variants
 
 
 def load_features(

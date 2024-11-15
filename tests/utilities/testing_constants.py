@@ -1,14 +1,4 @@
 from UnleashClient.constants import FEATURES_URL
-from UnleashClient.strategies import (
-    ApplicationHostname,
-    Default,
-    FlexibleRollout,
-    GradualRolloutRandom,
-    GradualRolloutSessionId,
-    GradualRolloutUserId,
-    RemoteAddress,
-    UserWithId,
-)
 
 # General configs
 APP_NAME = "pytest"
@@ -36,15 +26,3 @@ IP_LIST = (
 )
 PROJECT_NAME = "ivan"
 ETAG_VALUE = 'W/"730-v0ozrE11zfZK13j7rQ5PxkXfjYQ"'
-
-# Mapping
-DEFAULT_STRATEGY_MAPPING = {
-    "applicationHostname": ApplicationHostname,
-    "default": Default,
-    "gradualRolloutRandom": GradualRolloutRandom,
-    "gradualRolloutSessionId": GradualRolloutSessionId,
-    "gradualRolloutUserId": GradualRolloutUserId,
-    "remoteAddress": RemoteAddress,
-    "userWithId": UserWithId,
-    "flexibleRollout": FlexibleRollout,
-}
