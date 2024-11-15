@@ -153,6 +153,13 @@ CONSTRAINT_DATE_ERROR = {
     "inverted": False,
 }
 
+CONSTRAINT_DATE_TZ_NAIVE = {
+    "contextName": "currentTime",
+    "operator": "DATE_AFTER",
+    "value": "2022-01-22T00:00:00.000",
+    "inverted": False,
+}
+
 
 CONSTRAINT_SEMVER_EQ = {
     "contextName": "customField",

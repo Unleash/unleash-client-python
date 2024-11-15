@@ -1,3 +1,12 @@
+# v5.12.3
+* (Bugfix) Current time context field will automatically populate with UTC aware time ([#324](https://github.com/Unleash/unleash-client-python/pull/324)). Thanks @jacob-indigo!
+
+## v5.12.2
+* (Patch) Metrics are extended with richer metadata about runtime
+
+## v5.12.1
+* (Bugfix) Packaged wheel no longer includes tests
+
 ## v5.12.0
 * (Minor) Switch back to mmh3 for Python 3.12 support.
 
