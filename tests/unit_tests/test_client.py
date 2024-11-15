@@ -1,5 +1,6 @@
 import time
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -13,7 +14,9 @@ from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE,
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
+    MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+    MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -920,3 +923,56 @@ def test_signals_feature_flag(cache):
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
+
+
+def test_context_handles_numerics():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    context = {"userId": 99999}
+
+    assert unleash_client.is_enabled("NumericConstraint", context)
+
+
+def test_context_handles_datetimes():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_RESPONSE)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    current_time = datetime.fromisoformat("1834-02-20").replace(tzinfo=timezone.utc)
+    context = {"currentTime": current_time}
+
+    assert unleash_client.is_enabled("testConstraintFlag", context)
+
+
+def test_context_adds_current_time_if_not_set():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    assert unleash_client.is_enabled("DateConstraint")
