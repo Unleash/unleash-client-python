@@ -1,9 +1,9 @@
 import json
 from datetime import datetime, timezone
 from platform import python_implementation, python_version
-import yggdrasil_engine
 
 import requests
+import yggdrasil_engine
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 
 from UnleashClient.constants import (
