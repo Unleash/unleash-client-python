@@ -434,17 +434,17 @@ class UnleashClient:
     def _safe_context(self, context) -> dict:
         new_context = self.unleash_static_context.copy()
         new_context.update(context or {})
-        context = new_context
-        if "currentTime" not in context:
-            context["currentTime"] = datetime.now(timezone.utc).isoformat()
 
-        safe_properties = context.get("properties", {})
+        if "currentTime" not in new_context:
+            new_context["currentTime"] = datetime.now(timezone.utc).isoformat()
+
+        safe_properties = new_context.get("properties", {})
         safe_properties = {
             k: self._safe_context_value(v) for k, v in safe_properties.items()
         }
         safe_context = {
             k: self._safe_context_value(v)
-            for k, v in context.items()
+            for k, v in new_context.items()
             if k != "properties"
         }
 
