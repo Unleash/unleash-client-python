@@ -1,5 +1,7 @@
 from typing import Optional
 
+from yggdrasil_engine.engine import UnleashEngine
+
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
@@ -14,13 +16,12 @@ def fetch_and_load_features(
     custom_headers: dict,
     custom_options: dict,
     cache: BaseCache,
-    features: dict,
-    strategy_mapping: dict,
     request_timeout: int,
     request_retries: int,
+    engine: UnleashEngine,
     project: Optional[str] = None,
 ) -> None:
-    (feature_provisioning, etag) = get_feature_toggles(
+    (state, etag) = get_feature_toggles(
         url,
         app_name,
         instance_id,
@@ -32,8 +33,8 @@ def fetch_and_load_features(
         cache.get(ETAG),
     )
 
-    if feature_provisioning:
-        cache.set(FEATURES_URL, feature_provisioning)
+    if state:
+        cache.set(FEATURES_URL, state)
     else:
         LOGGER.debug(
             "No feature provisioning returned from server, using cached provisioning."
@@ -42,4 +43,4 @@ def fetch_and_load_features(
     if etag:
         cache.set(ETAG, etag)
 
-    load_features(cache, features, strategy_mapping)
+    load_features(cache, engine)

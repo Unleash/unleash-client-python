@@ -14,7 +14,7 @@ MOCK_FEATURE_RESPONSE = {
             "description": "Test flag 2",
             "enabled": True,
             "strategies": [
-                {"name": "gradualRolloutRandom", "parameters": {"percentage": 50}}
+                {"name": "gradualRolloutRandom", "parameters": {"percentage": "50"}}
             ],
             "createdAt": "2018-10-04T11:03:56.062Z",
             "impressionData": False,
@@ -291,6 +291,60 @@ MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE = {
                 {
                     "name": "default",
                     "parameters": {},
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+    ],
+}
+
+MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT = {
+    "version": 1,
+    "features": [
+        {
+            "name": "NumericConstraint",
+            "description": "Feature toggle with numeric constraint",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "constraints": [
+                        {
+                            "contextName": "userId",
+                            "operator": "NUM_GT",
+                            "value": "10",
+                            "inverted": False,
+                        }
+                    ],
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+    ],
+}
+
+MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT = {
+    "version": 1,
+    "features": [
+        {
+            "name": "DateConstraint",
+            "description": "Feature toggle with numeric constraint",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "constraints": [
+                        {
+                            "contextName": "currentTime",
+                            "operator": "DATE_AFTER",
+                            "value": "1988-06-15T06:40:17.766Z",
+                            "inverted": False,
+                        }
+                    ],
                 }
             ],
             "createdAt": "2018-10-09T06:04:05.667Z",

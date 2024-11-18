@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from platform import python_implementation, python_version
 
 import requests
+import yggdrasil_engine
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 
 from UnleashClient.constants import (
@@ -52,7 +53,7 @@ def register_client(
         "interval": metrics_interval,
         "platformName": python_implementation(),
         "platformVersion": python_version(),
-        "yggdrasilVersion": None,
+        "yggdrasilVersion": yggdrasil_engine.__yggdrasil_core_version__,
         "specVersion": CLIENT_SPEC_VERSION,
     }
 

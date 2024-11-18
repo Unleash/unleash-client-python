@@ -3,14 +3,16 @@ import random
 import string
 import uuid
 import warnings
+from dataclasses import asdict
 from datetime import datetime, timezone
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import BaseScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.api import register_client
 from UnleashClient.constants import (
@@ -21,25 +23,13 @@ from UnleashClient.constants import (
     REQUEST_TIMEOUT,
 )
 from UnleashClient.events import UnleashEvent, UnleashEventType
-from UnleashClient.features import Feature
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
     fetch_and_load_features,
 )
-from UnleashClient.strategies import (
-    ApplicationHostname,
-    Default,
-    FlexibleRollout,
-    GradualRolloutRandom,
-    GradualRolloutSessionId,
-    GradualRolloutUserId,
-    RemoteAddress,
-    UserWithId,
-)
 
 from .cache import BaseCache, FileCache
-from .deprecation_warnings import strategy_v2xx_deprecation_check
 from .utils import LOGGER, InstanceAllowType, InstanceCounter
 
 INSTANCES = InstanceCounter()
@@ -134,9 +124,9 @@ class UnleashClient:
         self._do_instance_check(multiple_instance_mode)
 
         # Class objects
-        self.features: dict = {}
         self.fl_job: Job = None
         self.metric_job: Job = None
+        self.engine = UnleashEngine()
 
         self.cache = cache or FileCache(
             self.unleash_app_name, directory=cache_directory
@@ -167,24 +157,10 @@ class UnleashClient:
             executors = {self.unleash_executor_name: ThreadPoolExecutor()}
             self.unleash_scheduler = BackgroundScheduler(executors=executors)
 
-        # Mappings
-        default_strategy_mapping = {
-            "applicationHostname": ApplicationHostname,
-            "default": Default,
-            "gradualRolloutRandom": GradualRolloutRandom,
-            "gradualRolloutSessionId": GradualRolloutSessionId,
-            "gradualRolloutUserId": GradualRolloutUserId,
-            "remoteAddress": RemoteAddress,
-            "userWithId": UserWithId,
-            "flexibleRollout": FlexibleRollout,
-        }
-
         if custom_strategies:
-            strategy_v2xx_deprecation_check(
-                [x for x in custom_strategies.values()]
-            )  # pylint: disable=R1721
+            self.engine.register_custom_strategies(custom_strategies)
 
-        self.strategy_mapping = {**custom_strategies, **default_strategy_mapping}
+        self.strategy_mapping = {**custom_strategies}
 
         # Client status
         self.is_initialized = False
@@ -193,8 +169,7 @@ class UnleashClient:
         if self.unleash_bootstrapped:
             load_features(
                 cache=self.cache,
-                feature_toggles=self.features,
-                strategy_mapping=self.strategy_mapping,
+                engine=self.engine,
             )
 
     def initialize_client(self, fetch_toggles: bool = True) -> None:
@@ -234,9 +209,8 @@ class UnleashClient:
                     "instance_id": self.unleash_instance_id,
                     "custom_headers": self.unleash_custom_headers,
                     "custom_options": self.unleash_custom_options,
-                    "features": self.features,
-                    "cache": self.cache,
                     "request_timeout": self.unleash_request_timeout,
+                    "engine": self.engine,
                 }
 
                 # Register app
@@ -260,8 +234,7 @@ class UnleashClient:
                         "custom_headers": self.unleash_custom_headers,
                         "custom_options": self.unleash_custom_options,
                         "cache": self.cache,
-                        "features": self.features,
-                        "strategy_mapping": self.strategy_mapping,
+                        "engine": self.engine,
                         "request_timeout": self.unleash_request_timeout,
                         "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
@@ -270,8 +243,7 @@ class UnleashClient:
                 else:
                     job_args = {
                         "cache": self.cache,
-                        "feature_toggles": self.features,
-                        "strategy_mapping": self.strategy_mapping,
+                        "engine": self.engine,
                     }
                     job_func = load_features
 
@@ -311,6 +283,28 @@ class UnleashClient:
             warnings.warn(
                 "Attempted to initialize an Unleash Client instance that has already been initialized."
             )
+
+    def feature_definitions(self) -> dict:
+        """
+        Returns a dict containing all feature definitions known to the SDK at the time of calling.
+        Normally this would be a pared down version of the response from the Unleash API but this
+        may also be a result from bootstrapping or loading from backup.
+
+        Example response:
+
+        {
+            "feature1": {
+                "project": "default",
+                "type": "release",
+            }
+        }
+        """
+
+        toggles = self.engine.list_known_toggles()
+        return {
+            toggle.name: {"type": toggle.type, "project": toggle.project}
+            for toggle in toggles
+        }
 
     def destroy(self) -> None:
         """
@@ -354,85 +348,37 @@ class UnleashClient:
         :param fallback_function: Allows users to provide a custom function to set default value.
         :return: Feature flag result
         """
-        context = context or {}
+        context = self._safe_context(context)
+        feature_enabled = self.engine.is_enabled(feature_name, context)
 
-        base_context = self.unleash_static_context.copy()
-        # Update context with static values and allow context to override environment
-        base_context.update(context)
-        context = base_context
+        if feature_enabled is None:
+            feature_enabled = self._get_fallback_value(
+                fallback_function, feature_name, context
+            )
 
-        if self.unleash_bootstrapped or self.is_initialized:
-            try:
-                feature = self.features[feature_name]
-                dependency_check = self._dependencies_are_satisfied(
-                    feature_name, context
+        self.engine.count_toggle(feature_name, feature_enabled)
+        try:
+            if (
+                self.unleash_event_callback
+                and self.engine.should_emit_impression_event(feature_name)
+            ):
+                event = UnleashEvent(
+                    event_type=UnleashEventType.FEATURE_FLAG,
+                    event_id=uuid.uuid4(),
+                    context=context,
+                    enabled=feature_enabled,
+                    feature_name=feature_name,
                 )
 
-                if dependency_check:
-                    feature_check = feature.is_enabled(context)
-                else:
-                    feature.increment_stats(False)
-                    feature_check = False
-
-                if feature.only_for_metrics:
-                    return self._get_fallback_value(
-                        fallback_function, feature_name, context
-                    )
-
-                try:
-                    if self.unleash_event_callback and feature.impression_data:
-                        event = UnleashEvent(
-                            event_type=UnleashEventType.FEATURE_FLAG,
-                            event_id=uuid.uuid4(),
-                            context=context,
-                            enabled=feature_check,
-                            feature_name=feature_name,
-                        )
-
-                        self.unleash_event_callback(event)
-                except Exception as excep:
-                    LOGGER.log(
-                        self.unleash_verbose_log_level,
-                        "Error in event callback: %s",
-                        excep,
-                    )
-                    return feature_check
-
-                return feature_check
-            except Exception as excep:
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Returning default value for feature: %s",
-                    feature_name,
-                )
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Error checking feature flag: %s",
-                    excep,
-                )
-                # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature.metrics_only_feature(feature_name)
-                self.features[feature_name] = new_feature
-
-                # Use the feature's is_enabled method to count the call
-                new_feature.is_enabled(context)
-
-                return self._get_fallback_value(
-                    fallback_function, feature_name, context
-                )
-
-        else:
+                self.unleash_event_callback(event)
+        except Exception as excep:
             LOGGER.log(
                 self.unleash_verbose_log_level,
-                "Returning default value for feature: %s",
-                feature_name,
+                "Error in event callback: %s",
+                excep,
             )
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Attempted to get feature_flag %s, but client wasn't initialized!",
-                feature_name,
-            )
-            return self._get_fallback_value(fallback_function, feature_name, context)
+
+        return feature_enabled
 
     # pylint: disable=broad-except
     def get_variant(self, feature_name: str, context: Optional[dict] = None) -> dict:
@@ -447,123 +393,80 @@ class UnleashClient:
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :return: Variant and feature flag status.
         """
-        context = context or {}
-        context.update(self.unleash_static_context)
+        context = self._safe_context(context)
+        variant = self._resolve_variant(feature_name, context)
 
-        if self.unleash_bootstrapped or self.is_initialized:
+        if not variant:
+            if self.unleash_bootstrapped or self.is_initialized:
+                LOGGER.log(
+                    self.unleash_verbose_log_level,
+                    "Attempted to get feature flag/variation %s, but client wasn't initialized!",
+                    feature_name,
+                )
+            variant = DISABLED_VARIATION
+
+        self.engine.count_variant(feature_name, variant["name"])
+        self.engine.count_toggle(feature_name, variant["feature_enabled"])
+
+        if self.unleash_event_callback and self.engine.should_emit_impression_event(
+            feature_name
+        ):
             try:
-                feature = self.features[feature_name]
+                event = UnleashEvent(
+                    event_type=UnleashEventType.VARIANT,
+                    event_id=uuid.uuid4(),
+                    context=context,
+                    enabled=variant["enabled"],
+                    feature_name=feature_name,
+                    variant=variant["name"],
+                )
 
-                if not self._dependencies_are_satisfied(feature_name, context):
-                    feature.increment_stats(False)
-                    feature._count_variant("disabled")
-                    return DISABLED_VARIATION
-
-                variant_check = feature.get_variant(context)
-
-                if self.unleash_event_callback and feature.impression_data:
-                    try:
-                        event = UnleashEvent(
-                            event_type=UnleashEventType.VARIANT,
-                            event_id=uuid.uuid4(),
-                            context=context,
-                            enabled=variant_check["enabled"],
-                            feature_name=feature_name,
-                            variant=variant_check["name"],
-                        )
-
-                        self.unleash_event_callback(event)
-                    except Exception as excep:
-                        LOGGER.log(
-                            self.unleash_verbose_log_level,
-                            "Error in event callback: %s",
-                            excep,
-                        )
-                        return variant_check
-
-                return variant_check
+                self.unleash_event_callback(event)
             except Exception as excep:
                 LOGGER.log(
                     self.unleash_verbose_log_level,
-                    "Returning default flag/variation for feature: %s",
-                    feature_name,
-                )
-                LOGGER.log(
-                    self.unleash_verbose_log_level,
-                    "Error checking feature flag variant: %s",
+                    "Error in event callback: %s",
                     excep,
                 )
 
-                # The feature doesn't exist, so create it to track metrics
-                new_feature = Feature.metrics_only_feature(feature_name)
-                self.features[feature_name] = new_feature
+        return variant
 
-                # Use the feature's get_variant method to count the call
-                variant_check = new_feature.get_variant(context)
-                return variant_check
-        else:
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Returning default flag/variation for feature: %s",
-                feature_name,
-            )
-            LOGGER.log(
-                self.unleash_verbose_log_level,
-                "Attempted to get feature flag/variation %s, but client wasn't initialized!",
-                feature_name,
-            )
-            return DISABLED_VARIATION
+    def _safe_context(self, context) -> dict:
+        new_context: Dict[str, Any] = self.unleash_static_context.copy()
+        new_context.update(context or {})
 
-    def _is_dependency_satified(self, dependency: dict, context: dict) -> bool:
+        if "currentTime" not in new_context:
+            new_context["currentTime"] = datetime.now(timezone.utc).isoformat()
+
+        safe_properties = new_context.get("properties", {})
+        safe_properties = {
+            k: self._safe_context_value(v) for k, v in safe_properties.items()
+        }
+        safe_context = {
+            k: self._safe_context_value(v)
+            for k, v in new_context.items()
+            if k != "properties"
+        }
+
+        safe_context["properties"] = safe_properties
+
+        return safe_context
+
+    def _safe_context_value(self, value):
+        if isinstance(value, datetime):
+            return value.isoformat()
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    def _resolve_variant(self, feature_name: str, context: dict) -> dict:
         """
-        Checks a single feature dependency.
+        Resolves a feature variant.
         """
-
-        dependency_name = dependency["feature"]
-
-        dependency_feature = self.features[dependency_name]
-
-        if not dependency_feature:
-            LOGGER.warning("Feature dependency not found. %s", dependency_name)
-            return False
-
-        if dependency_feature.dependencies:
-            LOGGER.warning(
-                "Feature dependency cannot have it's own dependencies. %s",
-                dependency_name,
-            )
-            return False
-
-        should_be_enabled = dependency.get("enabled", True)
-        is_enabled = dependency_feature.is_enabled(context, skip_stats=True)
-
-        if is_enabled != should_be_enabled:
-            return False
-
-        variants = dependency.get("variants")
-        if variants:
-            variant = dependency_feature.get_variant(context, skip_stats=True)
-            if variant["name"] not in variants:
-                return False
-
-        return True
-
-    def _dependencies_are_satisfied(self, feature_name: str, context: dict) -> bool:
-        """
-        If feature dependencies are satisfied (or non-existent).
-        """
-
-        feature = self.features[feature_name]
-        dependencies = feature.dependencies
-
-        if not dependencies:
-            return True
-
-        for dependency in dependencies:
-            if not self._is_dependency_satified(dependency, context):
-                return False
-
-        return True
+        variant = self.engine.get_variant(feature_name, context)
+        if variant:
+            return {k: v for k, v in asdict(variant).items() if v is not None}
+        return None
 
     def _do_instance_check(self, multiple_instance_mode):
         identifier = self.__get_identifier()

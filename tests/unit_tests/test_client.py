@@ -1,5 +1,6 @@
 import time
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -13,7 +14,9 @@ from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE,
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
+    MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
+    MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -38,25 +41,24 @@ from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
-from UnleashClient.periodic_tasks import aggregate_metrics
-from UnleashClient.strategies import Strategy
 from UnleashClient.utils import InstanceAllowType
 
 
-class EnvironmentStrategy(Strategy):
-    def load_provisioning(self) -> list:
-        return [x.strip() for x in self.parameters["environments"].split(",")]
+class EnvironmentStrategy:
+    def load_provisioning(self, parameters) -> list:
+        return [x.strip() for x in parameters["environments"].split(",")]
 
-    def apply(self, context: dict = None) -> bool:
+    def apply(self, parameters: dict, context: dict = None) -> bool:
         """
         Turn on if environemnt is a match.
 
         :return:
         """
         default_value = False
+        parsed_provisioning = self.load_provisioning(parameters)
 
         if "environment" in context.keys():
-            default_value = context["environment"] in self.parsed_provisioning
+            default_value = context["environment"] in parsed_provisioning
 
         return default_value
 
@@ -200,7 +202,7 @@ def test_uc_lifecycle(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
 
     # Simulate caching
     responses.add(
@@ -221,7 +223,7 @@ def test_uc_lifecycle(unleash_client):
         headers={"etag": "W/somethingelse"},
     )
     time.sleep(REFRESH_INTERVAL * 2)
-    assert len(unleash_client.features) >= 9
+    assert len(unleash_client.feature_definitions()) >= 9
 
 
 @responses.activate
@@ -348,7 +350,7 @@ def test_uc_is_enabled_with_context():
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    custom_strategies_dict = {"custom-context": EnvironmentStrategy}
+    custom_strategies_dict = {"custom-context": EnvironmentStrategy()}
 
     unleash_client = UnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
@@ -484,7 +486,7 @@ def test_uc_metrics(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["testFlag"]["yes"] == 1
 
 
@@ -504,7 +506,7 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     unleash_client.is_enabled("nonexistent-flag")
 
     # Verify that the metrics are serialized
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["nonexistent-flag"]["no"] == 1
 
 
@@ -522,7 +524,7 @@ def test_uc_metrics_dependencies(unleash_client):
     time.sleep(1)
     assert unleash_client.is_enabled("Child")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["Child"]["yes"] == 1
     assert "Parent" not in metrics
 
@@ -542,7 +544,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
 
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["nonexistent-flag"]["no"] == 1
     assert metrics["nonexistent-flag"]["variants"]["disabled"] == 1
 
@@ -569,7 +571,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics[child]["yes"] == 2
     assert metrics[child]["variants"]["childVariant"] == 1
     assert parent not in metrics
@@ -597,7 +599,7 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     unleash_client.get_variant(child)
 
     # Verify that the parent doesn't have any metrics registered
-    metrics = aggregate_metrics(unleash_client.features)
+    metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics[child]["no"] == 2
     assert metrics[child]["variants"]["disabled"] == 1
     assert parent not in metrics
@@ -673,7 +675,7 @@ def test_uc_multiple_initializations(unleash_client):
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
 
     with warnings.catch_warnings(record=True) as w:
         # Try and initialize client again.
@@ -707,14 +709,14 @@ def test_uc_cache_bootstrap_dict(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) == 1
+    assert len(unleash_client.feature_definitions()) == 1
     assert unleash_client.is_enabled("ivan-project")
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -738,7 +740,7 @@ def test_uc_cache_bootstrap_file(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) >= 1
+    assert len(unleash_client.feature_definitions()) >= 1
     assert unleash_client.is_enabled("ivan-project")
 
 
@@ -764,7 +766,7 @@ def test_uc_cache_bootstrap_url(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -799,7 +801,7 @@ def test_uc_custom_scheduler():
     unleash_client.initialize_client()
     time.sleep(1)
     assert unleash_client.is_initialized
-    assert len(unleash_client.features) >= 4
+    assert len(unleash_client.feature_definitions()) >= 4
 
     # Simulate caching
     responses.add(
@@ -820,7 +822,7 @@ def test_uc_custom_scheduler():
         headers={"etag": "W/somethingelse"},
     )
     time.sleep(6)
-    assert len(unleash_client.features) >= 9
+    assert len(unleash_client.feature_definitions()) >= 9
 
 
 def test_multiple_instances_blocks_client_instantiation():
@@ -921,3 +923,56 @@ def test_signals_feature_flag(cache):
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
+
+
+def test_context_handles_numerics():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    context = {"userId": 99999}
+
+    assert unleash_client.is_enabled("NumericConstraint", context)
+
+
+def test_context_handles_datetimes():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_RESPONSE)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    current_time = datetime.fromisoformat("1834-02-20").replace(tzinfo=timezone.utc)
+    context = {"currentTime": current_time}
+
+    assert unleash_client.is_enabled("testConstraintFlag", context)
+
+
+def test_context_adds_current_time_if_not_set():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        environment="default",
+    )
+
+    assert unleash_client.is_enabled("DateConstraint")

@@ -30,7 +30,8 @@ dependencies=[
     "apscheduler < 4.0.0",
     "importlib_metadata",
     "python-dateutil",
-    "semver < 4.0.0"
+    "semver < 4.0.0",
+    "yggdrasil-engine",
 ]
 
 [project.urls]
