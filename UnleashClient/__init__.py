@@ -5,7 +5,7 @@ import uuid
 import warnings
 from dataclasses import asdict
 from datetime import datetime, timezone
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
@@ -348,13 +348,7 @@ class UnleashClient:
         :param fallback_function: Allows users to provide a custom function to set default value.
         :return: Feature flag result
         """
-        context = context or {}
-
-        base_context = self.unleash_static_context.copy()
-        # Update context with static values and allow context to override environment
-        base_context.update(context)
-        context = base_context
-
+        context = self._safe_context(context)
         feature_enabled = self.engine.is_enabled(feature_name, context)
 
         if feature_enabled is None:
@@ -399,9 +393,7 @@ class UnleashClient:
         :param context: Dictionary with context (e.g. IPs, email) for feature toggle.
         :return: Variant and feature flag status.
         """
-        context = context or {}
-        context.update(self.unleash_static_context)
-
+        context = self._safe_context(context)
         variant = self._resolve_variant(feature_name, context)
 
         if not variant:
@@ -438,6 +430,34 @@ class UnleashClient:
                 )
 
         return variant
+
+    def _safe_context(self, context) -> dict:
+        new_context: Dict[str, Any] = self.unleash_static_context.copy()
+        new_context.update(context or {})
+
+        if "currentTime" not in new_context:
+            new_context["currentTime"] = datetime.now(timezone.utc).isoformat()
+
+        safe_properties = new_context.get("properties", {})
+        safe_properties = {
+            k: self._safe_context_value(v) for k, v in safe_properties.items()
+        }
+        safe_context = {
+            k: self._safe_context_value(v)
+            for k, v in new_context.items()
+            if k != "properties"
+        }
+
+        safe_context["properties"] = safe_properties
+
+        return safe_context
+
+    def _safe_context_value(self, value):
+        if isinstance(value, datetime):
+            return value.isoformat()
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
 
     def _resolve_variant(self, feature_name: str, context: dict) -> dict:
         """
