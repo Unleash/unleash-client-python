@@ -5,6 +5,11 @@
 
 This is the Python client for [Unleash](https://github.com/unleash/unleash).  It implements [Client Specifications 1.0](https://docs.getunleash.io/client-specification) and checks compliance based on spec in [unleash/client-specifications](https://github.com/Unleash/client-specification)
 
+>  **Migrating to v6**
+>
+> If you use custom strategies or access the `features` property on the Unleash Client, read the complete [migration guide](./v6_MIGRATION_GUIDE.md) before upgrading to v6.
+
+
 What it supports:
 * Default activation strategies using 32-bit [Murmurhash3](https://en.wikipedia.org/wiki/MurmurHash)
 * Custom strategies
