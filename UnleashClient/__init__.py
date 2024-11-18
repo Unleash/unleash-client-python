@@ -5,7 +5,7 @@ import uuid
 import warnings
 from dataclasses import asdict
 from datetime import datetime, timezone
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
@@ -432,7 +432,7 @@ class UnleashClient:
         return variant
 
     def _safe_context(self, context) -> dict:
-        new_context = self.unleash_static_context.copy()
+        new_context: Dict[str, Any] = self.unleash_static_context.copy()
         new_context.update(context or {})
 
         if "currentTime" not in new_context:
