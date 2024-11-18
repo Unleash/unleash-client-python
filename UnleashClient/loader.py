@@ -25,9 +25,13 @@ def load_features(
         )
         return
 
-    warnings = engine.take_state(feature_provisioning)
-    if warnings:
-        LOGGER.warning(
-            "Some features were not able to be parsed correctly, they may not evaluate as expected"
-        )
-        LOGGER.warning(warnings)
+    try:
+        warnings = engine.take_state(feature_provisioning)
+        if warnings:
+            LOGGER.warning(
+                "Some features were not able to be parsed correctly, they may not evaluate as expected"
+            )
+            LOGGER.warning(warnings)
+    except Exception as e:
+        LOGGER.error(f"Error loading features: {e}")
+        LOGGER.debug(f"Full feature response body from server: {feature_provisioning}")
