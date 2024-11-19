@@ -40,7 +40,7 @@
 				"ms-azuretools.vscode-docker",
 				"ritwickdey.LiveServer",
 				"ms-vscode.makefile-tools",
-				"bungcip.better-toml",
+				"tamasfe.even-better-toml",
 				"ms-python.vscode-pylance",
 				"ms-azuretools.vscode-docker"
 			]
