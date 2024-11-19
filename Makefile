@@ -11,7 +11,7 @@ test: lint pytest specification-test
 
 precommit: clean generate-requirements
 
-build: clean build-package upload
+build: clean build-package
 
 build-local: clean build-package
 
@@ -62,9 +62,6 @@ clean:
 
 build-package:
 	python -m build
-
-upload:
-	twine upload dist/*
 
 #-----------------------------------------------------------------------
 # Docs

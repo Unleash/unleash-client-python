@@ -7,6 +7,9 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment: pypi
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
@@ -19,9 +22,10 @@ jobs:
       - name: Build package
         run: |
           make build
+      - name: Publish package to Pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
         env:
-          TWINE_USERNAME: ${{ secrets.pypi_username }}
-          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          repository-url: https://pypi.org/project/UnleashClient/
       - name: Build docs
         run: |
           make install-docs
