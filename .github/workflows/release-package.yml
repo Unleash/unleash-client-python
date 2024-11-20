@@ -3,8 +3,6 @@ name: Release package
 on:
   release:
     types: [published]
-  push:
-    branches: ["fix_doc_publishing"]
 
 jobs:
   main:
@@ -25,10 +23,10 @@ jobs:
       - name: Build package
         run: |
           make build
-      # - name: Publish package to Pypi
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   env:
-      #     repository-url: https://pypi.org/project/UnleashClient/
+      - name: Publish package to Pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        env:
+          repository-url: https://pypi.org/project/UnleashClient/
       - name: Build docs
         run: |
           make install-docs
