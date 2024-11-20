@@ -2,7 +2,7 @@ name: Release docs
 
 on:
   push:
-    branches: ["main", "fix_doc_publishing"]
+    branches: ["main"]
 
 jobs:
   Build:
