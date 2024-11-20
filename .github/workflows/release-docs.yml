@@ -2,11 +2,13 @@ name: Release docs
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "fix_doc_publishing"]
 
 jobs:
   Build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
