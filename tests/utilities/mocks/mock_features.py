@@ -352,3 +352,30 @@ MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT = {
         },
     ],
 }
+
+MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS = {
+    "version": 1,
+    "features": [
+        {
+            "name": "customContextToggle",
+            "description": "Feature toggle with custom context constraint",
+            "enabled": True,
+            "strategies": [
+                {
+                    "name": "default",
+                    "parameters": {},
+                    "constraints": [
+                        {
+                            "contextName": "myContext",
+                            "operator": "IN",
+                            "values": ["1234"],
+                            "inverted": False,
+                        }
+                    ],
+                }
+            ],
+            "createdAt": "2018-10-09T06:04:05.667Z",
+            "impressionData": False,
+        },
+    ],
+}

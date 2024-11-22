@@ -17,6 +17,7 @@ from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
     MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT,
+    MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -989,3 +990,44 @@ def test_context_moves_properties_fields_to_properties():
     context = {"myContext": "1234"}
 
     assert "myContext" in unleash_client._safe_context(context)["properties"]
+
+
+def test_existing_properties_are_retained_when_custom_context_properties_are_in_the_root():
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+    )
+
+    context = {"myContext": "1234", "properties": {"yourContext": "1234"}}
+
+    assert "myContext" in unleash_client._safe_context(context)["properties"]
+    assert "yourContext" in unleash_client._safe_context(context)["properties"]
+
+def test_base_context_properties_are_retained_in_root():
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+    )
+
+    context = {"userId": "1234"}
+
+    assert "userId" in unleash_client._safe_context(context)
+
+
+def test_is_enabled_works_with_properties_field_in_the_context_root():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS)
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        disable_metrics=True,
+        cache=cache,
+        disable_registration=True,
+    )
+
+    context = {"myContext": "1234"}
+    assert unleash_client.is_enabled("customContextToggle", context)
