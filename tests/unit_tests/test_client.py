@@ -976,3 +976,16 @@ def test_context_adds_current_time_if_not_set():
     )
 
     assert unleash_client.is_enabled("DateConstraint")
+
+
+def test_context_moves_properties_fields_to_properties():
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+    )
+
+    context = {"myContext": "1234"}
+
+    assert "myContext" in unleash_client._safe_context(context)["properties"]
