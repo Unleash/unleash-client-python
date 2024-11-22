@@ -14,10 +14,10 @@ from tests.utilities.mocks.mock_features import (
     MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE,
     MOCK_FEATURE_RESPONSE,
     MOCK_FEATURE_RESPONSE_PROJECT,
+    MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS,
     MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT,
     MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE,
     MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT,
-    MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS,
 )
 from tests.utilities.testing_constants import (
     APP_NAME,
@@ -1004,6 +1004,7 @@ def test_existing_properties_are_retained_when_custom_context_properties_are_in_
 
     assert "myContext" in unleash_client._safe_context(context)["properties"]
     assert "yourContext" in unleash_client._safe_context(context)["properties"]
+
 
 def test_base_context_properties_are_retained_in_root():
     unleash_client = UnleashClient(
