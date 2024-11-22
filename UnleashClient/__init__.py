@@ -33,6 +33,15 @@ from .cache import BaseCache, FileCache
 from .utils import LOGGER, InstanceAllowType, InstanceCounter
 
 INSTANCES = InstanceCounter()
+_BASE_CONTEXT_FIELDS = [
+    "userId",
+    "sessionId",
+    "environment",
+    "appName",
+    "currentTime",
+    "remoteAddress",
+    "properties",
+]
 
 
 # pylint: disable=dangerous-default-value
@@ -438,7 +447,7 @@ class UnleashClient:
         if "currentTime" not in new_context:
             new_context["currentTime"] = datetime.now(timezone.utc).isoformat()
 
-        safe_properties = new_context.get("properties", {})
+        safe_properties = self._extract_properties(context or {})
         safe_properties = {
             k: self._safe_context_value(v) for k, v in safe_properties.items()
         }
@@ -451,6 +460,14 @@ class UnleashClient:
         safe_context["properties"] = safe_properties
 
         return safe_context
+
+    def _extract_properties(self, context: dict) -> dict:
+        properties = context.get("properties", {})
+        extracted_fields = {
+            k: v for k, v in context.items() if k not in _BASE_CONTEXT_FIELDS
+        }
+        extracted_fields.update(properties)
+        return extracted_fields
 
     def _safe_context_value(self, value):
         if isinstance(value, datetime):
