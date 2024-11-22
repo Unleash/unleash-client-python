@@ -447,7 +447,7 @@ class UnleashClient:
         if "currentTime" not in new_context:
             new_context["currentTime"] = datetime.now(timezone.utc).isoformat()
 
-        safe_properties = self._extract_properties(context or {})
+        safe_properties = self._extract_properties(new_context)
         safe_properties = {
             k: self._safe_context_value(v) for k, v in safe_properties.items()
         }
