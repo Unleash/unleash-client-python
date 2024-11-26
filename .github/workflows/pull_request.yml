@@ -3,6 +3,8 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
 
 jobs:
   main:
@@ -29,7 +31,7 @@ jobs:
           coveralls --service=github
 
   tox:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
