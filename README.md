@@ -135,14 +135,14 @@ Once the proxy is running, you can connect to it by passing the server SDK token
 
 ```python
 client = UnleashClient(
-    url='<unleash-api-url>',
+    url='<unleash-proxy-url>',
     app_name='<app-name>',
     custom_headers={'Authorization': '<server-sdk-token>'},
 )
 ```
 
 Replace the following placeholders:
-- `<unleash-api-url>`: The URL of your Unleash API.
+- `<unleash-proxy-url>`: The URL of your Unleash proxy for example `http://localhost:3000/proxy`.
 - `<app-name>`: The name of your application.
 - `<server-sdk-token>`: The server SDK token used to authenticate the request.
 
