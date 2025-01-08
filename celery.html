@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Running with Celery &mdash; unleash-client-python  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -96,8 +96,8 @@
   <section id="running-with-celery">
 <h1>Running with Celery<a class="headerlink" href="#running-with-celery" title="Link to this heading"></a></h1>
 <p>To use this client with Celery, call the <cite>initialize_client</cite> method in the <cite>worker_process_init</cite> event. If you don’t initialize the client inside the <cite>worker_process_init</cite> event, the client will not poll for updates. As such, the client will not update its feature toggles, even when changes are made server side.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">UnleashClient</span> <span class="kn">import</span> <span class="n">UnleashClient</span>
-<span class="kn">from</span> <span class="nn">celery.signals</span> <span class="kn">import</span> <span class="n">worker_process_init</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">UnleashClient</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnleashClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">celery.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">worker_process_init</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">UnleashClient</span><span class="p">(</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:4242/api/&quot;</span><span class="p">,</span>
@@ -105,7 +105,7 @@
     <span class="n">custom_headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;*:development.bb09e81624d5ad67b2ac29bd0b0fdc35ccbac884e63cfd20c6fefc49&#39;</span><span class="p">})</span>
 
 <span class="nd">@worker_process_init</span><span class="o">.</span><span class="n">connect</span>
-<span class="k">def</span> <span class="nf">configure_workers</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">configure_workers</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">client</span><span class="o">.</span><span class="n">initialize_client</span><span class="p">()</span>
 </pre></div>
 </div>
