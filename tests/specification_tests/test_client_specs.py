@@ -12,7 +12,7 @@ CLIENT_SPEC_PATH = "tests/specification_tests/client-specification/specification
 
 
 def load_spec(spec):
-    with open(path.join(CLIENT_SPEC_PATH, spec)) as _f:
+    with open(path.join(CLIENT_SPEC_PATH, spec), encoding="utf-8") as _f:
         data = json.load(_f)
         return (
             data["name"],
