@@ -20,10 +20,10 @@ Execute the following Docker command to run the proxy container with the necessa
 
 Replace the following placeholders:
 
-- ``<proxy-client-key>``: Your proxy client key.  
-- ``<unleash-api-url>``: The URL of your Unleash API.   
-- ``<client-api-token>``: Your Unleash API token.   
-- ``<server-sdk-token>``: The server SDK token (used for the experimental configuration).  
+- ``<proxy-client-key>``: Your proxy client key.
+- ``<unleash-api-url>``: The URL of your Unleash API.
+- ``<client-api-token>``: Your Unleash API token.
+- ``<server-sdk-token>``: The server SDK token (used for the experimental configuration).
 
 Step 2: Connecting to the Proxy
 --------------------------------
