@@ -110,7 +110,6 @@ class UnleashClient:
         self.unleash_app_name = app_name
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
-        self.unleash_connection_id = str(uuid.uuid4())
         self.unleash_refresh_interval = refresh_interval
         self.unleash_request_timeout = request_timeout
         self.unleash_request_retries = request_retries
@@ -214,9 +213,9 @@ class UnleashClient:
         if not self.is_initialized:
             # pylint: disable=no-else-raise
             try:
-                headers = {  # SDK identification headers
+                headers = {
                     **self.unleash_custom_headers,
-                    "x-unleash-connection-id": self.unleash_connection_id,
+                    "x-unleash-connection-id": str(uuid.uuid4()),
                     "x-unleash-appname": self.unleash_app_name,
                     "x-unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
                 }
@@ -226,7 +225,7 @@ class UnleashClient:
                     "url": self.unleash_url,
                     "app_name": self.unleash_app_name,
                     "instance_id": self.unleash_instance_id,
-                    "custom_headers": headers,
+                    "headers": headers,
                     "custom_options": self.unleash_custom_options,
                     "request_timeout": self.unleash_request_timeout,
                     "engine": self.engine,
@@ -250,7 +249,7 @@ class UnleashClient:
                         "url": self.unleash_url,
                         "app_name": self.unleash_app_name,
                         "instance_id": self.unleash_instance_id,
-                        "custom_headers": headers,
+                        "headers": headers,
                         "custom_options": self.unleash_custom_options,
                         "cache": self.cache,
                         "engine": self.engine,

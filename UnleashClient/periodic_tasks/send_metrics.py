@@ -12,7 +12,7 @@ def aggregate_and_send_metrics(
     url: str,
     app_name: str,
     instance_id: str,
-    custom_headers: dict,
+    headers: dict,
     custom_options: dict,
     request_timeout: int,
     engine: UnleashEngine,
@@ -31,7 +31,7 @@ def aggregate_and_send_metrics(
 
     if metrics_bucket:
         send_metrics(
-            url, metrics_request, custom_headers, custom_options, request_timeout
+            url, metrics_request, headers, custom_options, request_timeout
         )
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")
