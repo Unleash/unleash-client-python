@@ -1033,8 +1033,9 @@ def test_is_enabled_works_with_properties_field_in_the_context_root():
     context = {"myContext": "1234"}
     assert unleash_client.is_enabled("customContextToggle", context)
 
+
 @responses.activate
-def test_identification_headers_sent(unleash_client):
+def test_identification_headers_sent_and_consistent(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
@@ -1042,7 +1043,38 @@ def test_identification_headers_sent(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
     unleash_client.initialize_client()
 
+    connection_id = responses.calls[0].request.headers["X-UNLEASH-CONNECTION-ID"]
+    app_name = responses.calls[0].request.headers["X-UNLEASH-APPNAME"]
+    sdk = responses.calls[0].request.headers["X-UNLEASH-SDK"]
+
     for api_call in responses.calls:
-        assert "X-UNLEASH-CONNECTION-ID" in api_call.request.headers
-        assert "X-UNLEASH-APPNAME" in api_call.request.headers
-        assert "X-UNLEASH-SDK" in api_call.request.headers
+        assert api_call.request.headers["X-UNLEASH-CONNECTION-ID"] == connection_id
+        assert api_call.request.headers["X-UNLEASH-APPNAME"] == app_name
+        assert api_call.request.headers["X-UNLEASH-SDK"] == sdk
+
+
+@responses.activate
+def test_identification_headers_unique_connection_id():
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    unleash_client = UnleashClient(
+        URL, APP_NAME, disable_metrics=True, disable_registration=True
+    )
+    unleash_client.initialize_client()
+    connection_id_first_client = responses.calls[0].request.headers[
+        "X-UNLEASH-CONNECTION-ID"
+    ]
+
+    other_unleash_client = UnleashClient(
+        URL, APP_NAME, disable_metrics=True, disable_registration=True
+    )
+    other_unleash_client.initialize_client()
+
+    connection_id_second_client = responses.calls[1].request.headers[
+        "X-UNLEASH-CONNECTION-ID"
+    ]
+    assert connection_id_first_client != connection_id_second_client
