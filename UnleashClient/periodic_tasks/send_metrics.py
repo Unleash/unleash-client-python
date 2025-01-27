@@ -30,8 +30,6 @@ def aggregate_and_send_metrics(
     }
 
     if metrics_bucket:
-        send_metrics(
-            url, metrics_request, headers, custom_options, request_timeout
-        )
+        send_metrics(url, metrics_request, headers, custom_options, request_timeout)
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")

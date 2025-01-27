@@ -41,7 +41,10 @@ def get_feature_toggles(
     try:
         LOGGER.info("Getting feature flag.")
 
-        request_specific_headers = {"UNLEASH-APPNAME": app_name, "UNLEASH-INSTANCEID": instance_id}
+        request_specific_headers = {
+            "UNLEASH-APPNAME": app_name,
+            "UNLEASH-INSTANCEID": instance_id,
+        }
 
         if cached_etag:
             request_specific_headers["If-None-Match"] = cached_etag
