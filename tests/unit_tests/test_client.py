@@ -1032,3 +1032,17 @@ def test_is_enabled_works_with_properties_field_in_the_context_root():
 
     context = {"myContext": "1234"}
     assert unleash_client.is_enabled("customContextToggle", context)
+
+@responses.activate
+def test_identification_headers_sent(unleash_client):
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    unleash_client.initialize_client()
+
+    for api_call in responses.calls:
+        assert "X-UNLEASH-CONNECTION-ID" in api_call.request.headers
+        assert "X-UNLEASH-APPNAME" in api_call.request.headers
+        assert "X-UNLEASH-SDK" in api_call.request.headers
