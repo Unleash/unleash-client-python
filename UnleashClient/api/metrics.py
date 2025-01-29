@@ -10,7 +10,7 @@ from UnleashClient.utils import LOGGER, log_resp_info
 def send_metrics(
     url: str,
     request_body: dict,
-    custom_headers: dict,
+    headers: dict,
     custom_options: dict,
     request_timeout: int,
 ) -> bool:
@@ -22,7 +22,7 @@ def send_metrics(
 
     :param url:
     :param request_body:
-    :param custom_headers:
+    :param headers:
     :param custom_options:
     :param request_timeout:
     :return: true if registration successful, false if registration unsuccessful or exception.
@@ -34,7 +34,7 @@ def send_metrics(
         resp = requests.post(
             url + METRICS_URL,
             data=json.dumps(request_body),
-            headers={**custom_headers, **APPLICATION_HEADERS},
+            headers={**headers, **APPLICATION_HEADERS},
             timeout=request_timeout,
             **custom_options,
         )

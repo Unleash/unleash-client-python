@@ -13,7 +13,7 @@ def get_feature_toggles(
     url: str,
     app_name: str,
     instance_id: str,
-    custom_headers: dict,
+    headers: dict,
     custom_options: dict,
     request_timeout: int,
     request_retries: int,
@@ -30,7 +30,7 @@ def get_feature_toggles(
     :param url:
     :param app_name:
     :param instance_id:
-    :param custom_headers:
+    :param headers:
     :param custom_options:
     :param request_timeout:
     :param request_retries:
@@ -41,10 +41,13 @@ def get_feature_toggles(
     try:
         LOGGER.info("Getting feature flag.")
 
-        headers = {"UNLEASH-APPNAME": app_name, "UNLEASH-INSTANCEID": instance_id}
+        request_specific_headers = {
+            "UNLEASH-APPNAME": app_name,
+            "UNLEASH-INSTANCEID": instance_id,
+        }
 
         if cached_etag:
-            headers["If-None-Match"] = cached_etag
+            request_specific_headers["If-None-Match"] = cached_etag
 
         base_url = f"{url}{FEATURES_URL}"
         base_params = {}
@@ -60,7 +63,7 @@ def get_feature_toggles(
             session.mount("http://", adapter)
             resp = session.get(
                 base_url,
-                headers={**custom_headers, **headers},
+                headers={**headers, **request_specific_headers},
                 params=base_params,
                 timeout=request_timeout,
                 **custom_options,

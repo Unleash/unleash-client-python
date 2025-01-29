@@ -22,7 +22,7 @@ def register_client(
     app_name: str,
     instance_id: str,
     metrics_interval: int,
-    custom_headers: dict,
+    headers: dict,
     custom_options: dict,
     supported_strategies: dict,
     request_timeout: int,
@@ -38,7 +38,7 @@ def register_client(
     :param app_name:
     :param instance_id:
     :param metrics_interval:
-    :param custom_headers:
+    :param headers:
     :param custom_options:
     :param supported_strategies:
     :param request_timeout:
@@ -64,7 +64,7 @@ def register_client(
         resp = requests.post(
             url + REGISTER_URL,
             data=json.dumps(registration_request),
-            headers={**custom_headers, **APPLICATION_HEADERS},
+            headers={**headers, **APPLICATION_HEADERS},
             timeout=request_timeout,
             **custom_options,
         )
