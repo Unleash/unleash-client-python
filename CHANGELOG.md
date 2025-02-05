@@ -1,4 +1,17 @@
-# v5.12.3
+## v6.1.0
+* (Minor) standardised client identification headers
+
+## v6.0.1
+* (Minor) Use PyPi Publish Github actions
+* (Bugfix) Fix permissions for doc publishing
+* (Bugfix) custom context properties are respected during evaluation
+
+## v6.0.0
+* (Major) swap core for yggdrasil 
+* (Documentation) v6 migration guide 
+* (Bugfix)  handle cases where the response from upstream is a bad
+
+## v5.12.3
 * (Bugfix) Current time context field will automatically populate with UTC aware time ([#324](https://github.com/Unleash/unleash-client-python/pull/324)). Thanks @jacob-indigo!
 
 ## v5.12.2
