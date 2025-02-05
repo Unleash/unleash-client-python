@@ -1043,14 +1043,14 @@ def test_identification_headers_sent_and_consistent(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
     unleash_client.initialize_client()
 
-    connection_id = responses.calls[0].request.headers["X-UNLEASH-CONNECTION-ID"]
-    app_name = responses.calls[0].request.headers["X-UNLEASH-APPNAME"]
-    sdk = responses.calls[0].request.headers["X-UNLEASH-SDK"]
+    connection_id = responses.calls[0].request.headers["UNLEASH-CONNECTION-ID"]
+    app_name = responses.calls[0].request.headers["UNLEASH-APPNAME"]
+    sdk = responses.calls[0].request.headers["UNLEASH-SDK"]
 
     for api_call in responses.calls:
-        assert api_call.request.headers["X-UNLEASH-CONNECTION-ID"] == connection_id
-        assert api_call.request.headers["X-UNLEASH-APPNAME"] == app_name
-        assert api_call.request.headers["X-UNLEASH-SDK"] == sdk
+        assert api_call.request.headers["UNLEASH-CONNECTION-ID"] == connection_id
+        assert api_call.request.headers["UNLEASH-APPNAME"] == app_name
+        assert api_call.request.headers["UNLEASH-SDK"] == sdk
 
 
 @responses.activate
@@ -1066,7 +1066,7 @@ def test_identification_headers_unique_connection_id():
     )
     unleash_client.initialize_client()
     connection_id_first_client = responses.calls[0].request.headers[
-        "X-UNLEASH-CONNECTION-ID"
+        "UNLEASH-CONNECTION-ID"
     ]
 
     other_unleash_client = UnleashClient(
@@ -1075,6 +1075,6 @@ def test_identification_headers_unique_connection_id():
     other_unleash_client.initialize_client()
 
     connection_id_second_client = responses.calls[1].request.headers[
-        "X-UNLEASH-CONNECTION-ID"
+        "UNLEASH-CONNECTION-ID"
     ]
     assert connection_id_first_client != connection_id_second_client
