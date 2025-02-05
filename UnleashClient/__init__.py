@@ -215,9 +215,9 @@ class UnleashClient:
             try:
                 headers = {
                     **self.unleash_custom_headers,
-                    "x-unleash-connection-id": str(uuid.uuid4()),
-                    "x-unleash-appname": self.unleash_app_name,
-                    "x-unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
+                    "unleash-connection-id": str(uuid.uuid4()),
+                    "unleash-appname": self.unleash_app_name,
+                    "unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
                 }
 
                 # Setup
