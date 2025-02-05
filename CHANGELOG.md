@@ -9,7 +9,7 @@
 ## v6.0.0
 * (Major) swap core for yggdrasil 
 * (Documentation) v6 migration guide 
-* (Bugfix)  handle cases where the response from upstream is a bad
+* (Bugfix) handle cases where the response from upstream is a bad
 
 ## v5.12.3
 * (Bugfix) Current time context field will automatically populate with UTC aware time ([#324](https://github.com/Unleash/unleash-client-python/pull/324)). Thanks @jacob-indigo!
