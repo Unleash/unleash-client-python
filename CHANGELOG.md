@@ -7,8 +7,8 @@
 * (Bugfix) custom context properties are respected during evaluation
 
 ## v6.0.0
-* (Major) swap core for yggdrasil 
-* (Documentation) v6 migration guide 
+* (Major) swap core for yggdrasil
+* (Documentation) v6 migration guide
 * (Bugfix) handle cases where the response from upstream is a bad
 
 ## v5.12.3
