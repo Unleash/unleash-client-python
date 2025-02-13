@@ -37,12 +37,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html
-      - name: Notify Slack of pipeline completion
-        uses: 8398a7/action-slack@v2
-        with:
-          status: ${{ job.status }}
-          author_name: Github Action
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_slack_token }}
-          SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
-        if: always()
