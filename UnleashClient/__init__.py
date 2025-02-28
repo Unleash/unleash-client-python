@@ -110,7 +110,7 @@ class UnleashClient:
         self.unleash_app_name = app_name
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
-        self.connection_id = str(uuid.uuid4())
+        self._connection_id = str(uuid.uuid4())
         self.unleash_refresh_interval = refresh_interval
         self.unleash_request_timeout = request_timeout
         self.unleash_request_retries = request_retries
@@ -187,6 +187,10 @@ class UnleashClient:
     @property
     def unleash_refresh_interval_str_millis(self) -> str:
         return str(self.unleash_refresh_interval * 1000)
+
+    @property
+    def connection_id(self):
+        return self._connection_id
 
     def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
