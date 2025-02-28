@@ -6,12 +6,13 @@ from requests import ConnectionError
 
 from tests.utilities.testing_constants import (
     APP_NAME,
+    CONNECTION_ID,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
     INSTANCE_ID,
     METRICS_INTERVAL,
     REQUEST_TIMEOUT,
-    URL, CONNECTION_ID,
+    URL,
 )
 from UnleashClient.api import register_client
 from UnleashClient.constants import CLIENT_SPEC_VERSION, REGISTER_URL

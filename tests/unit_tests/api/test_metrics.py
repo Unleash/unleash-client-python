@@ -43,4 +43,4 @@ def test_send_metrics(payload, status, expected):
     assert len(responses.calls) == 1
     assert expected(result)
 
-    assert request["connectionId"] == MOCK_METRICS_REQUEST.get('connectionId')
+    assert request["connectionId"] == MOCK_METRICS_REQUEST.get("connectionId")
