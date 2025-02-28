@@ -289,7 +289,6 @@ class UnleashClient:
                     executor=self.unleash_executor_name,
                     kwargs=job_args,
                 )
-
                 if not self.unleash_disable_metrics:
                     self.metric_job = self.unleash_scheduler.add_job(
                         aggregate_and_send_metrics,
