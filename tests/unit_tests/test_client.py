@@ -1,3 +1,4 @@
+import json
 import time
 import warnings
 from datetime import datetime, timezone
@@ -1044,13 +1045,11 @@ def test_identification_headers_sent_and_consistent(unleash_client):
     unleash_client.initialize_client()
 
     connection_id = responses.calls[0].request.headers["UNLEASH-CONNECTION-ID"]
-    # interval = responses.calls[0].request.headers["UNLEASH-INTERVAL"]
     app_name = responses.calls[0].request.headers["UNLEASH-APPNAME"]
     sdk = responses.calls[0].request.headers["UNLEASH-SDK"]
 
     for api_call in responses.calls:
         assert api_call.request.headers["UNLEASH-CONNECTION-ID"] == connection_id
-        # assert api_call.request.headers["UNLEASH-INTERVAL"] == interval
         assert api_call.request.headers["UNLEASH-APPNAME"] == app_name
         assert api_call.request.headers["UNLEASH-SDK"] == sdk
 
@@ -1080,3 +1079,37 @@ def test_identification_headers_unique_connection_id():
         "UNLEASH-CONNECTION-ID"
     ]
     assert connection_id_first_client != connection_id_second_client
+
+@responses.activate
+def test_identification_values_are_passed_in():
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+
+    input_interval = 1
+    unleash_client = UnleashClient(
+        URL, APP_NAME, refresh_interval=input_interval, metrics_interval=1
+    )
+    expected_connection_id = unleash_client.connection_id
+    expected_interval = str(input_interval * 1000)
+
+    unleash_client.initialize_client()
+    register_request = responses.calls[0].request
+    reqister_body = json.loads(register_request.body)
+
+    assert register_request.headers[ "UNLEASH-CONNECTION-ID"] == expected_connection_id
+    assert reqister_body['connectionId'] == expected_connection_id
+
+    features_request = responses.calls[1].request
+
+    assert features_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
+    assert features_request.headers["UNLEASH-INTERVAL-ID"] == expected_interval
+
+    time.sleep(2)
+    metrics_request = responses.calls[2].request
+
+    assert metrics_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
+    assert metrics_request.headers["UNLEASH-INTERVAL-ID"] == expected_interval
+

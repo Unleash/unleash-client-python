@@ -231,7 +231,6 @@ class UnleashClient:
                     "url": self.unleash_url,
                     "app_name": self.unleash_app_name,
                     "connection_id": self.connection_id,
-                    "interval": self.unleash_refresh_interval,
                     "instance_id": self.unleash_instance_id,
                     "headers": headers,
                     "custom_options": self.unleash_custom_options,
