@@ -11,7 +11,7 @@ from tests.utilities.testing_constants import (
     INSTANCE_ID,
     METRICS_INTERVAL,
     REQUEST_TIMEOUT,
-    URL,
+    URL, CONNECTION_ID,
 )
 from UnleashClient.api import register_client
 from UnleashClient.constants import CLIENT_SPEC_VERSION, REGISTER_URL
@@ -40,6 +40,7 @@ def test_register_client(payload, status, expected):
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
@@ -59,6 +60,7 @@ def test_register_includes_metadata():
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
@@ -71,5 +73,6 @@ def test_register_includes_metadata():
 
     assert request["yggdrasilVersion"] is not None
     assert request["specVersion"] == CLIENT_SPEC_VERSION
+    assert request["connectionId"] == CONNECTION_ID
     assert request["platformName"] is not None
     assert request["platformVersion"] is not None

@@ -1044,11 +1044,13 @@ def test_identification_headers_sent_and_consistent(unleash_client):
     unleash_client.initialize_client()
 
     connection_id = responses.calls[0].request.headers["UNLEASH-CONNECTION-ID"]
+    # interval = responses.calls[0].request.headers["UNLEASH-INTERVAL"]
     app_name = responses.calls[0].request.headers["UNLEASH-APPNAME"]
     sdk = responses.calls[0].request.headers["UNLEASH-SDK"]
 
     for api_call in responses.calls:
         assert api_call.request.headers["UNLEASH-CONNECTION-ID"] == connection_id
+        # assert api_call.request.headers["UNLEASH-INTERVAL"] == interval
         assert api_call.request.headers["UNLEASH-APPNAME"] == app_name
         assert api_call.request.headers["UNLEASH-SDK"] == sdk
 

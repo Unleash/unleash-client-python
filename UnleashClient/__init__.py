@@ -184,6 +184,10 @@ class UnleashClient:
                 engine=self.engine,
             )
 
+    @property
+    def unleash_refresh_interval_str_millis(self) -> str:
+        return str(self.unleash_refresh_interval * 1000)
+
     def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
         Initializes client and starts communication with central unleash server(s).
@@ -217,7 +221,7 @@ class UnleashClient:
                 headers = {
                     **self.unleash_custom_headers,
                     "unleash-connection-id": self.connection_id,
-                    "unleash-interval-id": self.unleash_refresh_interval,
+                    "unleash-interval-id": self.unleash_refresh_interval_str_millis,
                     "unleash-appname": self.unleash_app_name,
                     "unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
                 }
@@ -227,6 +231,7 @@ class UnleashClient:
                     "url": self.unleash_url,
                     "app_name": self.unleash_app_name,
                     "connection_id": self.connection_id,
+                    "interval": self.unleash_refresh_interval,
                     "instance_id": self.unleash_instance_id,
                     "headers": headers,
                     "custom_options": self.unleash_custom_options,
@@ -240,6 +245,7 @@ class UnleashClient:
                         self.unleash_url,
                         self.unleash_app_name,
                         self.unleash_instance_id,
+                        self.connection_id,
                         self.unleash_metrics_interval,
                         headers,
                         self.unleash_custom_options,

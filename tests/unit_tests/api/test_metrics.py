@@ -1,3 +1,5 @@
+import json
+
 import responses
 from pytest import mark, param
 from requests import ConnectionError
@@ -36,5 +38,9 @@ def test_send_metrics(payload, status, expected):
         URL, MOCK_METRICS_REQUEST, CUSTOM_HEADERS, CUSTOM_OPTIONS, REQUEST_TIMEOUT
     )
 
+    request = json.loads(responses.calls[0].request.body)
+
     assert len(responses.calls) == 1
     assert expected(result)
+
+    assert request["connectionId"] == MOCK_METRICS_REQUEST.get('connectionId')
