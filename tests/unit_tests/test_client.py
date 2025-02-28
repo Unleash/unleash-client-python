@@ -1080,6 +1080,7 @@ def test_identification_headers_unique_connection_id():
     ]
     assert connection_id_first_client != connection_id_second_client
 
+
 @responses.activate
 def test_identification_values_are_passed_in():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
@@ -1099,8 +1100,8 @@ def test_identification_values_are_passed_in():
     register_request = responses.calls[0].request
     reqister_body = json.loads(register_request.body)
 
-    assert register_request.headers[ "UNLEASH-CONNECTION-ID"] == expected_connection_id
-    assert reqister_body['connectionId'] == expected_connection_id
+    assert register_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
+    assert reqister_body["connectionId"] == expected_connection_id
 
     features_request = responses.calls[1].request
 
@@ -1112,4 +1113,3 @@ def test_identification_values_are_passed_in():
 
     assert metrics_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
     assert metrics_request.headers["UNLEASH-INTERVAL-ID"] == expected_interval
-
