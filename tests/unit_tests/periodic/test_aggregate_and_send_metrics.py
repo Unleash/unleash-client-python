@@ -5,11 +5,12 @@ from yggdrasil_engine.engine import UnleashEngine
 
 from tests.utilities.testing_constants import (
     APP_NAME,
+    CONNECTION_ID,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
     INSTANCE_ID,
     REQUEST_TIMEOUT,
-    URL, CONNECTION_ID,
+    URL,
 )
 from UnleashClient.constants import (
     CLIENT_SPEC_VERSION,
