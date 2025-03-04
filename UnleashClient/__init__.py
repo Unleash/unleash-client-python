@@ -5,7 +5,6 @@ import uuid
 import warnings
 from dataclasses import asdict
 from datetime import datetime, timezone
-from sys import base_prefix
 from typing import Any, Callable, Dict, Optional
 
 from apscheduler.executors.pool import ThreadPoolExecutor
