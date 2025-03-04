@@ -5,6 +5,7 @@ import uuid
 import warnings
 from dataclasses import asdict
 from datetime import datetime, timezone
+from sys import base_prefix
 from typing import Any, Callable, Dict, Optional
 
 from apscheduler.executors.pool import ThreadPoolExecutor
@@ -189,6 +190,10 @@ class UnleashClient:
         return str(self.unleash_refresh_interval * 1000)
 
     @property
+    def unleash_metrics_interval_str_millis(self) -> str:
+        return str(self.unleash_metrics_interval * 1000)
+
+    @property
     def connection_id(self):
         return self._connection_id
 
@@ -222,12 +227,16 @@ class UnleashClient:
         if not self.is_initialized:
             # pylint: disable=no-else-raise
             try:
-                headers = {
+                base_headers = {
                     **self.unleash_custom_headers,
                     "unleash-connection-id": self.connection_id,
-                    "unleash-interval-id": self.unleash_refresh_interval_str_millis,
                     "unleash-appname": self.unleash_app_name,
                     "unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
+                }
+
+                metrics_headers = {
+                    **base_headers,
+                    "unleash-interval": self.unleash_metrics_interval_str_millis,
                 }
 
                 # Setup
@@ -236,7 +245,7 @@ class UnleashClient:
                     "app_name": self.unleash_app_name,
                     "connection_id": self.connection_id,
                     "instance_id": self.unleash_instance_id,
-                    "headers": headers,
+                    "headers": metrics_headers,
                     "custom_options": self.unleash_custom_options,
                     "request_timeout": self.unleash_request_timeout,
                     "engine": self.engine,
@@ -250,18 +259,23 @@ class UnleashClient:
                         self.unleash_instance_id,
                         self.connection_id,
                         self.unleash_metrics_interval,
-                        headers,
+                        base_headers,
                         self.unleash_custom_options,
                         self.strategy_mapping,
                         self.unleash_request_timeout,
                     )
 
                 if fetch_toggles:
+                    fetch_headers = {
+                        **base_headers,
+                        "unleash-interval": self.unleash_refresh_interval_str_millis,
+                    }
+
                     job_args = {
                         "url": self.unleash_url,
                         "app_name": self.unleash_app_name,
                         "instance_id": self.unleash_instance_id,
-                        "headers": headers,
+                        "headers": fetch_headers,
                         "custom_options": self.unleash_custom_options,
                         "cache": self.cache,
                         "engine": self.engine,
