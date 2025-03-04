@@ -1092,7 +1092,10 @@ def test_identification_values_are_passed_in():
     refresh_interval = 1
     metrics_interval = 2
     unleash_client = UnleashClient(
-        URL, APP_NAME, refresh_interval=refresh_interval, metrics_interval=metrics_interval
+        URL,
+        APP_NAME,
+        refresh_interval=refresh_interval,
+        metrics_interval=metrics_interval,
     )
     expected_connection_id = unleash_client.connection_id
     expected_refresh_interval = str(refresh_interval * 1000)
@@ -1102,8 +1105,8 @@ def test_identification_values_are_passed_in():
     register_request = responses.calls[0].request
     register_body = json.loads(register_request.body)
 
-    assert register_request.headers[ "UNLEASH-CONNECTION-ID"] == expected_connection_id
-    assert register_body['connectionId'] == expected_connection_id
+    assert register_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
+    assert register_body["connectionId"] == expected_connection_id
 
     unleash_client.is_enabled("registerMetricsFlag")
 
@@ -1113,11 +1116,11 @@ def test_identification_values_are_passed_in():
     assert features_request.headers["UNLEASH-INTERVAL"] == expected_refresh_interval
 
     time.sleep(3)
-    metrics_request = [call for call in responses.calls if METRICS_URL in call.request.url][0].request
+    metrics_request = [
+        call for call in responses.calls if METRICS_URL in call.request.url
+    ][0].request
     metrics_body = json.loads(metrics_request.body)
-
 
     assert metrics_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
     assert metrics_request.headers["UNLEASH-INTERVAL"] == expected_metrics_interval
-    assert metrics_body['connectionId'] == expected_connection_id
-
+    assert metrics_body["connectionId"] == expected_connection_id
