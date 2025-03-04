@@ -1112,12 +1112,13 @@ def test_identification_values_are_passed_in():
     except ValueError:
         assert False, "Invalid UUID format in connectionId"
 
-    assert "UNLEASH-CONNECTION-ID" in register_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+    assert (
+        "UNLEASH-CONNECTION-ID" in register_request.headers
+    ), "Header missing: UNLEASH-CONNECTION-ID"
     try:
         uuid.UUID(register_request.headers["UNLEASH-CONNECTION-ID"])
     except ValueError:
         assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
-
 
     unleash_client.is_enabled("registerMetricsFlag")
 
@@ -1125,7 +1126,9 @@ def test_identification_values_are_passed_in():
 
     assert features_request.headers["UNLEASH-INTERVAL"] == expected_refresh_interval
 
-    assert "UNLEASH-CONNECTION-ID" in features_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+    assert (
+        "UNLEASH-CONNECTION-ID" in features_request.headers
+    ), "Header missing: UNLEASH-CONNECTION-ID"
 
     try:
         uuid.UUID(features_request.headers["UNLEASH-CONNECTION-ID"])
@@ -1146,7 +1149,9 @@ def test_identification_values_are_passed_in():
     except ValueError:
         assert False, "Invalid UUID format in connectionId"
 
-    assert "UNLEASH-CONNECTION-ID" in metrics_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+    assert (
+        "UNLEASH-CONNECTION-ID" in metrics_request.headers
+    ), "Header missing: UNLEASH-CONNECTION-ID"
     try:
         uuid.UUID(metrics_request.headers["UNLEASH-CONNECTION-ID"])
     except ValueError:
