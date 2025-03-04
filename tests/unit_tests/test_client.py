@@ -1099,8 +1099,6 @@ def test_identification_values_are_passed_in():
         metrics_interval=metrics_interval,
     )
 
-
-    expected_connection_id = unleash_client.connection_id
     expected_refresh_interval = str(refresh_interval * 1000)
     expected_metrics_interval = str(metrics_interval * 1000)
 
