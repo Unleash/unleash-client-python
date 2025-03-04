@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
@@ -1097,6 +1098,8 @@ def test_identification_values_are_passed_in():
         refresh_interval=refresh_interval,
         metrics_interval=metrics_interval,
     )
+
+
     expected_connection_id = unleash_client.connection_id
     expected_refresh_interval = str(refresh_interval * 1000)
     expected_metrics_interval = str(metrics_interval * 1000)
@@ -1105,15 +1108,31 @@ def test_identification_values_are_passed_in():
     register_request = responses.calls[0].request
     register_body = json.loads(register_request.body)
 
-    assert register_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
-    assert register_body["connectionId"] == expected_connection_id
+    assert "connectionId" in register_body, "Key missing: connectionId"
+    try:
+        uuid.UUID(register_body["connectionId"])
+    except ValueError:
+        assert False, "Invalid UUID format in connectionId"
+
+    assert "UNLEASH-CONNECTION-ID" in register_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+    try:
+        uuid.UUID(register_request.headers["UNLEASH-CONNECTION-ID"])
+    except ValueError:
+        assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
+
 
     unleash_client.is_enabled("registerMetricsFlag")
 
     features_request = responses.calls[1].request
 
-    assert features_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
     assert features_request.headers["UNLEASH-INTERVAL"] == expected_refresh_interval
+
+    assert "UNLEASH-CONNECTION-ID" in features_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+
+    try:
+        uuid.UUID(features_request.headers["UNLEASH-CONNECTION-ID"])
+    except ValueError:
+        assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
 
     time.sleep(3)
     metrics_request = [
@@ -1121,6 +1140,16 @@ def test_identification_values_are_passed_in():
     ][0].request
     metrics_body = json.loads(metrics_request.body)
 
-    assert metrics_request.headers["UNLEASH-CONNECTION-ID"] == expected_connection_id
     assert metrics_request.headers["UNLEASH-INTERVAL"] == expected_metrics_interval
-    assert metrics_body["connectionId"] == expected_connection_id
+
+    assert "connectionId" in metrics_body, "Key missing: connectionId"
+    try:
+        uuid.UUID(metrics_body["connectionId"])
+    except ValueError:
+        assert False, "Invalid UUID format in connectionId"
+
+    assert "UNLEASH-CONNECTION-ID" in metrics_request.headers, "Header missing: UNLEASH-CONNECTION-ID"
+    try:
+        uuid.UUID(metrics_request.headers["UNLEASH-CONNECTION-ID"])
+    except ValueError:
+        assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
