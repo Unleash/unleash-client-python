@@ -1,3 +1,6 @@
+## v6.2.0
+* (Minor) add unleash interval headers and connection id to payloads
+  
 ## v6.1.0
 * (Minor) standardised client identification headers
 
