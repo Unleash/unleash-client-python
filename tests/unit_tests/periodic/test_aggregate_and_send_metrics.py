@@ -5,6 +5,7 @@ from yggdrasil_engine.engine import UnleashEngine
 
 from tests.utilities.testing_constants import (
     APP_NAME,
+    CONNECTION_ID,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
     INSTANCE_ID,
@@ -31,6 +32,7 @@ def test_no_metrics():
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         REQUEST_TIMEOUT,
@@ -51,6 +53,7 @@ def test_metrics_metadata_is_sent():
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
         REQUEST_TIMEOUT,

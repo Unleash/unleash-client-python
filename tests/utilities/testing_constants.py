@@ -4,6 +4,7 @@ from UnleashClient.constants import FEATURES_URL
 APP_NAME = "pytest"
 ENVIRONMENT = "unit"
 INSTANCE_ID = "123"
+CONNECTION_ID = "test-connection-id"
 REFRESH_INTERVAL = 3
 REFRESH_JITTER = None
 METRICS_INTERVAL = 2

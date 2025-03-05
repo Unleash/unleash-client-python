@@ -6,6 +6,7 @@ from requests import ConnectionError
 
 from tests.utilities.testing_constants import (
     APP_NAME,
+    CONNECTION_ID,
     CUSTOM_HEADERS,
     CUSTOM_OPTIONS,
     INSTANCE_ID,
@@ -40,6 +41,7 @@ def test_register_client(payload, status, expected):
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
@@ -59,6 +61,7 @@ def test_register_includes_metadata():
         URL,
         APP_NAME,
         INSTANCE_ID,
+        CONNECTION_ID,
         METRICS_INTERVAL,
         CUSTOM_HEADERS,
         CUSTOM_OPTIONS,
@@ -71,5 +74,6 @@ def test_register_includes_metadata():
 
     assert request["yggdrasilVersion"] is not None
     assert request["specVersion"] == CLIENT_SPEC_VERSION
+    assert request["connectionId"] == CONNECTION_ID
     assert request["platformName"] is not None
     assert request["platformVersion"] is not None

@@ -1,6 +1,7 @@
 MOCK_METRICS_REQUEST = {
     "appName": "appName",
     "instanceId": "instanceId",
+    "connectionId": "connectionId",
     "bucket": {
         "start": "2016-11-03T07:16:43.572Z",
         "stop": "2016-11-03T07:16:53.572Z",

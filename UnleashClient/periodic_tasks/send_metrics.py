@@ -12,6 +12,7 @@ def aggregate_and_send_metrics(
     url: str,
     app_name: str,
     instance_id: str,
+    connection_id: str,
     headers: dict,
     custom_options: dict,
     request_timeout: int,
@@ -22,6 +23,7 @@ def aggregate_and_send_metrics(
     metrics_request = {
         "appName": app_name,
         "instanceId": instance_id,
+        "connectionId": connection_id,
         "bucket": metrics_bucket,
         "platformName": python_implementation(),
         "platformVersion": python_version(),

@@ -110,6 +110,7 @@ class UnleashClient:
         self.unleash_app_name = app_name
         self.unleash_environment = environment
         self.unleash_instance_id = instance_id
+        self._connection_id = str(uuid.uuid4())
         self.unleash_refresh_interval = refresh_interval
         self.unleash_request_timeout = request_timeout
         self.unleash_request_retries = request_retries
@@ -183,6 +184,18 @@ class UnleashClient:
                 engine=self.engine,
             )
 
+    @property
+    def unleash_refresh_interval_str_millis(self) -> str:
+        return str(self.unleash_refresh_interval * 1000)
+
+    @property
+    def unleash_metrics_interval_str_millis(self) -> str:
+        return str(self.unleash_metrics_interval * 1000)
+
+    @property
+    def connection_id(self):
+        return self._connection_id
+
     def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
         Initializes client and starts communication with central unleash server(s).
@@ -213,19 +226,25 @@ class UnleashClient:
         if not self.is_initialized:
             # pylint: disable=no-else-raise
             try:
-                headers = {
+                base_headers = {
                     **self.unleash_custom_headers,
-                    "unleash-connection-id": str(uuid.uuid4()),
+                    "unleash-connection-id": self.connection_id,
                     "unleash-appname": self.unleash_app_name,
                     "unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
+                }
+
+                metrics_headers = {
+                    **base_headers,
+                    "unleash-interval": self.unleash_metrics_interval_str_millis,
                 }
 
                 # Setup
                 metrics_args = {
                     "url": self.unleash_url,
                     "app_name": self.unleash_app_name,
+                    "connection_id": self.connection_id,
                     "instance_id": self.unleash_instance_id,
-                    "headers": headers,
+                    "headers": metrics_headers,
                     "custom_options": self.unleash_custom_options,
                     "request_timeout": self.unleash_request_timeout,
                     "engine": self.engine,
@@ -237,19 +256,25 @@ class UnleashClient:
                         self.unleash_url,
                         self.unleash_app_name,
                         self.unleash_instance_id,
+                        self.connection_id,
                         self.unleash_metrics_interval,
-                        headers,
+                        base_headers,
                         self.unleash_custom_options,
                         self.strategy_mapping,
                         self.unleash_request_timeout,
                     )
 
                 if fetch_toggles:
+                    fetch_headers = {
+                        **base_headers,
+                        "unleash-interval": self.unleash_refresh_interval_str_millis,
+                    }
+
                     job_args = {
                         "url": self.unleash_url,
                         "app_name": self.unleash_app_name,
                         "instance_id": self.unleash_instance_id,
-                        "headers": headers,
+                        "headers": fetch_headers,
                         "custom_options": self.unleash_custom_options,
                         "cache": self.cache,
                         "engine": self.engine,
@@ -277,7 +302,6 @@ class UnleashClient:
                     executor=self.unleash_executor_name,
                     kwargs=job_args,
                 )
-
                 if not self.unleash_disable_metrics:
                     self.metric_job = self.unleash_scheduler.add_job(
                         aggregate_and_send_metrics,

@@ -21,6 +21,7 @@ def register_client(
     url: str,
     app_name: str,
     instance_id: str,
+    connection_id: str,
     metrics_interval: int,
     headers: dict,
     custom_options: dict,
@@ -47,6 +48,7 @@ def register_client(
     registration_request = {
         "appName": app_name,
         "instanceId": instance_id,
+        "connectionId": connection_id,
         "sdkVersion": f"{SDK_NAME}:{SDK_VERSION}",
         "strategies": [*supported_strategies],
         "started": datetime.now(timezone.utc).isoformat(),
