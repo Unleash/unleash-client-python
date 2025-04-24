@@ -21,11 +21,10 @@ def test_loader_initialization(cache_full):  # noqa: F811
         in_memory_features["GradualRolloutUserID"].strategies[0], GradualRolloutUserId
     )
 
-    for feature_name in in_memory_features.keys():
+    for feature_name, feature in in_memory_features.items():
         if feature_name == "Garbage":  # Don't check purposely invalid strategy.
             break
 
-        feature = in_memory_features[feature_name]
         assert len(feature.strategies) > 0
         strategy = feature.strategies[0]
 
