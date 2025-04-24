@@ -23,6 +23,7 @@ pytest-xdist
 responses
 ruff
 tox
+pytz
 
 # - Testing ()
 blinker

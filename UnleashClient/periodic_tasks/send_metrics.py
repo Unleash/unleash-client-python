@@ -13,15 +13,15 @@ def aggregate_metrics(
 ) -> dict:
     feature_stats_list = []
 
-    for feature_name in features.keys():
-        if not (features[feature_name].yes_count or features[feature_name].no_count):
+    for feature in features.values():
+        if not (feature.yes_count or feature.no_count):
             continue
 
         feature_stats = {
-            features[feature_name].name: {
-                "yes": features[feature_name].yes_count,
-                "no": features[feature_name].no_count,
-                "variants": features[feature_name].variant_counts,
+            feature.name: {
+                "yes": feature.yes_count,
+                "no": feature.no_count,
+                "variants": feature.variant_counts,
             }
         }
 
@@ -42,8 +42,8 @@ def aggregate_and_send_metrics(
 ) -> None:
     feature_stats_dict = aggregate_metrics(features)
 
-    for feature_name in features.keys():
-        features[feature_name].reset_stats()
+    for feature in features.values():
+        feature.reset_stats()
 
     metrics_request = {
         "appName": app_name,

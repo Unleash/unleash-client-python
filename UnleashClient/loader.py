@@ -132,7 +132,7 @@ def load_features(
             del feature_toggles[feature]
 
     # Update existing objects
-    for feature in feature_toggles.keys():
+    for feature in list(feature_toggles.keys()):
         feature_for_update = feature_toggles[feature]
         strategies = parsed_features[feature]["strategies"]
 
