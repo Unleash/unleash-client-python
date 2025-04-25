@@ -7,6 +7,10 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    environment: pypi
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
@@ -19,9 +23,10 @@ jobs:
       - name: Build package
         run: |
           make build
+      - name: Publish package to Pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
         env:
-          TWINE_USERNAME: ${{ secrets.pypi_username }}
-          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          repository-url: https://pypi.org/project/UnleashClient/
       - name: Build docs
         run: |
           make install-docs
@@ -31,13 +36,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
-      - name: Notify Slack of pipeline completion
-        uses: 8398a7/action-slack@v2
-        with:
-          status: ${{ job.status }}
-          author_name: Github Action
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_slack_token }}
-          SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook }}
-        if: always()
+          publish_dir: ./docs/_build/htmlg
