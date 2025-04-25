@@ -46,6 +46,7 @@ def send_metrics(
 
         LOGGER.info("Unleash Client metrics successfully sent!")
 
+
         return True
     except requests.RequestException as exc:
         LOGGER.warning(
