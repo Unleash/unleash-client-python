@@ -6,18 +6,18 @@ import niquests as requests
 import yggdrasil_engine
 from requests.exceptions import InvalidHeader, InvalidSchema, InvalidURL, MissingSchema
 
-from ..constants import (
+from ...constants import (
     APPLICATION_HEADERS,
     CLIENT_SPEC_VERSION,
     REGISTER_URL,
     SDK_NAME,
     SDK_VERSION,
 )
-from ..utils import LOGGER, log_resp_info
+from ...utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
-def register_client(
+async def async_register_client(
     url: str,
     app_name: str,
     instance_id: str,
@@ -63,7 +63,7 @@ def register_client(
         LOGGER.info("Registering unleash client with unleash @ %s", url)
         LOGGER.info("Registration request information: %s", registration_request)
 
-        resp = requests.post(
+        resp = await requests.apost(
             url + REGISTER_URL,
             data=json.dumps(registration_request),
             headers={**headers, **APPLICATION_HEADERS},

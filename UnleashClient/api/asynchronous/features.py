@@ -2,12 +2,12 @@ from typing import Optional, Tuple
 
 import niquests as requests
 
-from ..constants import FEATURES_URL
-from ..utils import LOGGER, log_resp_info
+from ...constants import FEATURES_URL
+from ...utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
-def get_feature_toggles(
+async def async_get_feature_toggles(
     url: str,
     app_name: str,
     instance_id: str,
@@ -53,12 +53,12 @@ def get_feature_toggles(
         if project:
             base_params = {"project": project}
 
-        with requests.Session(
+        async with requests.AsyncSession(
             retries=requests.RetryConfiguration(
                 total=request_retries, status_forcelist=[500, 502, 504]
             )
         ) as session:
-            resp = session.get(
+            resp = await session.get(
                 base_url,
                 headers={**headers, **request_specific_headers},
                 params=base_params,
@@ -77,7 +77,7 @@ def get_feature_toggles(
 
         etag = ""
         if "etag" in resp.headers.keys():
-            etag = resp.headers["etag"]  # type: ignore[assignment]
+            etag = resp.headers["etag"]
 
         if resp.status_code == 304:
             return None, etag

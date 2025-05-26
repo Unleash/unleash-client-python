@@ -19,3 +19,21 @@ FileCache
 	.. automethod:: exists
 
 	.. automethod:: destroy
+
+.. autoclass:: UnleashClient.asynchronous.cache.AsyncFileCache
+
+	.. automethod:: bootstrap_from_dict
+
+	.. automethod:: bootstrap_from_file
+
+	.. automethod:: bootstrap_from_url
+
+	.. automethod:: set
+
+	.. automethod:: mset
+
+	.. automethod:: get
+
+	.. automethod:: exists
+
+	.. automethod:: destroy

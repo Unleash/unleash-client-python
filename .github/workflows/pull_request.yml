@@ -5,6 +5,10 @@ on:
   pull_request:
 
 
+concurrency:
+  cancel-in-progress: true
+  group: CI
+
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -30,15 +34,23 @@ jobs:
           coveralls --service=github
 
   tox:
+    timeout-minutes: 10
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        exclude:
+          # a bug exist with apscheduler under
+          # CPython 3.8 on Windows (Proactor Loop)
+          # the destroy method hang indefinitely
+          # due to an unclear edge case.
+          - os: windows-latest
+            python: "3.8"
     steps:
       - uses: actions/checkout@v4
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Install Tox and any other packages

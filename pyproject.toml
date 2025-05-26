@@ -24,8 +24,9 @@ classifiers=[
 ]
 
 dependencies=[
-    "requests",
-    "fcache",
+    "niquests>=3.14.0,<4.0.0",
+    "aiofile>=3.0.0,<4.0.0",
+    "filelock>=3.0.0,<4.0.0",
     "mmh3",
     "apscheduler < 4.0.0",
     "importlib_metadata",

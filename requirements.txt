@@ -1,10 +1,9 @@
 # App packages
 APScheduler
-fcache
 importlib_metadata
 mmhash3
 python-dateutil
-requests
+niquests
 semver
 yggdrasil-engine
 
@@ -21,6 +20,7 @@ pytest-cov
 pytest-html==4.0.0rc4
 pytest-mock
 pytest-xdist
+pytest-asyncio
 responses
 ruff
 tox
@@ -32,6 +32,3 @@ blinker
 build
 setuptools_scm
 twine
-
-# - Typing
-types-requests

@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name
 import random
 import string
 import uuid
@@ -7,16 +6,14 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from typing import Any, Callable, Dict, Optional
 
-from apscheduler.executors.pool import ThreadPoolExecutor
+from apscheduler.executors.asyncio import AsyncIOExecutor
 from apscheduler.job import Job
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.schedulers.base import BaseScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from yggdrasil_engine.engine import UnleashEngine
 
-from .api import register_client
-from .cache import BaseCache, FileCache
-from .constants import (
+from ..api.asynchronous import async_register_client
+from ..constants import (
     DISABLED_VARIATION,
     ETAG,
     METRIC_LAST_SENT_TIME,
@@ -25,13 +22,14 @@ from .constants import (
     SDK_NAME,
     SDK_VERSION,
 )
-from .events import UnleashEvent, UnleashEventType
-from .loader import load_features
-from .periodic_tasks import (
-    aggregate_and_send_metrics,
-    fetch_and_load_features,
+from ..events import UnleashEvent, UnleashEventType
+from ..periodic_tasks.asynchronous import (
+    async_aggregate_and_send_metrics,
+    async_fetch_and_load_features,
 )
-from .utils import LOGGER, InstanceAllowType, InstanceCounter
+from ..utils import LOGGER, InstanceAllowType, InstanceCounter
+from .cache import AsyncBaseCache, AsyncFileCache
+from .loader import async_load_features
 
 INSTANCES = InstanceCounter()
 _BASE_CONTEXT_FIELDS = [
@@ -46,7 +44,7 @@ _BASE_CONTEXT_FIELDS = [
 
 
 # pylint: disable=dangerous-default-value
-class UnleashClient:
+class AsyncUnleashClient:
     """
     A client for the Unleash feature toggle system.
 
@@ -94,8 +92,8 @@ class UnleashClient:
         cache_directory: Optional[str] = None,
         project_name: Optional[str] = None,
         verbose_log_level: int = 30,
-        cache: Optional[BaseCache] = None,
-        scheduler: Optional[BaseScheduler] = None,
+        cache: Optional[AsyncBaseCache] = None,
+        scheduler: Optional[AsyncIOScheduler] = None,
         scheduler_executor: Optional[str] = None,
         multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
         event_callback: Optional[Callable[[UnleashEvent], None]] = None,
@@ -139,11 +137,13 @@ class UnleashClient:
         self.metric_job: Job = None
         self.engine = UnleashEngine()
 
-        self.cache = cache or FileCache(
+        self.cache = cache or AsyncFileCache(
             self.unleash_app_name, directory=cache_directory
         )
-        self.cache.mset({METRIC_LAST_SENT_TIME: datetime.now(timezone.utc), ETAG: ""})
         self.unleash_bootstrapped = self.cache.bootstrapped
+
+        if self.unleash_bootstrapped:
+            self.engine.take_state(self.cache.bootstrap_data)
 
         # Scheduler bootstrapping
         # - Figure out the Unleash executor name.
@@ -165,8 +165,8 @@ class UnleashClient:
         if scheduler:
             self.unleash_scheduler = scheduler
         else:
-            executors = {self.unleash_executor_name: ThreadPoolExecutor()}
-            self.unleash_scheduler = BackgroundScheduler(executors=executors)
+            executors = {self.unleash_executor_name: AsyncIOExecutor()}
+            self.unleash_scheduler = AsyncIOScheduler(executors=executors)
 
         if custom_strategies:
             self.engine.register_custom_strategies(custom_strategies)
@@ -175,13 +175,6 @@ class UnleashClient:
 
         # Client status
         self.is_initialized = False
-
-        # Bootstrapping
-        if self.unleash_bootstrapped:
-            load_features(
-                cache=self.cache,
-                engine=self.engine,
-            )
 
     @property
     def unleash_refresh_interval_str_millis(self) -> str:
@@ -195,7 +188,7 @@ class UnleashClient:
     def connection_id(self):
         return self._connection_id
 
-    def initialize_client(self, fetch_toggles: bool = True) -> None:
+    async def initialize_client(self, fetch_toggles: bool = True) -> None:
         """
         Initializes client and starts communication with central unleash server(s).
 
@@ -214,7 +207,7 @@ class UnleashClient:
 
         .. code-block:: python
 
-            with UnleashClient(
+            async with UnleashClient(
                 url="https://foo.bar",
                 app_name="myClient1",
                 instance_id="myinstanceid"
@@ -223,6 +216,15 @@ class UnleashClient:
         """
         # Only perform initialization steps if client is not initialized.
         if not self.is_initialized:
+
+            await self.cache.mset(
+                {METRIC_LAST_SENT_TIME: datetime.now(timezone.utc), ETAG: ""}
+            )
+
+            # Bootstrapping
+            if self.unleash_bootstrapped:
+                await async_load_features(cache=self.cache, engine=self.engine)
+
             # pylint: disable=no-else-raise
             try:
                 base_headers = {
@@ -251,7 +253,7 @@ class UnleashClient:
 
                 # Register app
                 if not self.unleash_disable_registration:
-                    register_client(
+                    await async_register_client(
                         self.unleash_url,
                         self.unleash_app_name,
                         self.unleash_instance_id,
@@ -281,15 +283,16 @@ class UnleashClient:
                         "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
                     }
-                    job_func: Callable = fetch_and_load_features
+                    job_func: Callable = async_fetch_and_load_features
                 else:
                     job_args = {
                         "cache": self.cache,
                         "engine": self.engine,
                     }
-                    job_func = load_features
+                    job_func = async_load_features
 
-                job_func(**job_args)  # type: ignore
+                await job_func(**job_args)  # type: ignore
+
                 # Start periodic jobs
                 self.unleash_scheduler.start()
                 self.fl_job = self.unleash_scheduler.add_job(
@@ -303,7 +306,7 @@ class UnleashClient:
                 )
                 if not self.unleash_disable_metrics:
                     self.metric_job = self.unleash_scheduler.add_job(
-                        aggregate_and_send_metrics,
+                        async_aggregate_and_send_metrics,
                         trigger=IntervalTrigger(
                             seconds=int(self.unleash_metrics_interval),
                             jitter=self.unleash_metrics_jitter,
@@ -353,7 +356,8 @@ class UnleashClient:
 
         You shouldn't need this too much!
         """
-        self.fl_job.remove()
+        if self.fl_job:
+            self.fl_job.remove()
         if self.metric_job:
             self.metric_job.remove()
         self.unleash_scheduler.shutdown()
@@ -535,10 +539,10 @@ class UnleashClient:
         )
         return f"apiKey:{api_key} appName:{self.unleash_app_name} instanceId:{self.unleash_instance_id}"
 
-    def __enter__(self) -> "UnleashClient":
-        self.initialize_client()
+    async def __aenter__(self) -> "AsyncUnleashClient":
+        await self.initialize_client()
         return self
 
-    def __exit__(self, *args, **kwargs):
+    async def __aexit__(self, *args, **kwargs):
         self.destroy()
         return False

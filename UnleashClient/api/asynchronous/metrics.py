@@ -2,12 +2,12 @@ import json
 
 import niquests as requests
 
-from ..constants import APPLICATION_HEADERS, METRICS_URL
-from ..utils import LOGGER, log_resp_info
+from ...constants import APPLICATION_HEADERS, METRICS_URL
+from ...utils import LOGGER, log_resp_info
 
 
 # pylint: disable=broad-except
-def send_metrics(
+async def async_send_metrics(
     url: str,
     request_body: dict,
     headers: dict,
@@ -31,7 +31,7 @@ def send_metrics(
         LOGGER.info("Sending messages to with unleash @ %s", url)
         LOGGER.info("unleash metrics information: %s", request_body)
 
-        resp = requests.post(
+        resp = await requests.apost(
             url + METRICS_URL,
             data=json.dumps(request_body),
             headers={**headers, **APPLICATION_HEADERS},

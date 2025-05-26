@@ -1,12 +1,12 @@
 from yggdrasil_engine.engine import UnleashEngine
 
-from .cache import BaseCache
-from .constants import FEATURES_URL
-from .utils import LOGGER
+from ..constants import FEATURES_URL
+from ..utils import LOGGER
+from .cache import AsyncBaseCache
 
 
-def load_features(
-    cache: BaseCache,
+async def async_load_features(
+    cache: AsyncBaseCache,
     engine: UnleashEngine,
 ) -> None:
     """
@@ -17,7 +17,7 @@ def load_features(
     :return:
     """
     # Pull raw provisioning from cache.
-    feature_provisioning = cache.get(FEATURES_URL)
+    feature_provisioning = await cache.get(FEATURES_URL)
     if not feature_provisioning:
         LOGGER.warning(
             "Unleash client does not have cached features. "

@@ -3,13 +3,14 @@ import json
 from pathlib import Path
 from typing import Any, Optional
 
+import aiofile
 import niquests as requests
 
-from .constants import FEATURES_URL, REQUEST_TIMEOUT
-from .vendor.fcache import FileCache as _FileCache
+from ..constants import FEATURES_URL, REQUEST_TIMEOUT
+from ..vendor.fcache import AsyncFileCache as _FileCache
 
 
-class BaseCache(abc.ABC):
+class AsyncBaseCache(abc.ABC):
     """
     Abstract base class for caches used for UnleashClient.
 
@@ -20,17 +21,18 @@ class BaseCache(abc.ABC):
     """
 
     bootstrapped = False
+    bootstrap_data: Optional[str] = None
 
     @abc.abstractmethod
-    def set(self, key: str, value: Any):
+    async def set(self, key: str, value: Any):
         pass
 
     @abc.abstractmethod
-    def mset(self, data: dict):
+    async def mset(self, data: dict):
         pass
 
     @abc.abstractmethod
-    def get(self, key: str, default: Optional[Any] = None):
+    async def get(self, key: str, default: Optional[Any] = None):
         pass
 
     @abc.abstractmethod
@@ -42,7 +44,7 @@ class BaseCache(abc.ABC):
         pass
 
 
-class FileCache(BaseCache):
+class AsyncFileCache(AsyncBaseCache):
     """
     The default cache for UnleashClient.  Uses `fcache <https://pypi.org/project/fcache/>`_ behind the scenes.
 
@@ -59,16 +61,17 @@ class FileCache(BaseCache):
     .. code-block:: python
 
         from pathlib import Path
-        from UnleashClient.cache import FileCache
-        from UnleashClient import UnleashClient
+        from UnleashClient.asynchronous.cache import AsyncFileCache
+        from UnleashClient.asynchronous import AsyncUnleashClient
 
-        my_cache = FileCache("HAMSTER_API")
-        my_cache.bootstrap_from_file(Path("/path/to/boostrap.json"))
-        unleash_client = UnleashClient(
-            "https://my.unleash.server.com",
-            "HAMSTER_API",
-            cache=my_cache
-        )
+        async def main():
+            my_cache = AsyncFileCache("HAMSTER_API")
+            await my_cache.bootstrap_from_file(Path("/path/to/boostrap.json"))
+            unleash_client = AsyncUnleashClient(
+                "https://my.unleash.server.com",
+                "HAMSTER_API",
+                cache=my_cache
+            )
 
     :param name: Name of cache.
     :param directory: Location to create cache.  If empty, will use filecache default.
@@ -81,9 +84,10 @@ class FileCache(BaseCache):
         request_timeout: int = REQUEST_TIMEOUT,
     ):
         self._cache = _FileCache(name, app_cache_dir=directory)
+        self.bootstrap_data: Optional[str] = None
         self.request_timeout = request_timeout
 
-    def bootstrap_from_dict(self, initial_config: dict) -> None:
+    async def bootstrap_from_dict(self, initial_config: dict) -> None:
         """
         Loads initial Unleash configuration from a dictionary.
 
@@ -91,10 +95,11 @@ class FileCache(BaseCache):
 
         :param initial_config: Dictionary that contains initial configuration.
         """
-        self.set(FEATURES_URL, json.dumps(initial_config))
+        self.bootstrap_data = json.dumps(initial_config)
+        await self.set(FEATURES_URL, self.bootstrap_data)
         self.bootstrapped = True
 
-    def bootstrap_from_file(self, initial_config_file: Path) -> None:
+    async def bootstrap_from_file(self, initial_config_file: Path) -> None:
         """
         Loads initial Unleash configuration from a file.
 
@@ -102,11 +107,14 @@ class FileCache(BaseCache):
 
         :param initial_configuration_file: Path to document containing initial configuration.  Must be JSON.
         """
-        with open(initial_config_file, "r", encoding="utf8") as bootstrap_file:
-            self.set(FEATURES_URL, bootstrap_file.read())
+        async with aiofile.async_open(
+            initial_config_file, "r", encoding="utf8"
+        ) as bootstrap_file:
+            self.bootstrap_data = await bootstrap_file.read()
+            await self.set(FEATURES_URL, self.bootstrap_data)
             self.bootstrapped = True
 
-    def bootstrap_from_url(
+    async def bootstrap_from_url(
         self,
         initial_config_url: str,
         headers: Optional[dict] = None,
@@ -121,20 +129,24 @@ class FileCache(BaseCache):
         :param headers: Headers to use when GETing the initial configuration URL.
         """
         timeout = request_timeout if request_timeout else self.request_timeout
-        response = requests.get(initial_config_url, headers=headers, timeout=timeout)
-        self.set(FEATURES_URL, response.text)
+        response = await requests.aget(
+            initial_config_url, headers=headers, timeout=timeout
+        )
+        self.bootstrap_data = response.text
+        await self.set(FEATURES_URL, self.bootstrap_data)
         self.bootstrapped = True
 
-    def set(self, key: str, value: Any):
-        self._cache[key] = value
-        self._cache.sync()
+    async def set(self, key: str, value: Any):
+        await self._cache.set(key, value)
+        await self._cache.sync()
 
-    def mset(self, data: dict):
-        self._cache.update(data)
-        self._cache.sync()
+    async def mset(self, data: dict):
+        for k, v in data.items():
+            await self._cache.set(k, v)
+        await self._cache.sync()
 
-    def get(self, key: str, default: Optional[Any] = None):
-        return self._cache.get(key, default)
+    async def get(self, key: str, default: Optional[Any] = None):
+        return await self._cache.get(key, default)
 
     def exists(self, key: str):
         return key in self._cache

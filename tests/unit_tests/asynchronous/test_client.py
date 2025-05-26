@@ -1,14 +1,15 @@
+import asyncio
 import json
-import time
 import uuid
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
+import pytest_asyncio
 import responses
-from apscheduler.executors.pool import ThreadPoolExecutor
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.executors.asyncio import AsyncIOExecutor
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from blinker import signal
 
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
@@ -40,8 +41,8 @@ from tests.utilities.testing_constants import (
     REQUEST_TIMEOUT,
     URL,
 )
-from UnleashClient import INSTANCES, UnleashClient
-from UnleashClient.cache import FileCache
+from UnleashClient.asynchronous import INSTANCES, AsyncUnleashClient
+from UnleashClient.asynchronous.cache import AsyncFileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 from UnleashClient.events import UnleashEvent, UnleashEventType
 from UnleashClient.utils import InstanceAllowType
@@ -66,19 +67,19 @@ class EnvironmentStrategy:
         return default_value
 
 
-@pytest.fixture(autouse=True)
-def before_each():
+@pytest_asyncio.fixture(autouse=True)
+async def before_each():
     INSTANCES._reset()
 
 
-@pytest.fixture
-def cache(tmpdir):
-    return FileCache(APP_NAME, directory=tmpdir.dirname)
+@pytest_asyncio.fixture
+async def cache(tmpdir):
+    return AsyncFileCache(APP_NAME, directory=tmpdir.dirname)
 
 
-@pytest.fixture()
-def unleash_client(cache):
-    unleash_client = UnleashClient(
+@pytest_asyncio.fixture()
+async def unleash_client(cache):
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -86,12 +87,13 @@ def unleash_client(cache):
         cache=cache,
     )
     yield unleash_client
+    await asyncio.sleep(0)
     unleash_client.destroy()
 
 
-@pytest.fixture()
-def unleash_client_project(cache):
-    unleash_client = UnleashClient(
+@pytest_asyncio.fixture()
+async def unleash_client_project(cache):
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -100,12 +102,13 @@ def unleash_client_project(cache):
         project_name=PROJECT_NAME,
     )
     yield unleash_client
+    await asyncio.sleep(0)
     unleash_client.destroy()
 
 
-@pytest.fixture()
-def unleash_client_nodestroy(cache):
-    unleash_client = UnleashClient(
+@pytest_asyncio.fixture()
+async def unleash_client_nodestroy(cache):
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -115,9 +118,9 @@ def unleash_client_nodestroy(cache):
     yield unleash_client
 
 
-@pytest.fixture()
-def unleash_client_toggle_only(cache):
-    unleash_client = UnleashClient(
+@pytest_asyncio.fixture()
+async def unleash_client_toggle_only(cache):
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -127,14 +130,15 @@ def unleash_client_toggle_only(cache):
         cache=cache,
     )
     yield unleash_client
+    await asyncio.sleep(0)
     unleash_client.destroy()
 
 
-@pytest.fixture()
-def unleash_client_bootstrap_dependencies():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
-    unleash_client = UnleashClient(
+@pytest_asyncio.fixture()
+async def unleash_client_bootstrap_dependencies():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
+    unleash_client = AsyncUnleashClient(
         url=URL,
         app_name=APP_NAME,
         disable_metrics=True,
@@ -142,19 +146,21 @@ def unleash_client_bootstrap_dependencies():
         cache=cache,
         environment="default",
     )
-    unleash_client.initialize_client(fetch_toggles=False)
+    await unleash_client.initialize_client(fetch_toggles=False)
     yield unleash_client
 
 
-def test_UC_initialize_default():
-    client = UnleashClient(URL, APP_NAME)
+@pytest.mark.asyncio
+async def test_UC_initialize_default():
+    client = AsyncUnleashClient(URL, APP_NAME)
     assert client.unleash_url == URL
     assert client.unleash_app_name == APP_NAME
     assert client.unleash_metrics_interval == 60
 
 
-def test_UC_initialize_full():
-    client = UnleashClient(
+@pytest.mark.asyncio
+async def test_UC_initialize_full():
+    client = AsyncUnleashClient(
         URL,
         APP_NAME,
         ENVIRONMENT,
@@ -181,15 +187,17 @@ def test_UC_initialize_full():
     assert client.unleash_custom_options == CUSTOM_OPTIONS
 
 
-def test_UC_type_violation():
-    client = UnleashClient(URL, APP_NAME, refresh_interval="60")
+@pytest.mark.asyncio
+async def test_UC_type_violation():
+    client = AsyncUnleashClient(URL, APP_NAME, refresh_interval="60")
     assert client.unleash_url == URL
     assert client.unleash_app_name == APP_NAME
     assert client.unleash_refresh_interval == "60"
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_lifecycle(unleash_client):
+async def test_uc_lifecycle(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -202,8 +210,8 @@ def test_uc_lifecycle(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
@@ -215,7 +223,7 @@ def test_uc_lifecycle(unleash_client):
         status=304,
         headers={"etag": ETAG_VALUE},
     )
-    time.sleep(REFRESH_INTERVAL + 1)
+    await asyncio.sleep(REFRESH_INTERVAL + 1)
 
     # Simulate server provisioning change
     responses.add(
@@ -225,12 +233,13 @@ def test_uc_lifecycle(unleash_client):
         status=200,
         headers={"etag": "W/somethingelse"},
     )
-    time.sleep(REFRESH_INTERVAL * 2)
+    await asyncio.sleep(REFRESH_INTERVAL * 2)
     assert len(unleash_client.feature_definitions()) >= 9
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_is_enabled(unleash_client):
+async def test_uc_is_enabled(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -239,19 +248,20 @@ def test_uc_is_enabled(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_consistent_results(unleash_client):
+async def test_consistent_results(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
     results = [unleash_client.is_enabled("testFlag2") for i in range(1000)]
     true_count = results.count(True)
@@ -267,8 +277,9 @@ def test_consistent_results(unleash_client):
     ), "False count is outside acceptable range"
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_project(unleash_client_project):
+async def test_uc_project(unleash_client_project):
     unleash_client = unleash_client_project
 
     # Set up API
@@ -278,14 +289,15 @@ def test_uc_project(unleash_client_project):
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    # Create Unleash client and check initial load.
-    unleash_client.initialize_client()
-    time.sleep(1)
+    # Create Unleash client and check initial load
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("ivan-project")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_fallbackfunction(unleash_client, mocker):
+async def test_uc_fallbackfunction(unleash_client, mocker):
     def good_fallback(feature_name: str, context: dict) -> bool:
         return True
 
@@ -304,8 +316,8 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     fallback_spy = mocker.Mock(wraps=good_fallback)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     # Non-existent feature flag, fallback_function
     assert unleash_client.is_enabled("notFoundTestFlag", fallback_function=fallback_spy)
     assert fallback_spy.call_count == 1
@@ -322,8 +334,9 @@ def test_uc_fallbackfunction(unleash_client, mocker):
     assert fallback_spy.call_count == 0
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_dirty_cache(unleash_client_nodestroy):
+async def test_uc_dirty_cache(unleash_client_nodestroy):
     unleash_client = unleash_client_nodestroy
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
@@ -333,19 +346,20 @@ def test_uc_dirty_cache(unleash_client_nodestroy):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("testFlag")
     unleash_client.unleash_scheduler.shutdown()
 
     # Check that everything works if previous cache exists.
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_is_enabled_with_context():
+async def test_uc_is_enabled_with_context():
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -355,19 +369,20 @@ def test_uc_is_enabled_with_context():
 
     custom_strategies_dict = {"custom-context": EnvironmentStrategy()}
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
     )
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
-    time.sleep(1)
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("testContextFlag")
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_is_enabled_error_states(unleash_client):
+async def test_uc_is_enabled_error_states(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -376,36 +391,39 @@ def test_uc_is_enabled_error_states(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
     assert unleash_client.is_enabled(
         "ThisFlagDoesn'tExist", fallback_function=lambda x, y: True
     )
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_context_manager(unleash_client_nodestroy):
+async def test_uc_context_manager(unleash_client_nodestroy):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    with unleash_client_nodestroy as unleash_client:
+    async with unleash_client_nodestroy as unleash_client:
         assert unleash_client.is_initialized
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_not_initialized_isenabled():
-    unleash_client = UnleashClient(URL, APP_NAME)
+async def test_uc_not_initialized_isenabled():
+    unleash_client = AsyncUnleashClient(URL, APP_NAME)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
     assert unleash_client.is_enabled(
         "ThisFlagDoesn'tExist", fallback_function=lambda x, y: True
     )
 
 
-def test_uc_dependency(unleash_client_bootstrap_dependencies):
+@pytest.mark.asyncio
+async def test_uc_dependency(unleash_client_bootstrap_dependencies):
     unleash_client = unleash_client_bootstrap_dependencies
     assert unleash_client.is_enabled("Child")
     assert not unleash_client.is_enabled("WithDisabledDependency")
@@ -414,8 +432,9 @@ def test_uc_dependency(unleash_client_bootstrap_dependencies):
     assert not unleash_client.is_enabled("TransitiveDependency")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_get_variant():
+async def test_uc_get_variant():
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -423,11 +442,11 @@ def test_uc_get_variant():
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    unleash_client = UnleashClient(URL, APP_NAME)
+    unleash_client = AsyncUnleashClient(URL, APP_NAME)
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
-    time.sleep(1)
+    await asyncio.sleep(1)
     # If feature flag is on.
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
@@ -443,11 +462,12 @@ def test_uc_get_variant():
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_get_variant_feature_enabled_no_variants():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE)
-    unleash_client = UnleashClient(
+async def test_uc_get_variant_feature_enabled_no_variants():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_ENABLED_NO_VARIANTS_RESPONSE)
+    unleash_client = AsyncUnleashClient(
         url=URL,
         app_name=APP_NAME,
         disable_metrics=True,
@@ -455,7 +475,7 @@ def test_uc_get_variant_feature_enabled_no_variants():
         cache=cache,
         environment="default",
     )
-    unleash_client.initialize_client(fetch_toggles=False)
+    await unleash_client.initialize_client(fetch_toggles=False)
 
     # If feature is enabled but has no variants, should return disabled variant with feature_enabled=True
     variant = unleash_client.get_variant("EnabledNoVariants")
@@ -466,17 +486,19 @@ def test_uc_get_variant_feature_enabled_no_variants():
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_not_initialized_getvariant():
-    unleash_client = UnleashClient(URL, APP_NAME)
+async def test_uc_not_initialized_getvariant():
+    unleash_client = AsyncUnleashClient(URL, APP_NAME)
     variant = unleash_client.get_variant("ThisFlagDoesn'tExist")
     assert not variant["enabled"]
     assert variant["name"] == "disabled"
     assert not variant["feature_enabled"]
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_metrics(unleash_client):
+async def test_uc_metrics(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -485,16 +507,17 @@ def test_uc_metrics(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("testFlag")
 
     metrics = unleash_client.engine.get_metrics()["toggles"]
     assert metrics["testFlag"]["yes"] == 1
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
+async def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -502,8 +525,8 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
 
     # Check a flag that doesn't exist
     unleash_client.is_enabled("nonexistent-flag")
@@ -513,8 +536,9 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
     assert metrics["nonexistent-flag"]["no"] == 1
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_metrics_dependencies(unleash_client):
+async def test_uc_metrics_dependencies(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET,
@@ -523,8 +547,8 @@ def test_uc_metrics_dependencies(unleash_client):
         status=200,
     )
 
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_enabled("Child")
 
     metrics = unleash_client.engine.get_metrics()["toggles"]
@@ -532,8 +556,9 @@ def test_uc_metrics_dependencies(unleash_client):
     assert "Parent" not in metrics
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
+async def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -541,8 +566,8 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
 
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
@@ -552,8 +577,9 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
     assert metrics["nonexistent-flag"]["variants"]["disabled"] == 1
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
+async def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -564,8 +590,8 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
 
     child = "ChildWithVariant"
     parent = "Parent"
@@ -580,8 +606,9 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
     assert parent not in metrics
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
+async def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -592,8 +619,8 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
 
     child = "WithDisabledDependency"
     parent = "Disabled"
@@ -608,8 +635,9 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
     assert parent not in metrics
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_disabled_registration(unleash_client_toggle_only):
+async def test_uc_disabled_registration(unleash_client_toggle_only):
     unleash_client = unleash_client_toggle_only
     # Set up APIs
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
@@ -618,17 +646,18 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
 
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
     unleash_client.is_enabled("testFlag")
-    time.sleep(REFRESH_INTERVAL * 2)
+    await asyncio.sleep(REFRESH_INTERVAL * 2)
     assert unleash_client.is_enabled("testFlag")
 
     for api_call in responses.calls:
         assert "/api/client/features" in api_call.request.url
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_server_error(unleash_client):
+async def test_uc_server_error(unleash_client):
     # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
     unleash_client = unleash_client  # noqa
     # Set up APIs
@@ -636,35 +665,37 @@ def test_uc_server_error(unleash_client):
     responses.add(responses.GET, URL + FEATURES_URL, status=500)
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=401)
 
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
     assert not unleash_client.is_enabled("testFlag")
 
     responses.remove(responses.GET, URL + FEATURES_URL)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    time.sleep(REFRESH_INTERVAL * 2)
+    await asyncio.sleep(REFRESH_INTERVAL * 2)
     assert unleash_client.is_enabled("testFlag")
 
 
-def test_uc_with_invalid_url():
-    unleash_client = UnleashClient("thisisnotavalidurl", APP_NAME)
+@pytest.mark.asyncio
+async def test_uc_with_invalid_url():
+    unleash_client = AsyncUnleashClient("thisisnotavalidurl", APP_NAME)
 
     with pytest.raises(ValueError):
-        unleash_client.initialize_client()
+        await unleash_client.initialize_client()
 
 
-def test_uc_with_network_error():
-    unleash_client = UnleashClient("https://thisisavalidurl.com", APP_NAME)
-    unleash_client.initialize_client()
+@pytest.mark.asyncio
+async def test_uc_with_network_error():
+    unleash_client = AsyncUnleashClient("https://thisisavalidurl.com", APP_NAME)
+    await unleash_client.initialize_client()
 
     assert unleash_client.is_enabled
-
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_multiple_initializations(unleash_client):
+async def test_uc_multiple_initializations(unleash_client):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -677,21 +708,22 @@ def test_uc_multiple_initializations(unleash_client):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
     with warnings.catch_warnings(record=True) as w:
         # Try and initialize client again.
-        unleash_client.initialize_client()
+        await unleash_client.initialize_client()
 
     assert len(w) == 1
     assert "initialize" in str(w[0].message)
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_cache_bootstrap_dict(cache):
+async def test_uc_cache_bootstrap_dict(cache):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -704,22 +736,23 @@ def test_uc_cache_bootstrap_dict(cache):
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Set up cache
-    cache.bootstrap_from_dict(initial_config=MOCK_FEATURE_RESPONSE_PROJECT)
+    await cache.bootstrap_from_dict(initial_config=MOCK_FEATURE_RESPONSE_PROJECT)
 
     # Check bootstrapping
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
     )
+
     assert len(unleash_client.feature_definitions()) == 1
     assert unleash_client.is_enabled("ivan-project")
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
@@ -727,20 +760,21 @@ def test_uc_cache_bootstrap_dict(cache):
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_cache_bootstrap_file(cache):
+async def test_uc_cache_bootstrap_file(cache):
     # Set up cache
     test_file = Path(
-        Path(__file__).parent.resolve(),
+        Path(__file__).parent.parent.resolve(),
         "..",
         "utilities",
         "mocks",
         "mock_bootstrap.json",
     )
-    cache.bootstrap_from_file(initial_config_file=test_file)
+    await cache.bootstrap_from_file(initial_config_file=test_file)
 
     # Check bootstrapping
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -751,8 +785,9 @@ def test_uc_cache_bootstrap_file(cache):
     assert unleash_client.is_enabled("ivan-project")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_cache_bootstrap_url(cache):
+async def test_uc_cache_bootstrap_url(cache):
     # Set up API
     responses.add(
         responses.GET,
@@ -763,10 +798,10 @@ def test_uc_cache_bootstrap_url(cache):
     )
 
     # Set up cache
-    cache.bootstrap_from_url(initial_config_url=URL + FEATURES_URL)
+    await cache.bootstrap_from_url(initial_config_url=URL + FEATURES_URL)
 
     # Check bootstrapping
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -777,8 +812,9 @@ def test_uc_cache_bootstrap_url(cache):
     assert unleash_client.is_enabled("testFlag")
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_custom_scheduler():
+async def test_uc_custom_scheduler():
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -791,11 +827,11 @@ def test_uc_custom_scheduler():
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Set up UnleashClient
-    custom_executors = {"hamster_executor": ThreadPoolExecutor()}
+    custom_executors = {"hamster_executor": AsyncIOExecutor()}
 
-    custom_scheduler = BackgroundScheduler(executors=custom_executors)
+    custom_scheduler = AsyncIOScheduler(executors=custom_executors)
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=5,
@@ -805,8 +841,8 @@ def test_uc_custom_scheduler():
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
@@ -818,7 +854,7 @@ def test_uc_custom_scheduler():
         status=304,
         headers={"etag": ETAG_VALUE},
     )
-    time.sleep(6)
+    await asyncio.sleep(6)
 
     # Simulate server provisioning change
     responses.add(
@@ -828,41 +864,51 @@ def test_uc_custom_scheduler():
         status=200,
         headers={"etag": "W/somethingelse"},
     )
-    time.sleep(6)
+    await asyncio.sleep(6)
     assert len(unleash_client.feature_definitions()) >= 9
 
     unleash_client.destroy()
 
 
-def test_multiple_instances_blocks_client_instantiation():
+@pytest.mark.asyncio
+async def test_multiple_instances_blocks_client_instantiation():
     with pytest.raises(Exception):
-        UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK)
-        UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK)
+        AsyncUnleashClient(
+            URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK
+        )
+        AsyncUnleashClient(
+            URL, APP_NAME, multiple_instance_mode=InstanceAllowType.BLOCK
+        )
 
 
-def test_multiple_instances_with_allow_multiple_warns(caplog):
-    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
-    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+@pytest.mark.asyncio
+async def test_multiple_instances_with_allow_multiple_warns(caplog):
+    AsyncUnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    AsyncUnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
     assert any(["You already have 1 instance" in r.msg for r in caplog.records])
 
 
-def test_multiple_instances_tracks_current_instance_count(caplog):
-    UnleashClient(URL, APP_NAME)
-    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
-    UnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+@pytest.mark.asyncio
+async def test_multiple_instances_tracks_current_instance_count(caplog):
+    AsyncUnleashClient(URL, APP_NAME)
+    AsyncUnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
+    AsyncUnleashClient(URL, APP_NAME, multiple_instance_mode=InstanceAllowType.WARN)
     assert any(["You already have 1 instance" in r.msg for r in caplog.records])
     assert any(["You already have 2 instance(s)" in r.msg for r in caplog.records])
 
 
-def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(caplog):
-    UnleashClient(URL, "some-probably-unique-app-name")
-    UnleashClient(
+@pytest.mark.asyncio
+async def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(
+    caplog,
+):
+    AsyncUnleashClient(URL, "some-probably-unique-app-name")
+    AsyncUnleashClient(
         URL,
         "some-probably-unique-app-name",
         instance_id="some-unique-instance-id",
         refresh_interval="60",
     )
-    UnleashClient(
+    AsyncUnleashClient(
         URL, "some-probably-unique-but-different-app-name", refresh_interval="60"
     )
     assert not any(
@@ -870,13 +916,14 @@ def test_multiple_instances_no_warnings_or_errors_with_different_client_configs(
     )
 
 
-def test_multiple_instances_are_unique_on_api_key(caplog):
-    UnleashClient(
+@pytest.mark.asyncio
+async def test_multiple_instances_are_unique_on_api_key(caplog):
+    AsyncUnleashClient(
         URL,
         "some-probably-unique-app-name",
         custom_headers={"Authorization": "penguins"},
     )
-    UnleashClient(
+    AsyncUnleashClient(
         URL,
         "some-probably-unique-app-name",
         custom_headers={"Authorization": "hamsters"},
@@ -886,8 +933,9 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
     )
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_signals_feature_flag(cache):
+async def test_signals_feature_flag(cache):
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -916,7 +964,7 @@ def test_signals_feature_flag(cache):
         send_data.send("anonymous", data=event)
 
     # Set up Unleash
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
@@ -926,8 +974,8 @@ def test_signals_feature_flag(cache):
     )
 
     # Create Unleash client and check initial load
-    unleash_client.initialize_client()
-    time.sleep(1)
+    await unleash_client.initialize_client()
+    await asyncio.sleep(1)
 
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
@@ -936,11 +984,12 @@ def test_signals_feature_flag(cache):
     unleash_client.destroy()
 
 
-def test_context_handles_numerics():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT)
+@pytest.mark.asyncio
+async def test_context_handles_numerics():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT)
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         url=URL,
         app_name=APP_NAME,
         disable_metrics=True,
@@ -954,11 +1003,12 @@ def test_context_handles_numerics():
     assert unleash_client.is_enabled("NumericConstraint", context)
 
 
-def test_context_handles_datetimes():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_RESPONSE)
+@pytest.mark.asyncio
+async def test_context_handles_datetimes():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_RESPONSE)
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         url=URL,
         app_name=APP_NAME,
         disable_metrics=True,
@@ -973,11 +1023,12 @@ def test_context_handles_datetimes():
     assert unleash_client.is_enabled("testConstraintFlag", context)
 
 
-def test_context_adds_current_time_if_not_set():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT)
+@pytest.mark.asyncio
+async def test_context_adds_current_time_if_not_set():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DATE_AFTER_CONSTRAINT)
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         url=URL,
         app_name=APP_NAME,
         disable_metrics=True,
@@ -989,8 +1040,9 @@ def test_context_adds_current_time_if_not_set():
     assert unleash_client.is_enabled("DateConstraint")
 
 
-def test_context_moves_properties_fields_to_properties():
-    unleash_client = UnleashClient(
+@pytest.mark.asyncio
+async def test_context_moves_properties_fields_to_properties():
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         disable_metrics=True,
@@ -1002,8 +1054,9 @@ def test_context_moves_properties_fields_to_properties():
     assert "myContext" in unleash_client._safe_context(context)["properties"]
 
 
-def test_existing_properties_are_retained_when_custom_context_properties_are_in_the_root():
-    unleash_client = UnleashClient(
+@pytest.mark.asyncio
+async def test_existing_properties_are_retained_when_custom_context_properties_are_in_the_root():
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         disable_metrics=True,
@@ -1016,8 +1069,9 @@ def test_existing_properties_are_retained_when_custom_context_properties_are_in_
     assert "yourContext" in unleash_client._safe_context(context)["properties"]
 
 
-def test_base_context_properties_are_retained_in_root():
-    unleash_client = UnleashClient(
+@pytest.mark.asyncio
+async def test_base_context_properties_are_retained_in_root():
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         disable_metrics=True,
@@ -1029,10 +1083,11 @@ def test_base_context_properties_are_retained_in_root():
     assert "userId" in unleash_client._safe_context(context)
 
 
-def test_is_enabled_works_with_properties_field_in_the_context_root():
-    cache = FileCache("MOCK_CACHE")
-    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS)
-    unleash_client = UnleashClient(
+@pytest.mark.asyncio
+async def test_is_enabled_works_with_properties_field_in_the_context_root():
+    cache = AsyncFileCache("MOCK_CACHE")
+    await cache.bootstrap_from_dict(MOCK_FEATURE_WITH_CUSTOM_CONTEXT_REQUIREMENTS)
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         disable_metrics=True,
@@ -1044,14 +1099,15 @@ def test_is_enabled_works_with_properties_field_in_the_context_root():
     assert unleash_client.is_enabled("customContextToggle", context)
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_identification_headers_sent_and_consistent(unleash_client):
+async def test_identification_headers_sent_and_consistent(unleash_client):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
     connection_id = responses.calls[0].request.headers["UNLEASH-CONNECTION-ID"]
     app_name = responses.calls[0].request.headers["UNLEASH-APPNAME"]
@@ -1063,38 +1119,41 @@ def test_identification_headers_sent_and_consistent(unleash_client):
         assert api_call.request.headers["UNLEASH-SDK"] == sdk
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_identification_headers_unique_connection_id():
+async def test_identification_headers_unique_connection_id():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL, APP_NAME, disable_metrics=True, disable_registration=True
     )
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
     connection_id_first_client = responses.calls[0].request.headers[
         "UNLEASH-CONNECTION-ID"
     ]
 
-    other_unleash_client = UnleashClient(
+    unleash_client.destroy()
+
+    other_unleash_client = AsyncUnleashClient(
         URL, APP_NAME, disable_metrics=True, disable_registration=True
     )
-    other_unleash_client.initialize_client()
+    await other_unleash_client.initialize_client()
 
     connection_id_second_client = responses.calls[1].request.headers[
         "UNLEASH-CONNECTION-ID"
     ]
     assert connection_id_first_client != connection_id_second_client
 
-    unleash_client.destroy()
     other_unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_identification_values_are_passed_in():
+async def test_identification_values_are_passed_in():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
@@ -1103,7 +1162,7 @@ def test_identification_values_are_passed_in():
 
     refresh_interval = 1
     metrics_interval = 2
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL,
         APP_NAME,
         refresh_interval=refresh_interval,
@@ -1113,7 +1172,7 @@ def test_identification_values_are_passed_in():
     expected_refresh_interval = str(refresh_interval * 1000)
     expected_metrics_interval = str(metrics_interval * 1000)
 
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
     register_request = responses.calls[0].request
     register_body = json.loads(register_request.body)
 
@@ -1146,7 +1205,7 @@ def test_identification_values_are_passed_in():
     except ValueError:
         assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
 
-    time.sleep(3)
+    await asyncio.sleep(3)
     metrics_request = [
         call for call in responses.calls if METRICS_URL in call.request.url
     ][0].request
