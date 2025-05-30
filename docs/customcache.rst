@@ -36,3 +36,7 @@ Implementing a custom cache
             return self._cache.delete()
 
 - Initialize your custom cache object and pass it into Unleash using the `cache` argument.
+
+.. note:: When using async, you will need to inherit from `UnleashClient.asynchronous.cache.AsyncBaseCache`.
+
+.. warning:: Our default FileCache implementation embeds a file locking mechanism to prevent racing conditions on disk I/O. You need to ensure it's safe to use in a concurrent environment.

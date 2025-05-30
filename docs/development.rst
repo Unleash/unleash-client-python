@@ -31,6 +31,36 @@ Using devcontainer
 ###########################################
 This SDK ships with a devcontainer to make local (or cloud!) environment fast & easy!
 
+Asynchronous support
+####################
+Every contribution MUST be applied in both sync and async part of the library.
+We recommend you to start working on the synchronous part then backport your work into
+the async part.
+
+Here are the 4 elements that must be awaited (sync to async).
+disk I/O, network I/O, apscheduler, and Python magicmethods.
+
+1. disk I/O
+
+You must convert your usual stdlib ``with open() as fp`` to ``async with aiofile.async_open() as fp``.
+
+2. network I/O
+
+The Niquests http client mirror each synchronous call to asynchronous ones.
+
+``niquests.get(...)`` becomes ``await niquests.aget(...)``
+
+3. apscheduler
+
+In the synchronous part we leverage (by default): ``ThreadPoolExecutor`` within a ``BackgroundScheduler``.
+
+In the other side, we use (still by default): ``AsyncIOExecutor`` within a ``AsyncIOScheduler``.
+
+4. Python magicmethods
+
+Classes that defines ``__enter__``, and ``__aenter__`` must be converted to using ``__aenter__`` and ``__aexit__`` instead.
+See the Python documentation to find async counterparts of those special methods.
+
 Upgrading the Client Specification Tests
 ###########################################
 This SDK implements tests for the `Unleash Client Specifications <https://github.com/Unleash/client-specification>`_,

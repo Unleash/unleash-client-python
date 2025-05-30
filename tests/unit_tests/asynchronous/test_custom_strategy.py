@@ -3,7 +3,7 @@ import responses
 
 from tests.utilities.mocks import MOCK_CUSTOM_STRATEGY
 from tests.utilities.testing_constants import APP_NAME, URL
-from UnleashClient import UnleashClient
+from UnleashClient.asynchronous import AsyncUnleashClient
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
 
 
@@ -45,8 +45,9 @@ class DogTest:
         return default_value
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_customstrategy_happypath(recwarn):
+async def test_uc_customstrategy_happypath(recwarn):
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200
@@ -55,11 +56,11 @@ def test_uc_customstrategy_happypath(recwarn):
 
     custom_strategies_dict = {"amIACat": CatTest()}
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
     )
 
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
     # Check custom strategy.
     assert unleash_client.is_enabled("CustomToggle", {"sound": "meow"})
@@ -68,8 +69,9 @@ def test_uc_customstrategy_happypath(recwarn):
     unleash_client.destroy()
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_customstrategy_deprecation_error():
+async def test_uc_customstrategy_deprecation_error():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200
@@ -79,13 +81,14 @@ def test_uc_customstrategy_deprecation_error():
     custom_strategies_dict = {"amIACat": CatTest, "amIADog": DogTest}
 
     with pytest.raises(ValueError):
-        UnleashClient(
+        AsyncUnleashClient(
             URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
         )
 
 
+@pytest.mark.asyncio
 @responses.activate
-def test_uc_customstrategy_safemulti():
+async def test_uc_customstrategy_safemulti():
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_CUSTOM_STRATEGY, status=200
@@ -94,11 +97,11 @@ def test_uc_customstrategy_safemulti():
 
     custom_strategies_dict = {"amIACat": CatTest(), "amIADog": DogTest()}
 
-    unleash_client = UnleashClient(
+    unleash_client = AsyncUnleashClient(
         URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
     )
 
-    unleash_client.initialize_client()
+    await unleash_client.initialize_client()
 
     # Check a toggle that contains an outdated custom strategy and a default strategy.
     assert unleash_client.is_enabled("CustomToggleWarningMultiStrat", {"sound": "meow"})

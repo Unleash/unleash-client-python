@@ -3,12 +3,12 @@ from platform import python_implementation, python_version
 import yggdrasil_engine
 from yggdrasil_engine.engine import UnleashEngine
 
-from ..api import send_metrics
-from ..constants import CLIENT_SPEC_VERSION
-from ..utils import LOGGER
+from ...api.asynchronous import async_send_metrics
+from ...constants import CLIENT_SPEC_VERSION
+from ...utils import LOGGER
 
 
-def aggregate_and_send_metrics(
+async def async_aggregate_and_send_metrics(
     url: str,
     app_name: str,
     instance_id: str,
@@ -32,6 +32,8 @@ def aggregate_and_send_metrics(
     }
 
     if metrics_bucket:
-        send_metrics(url, metrics_request, headers, custom_options, request_timeout)
+        await async_send_metrics(
+            url, metrics_request, headers, custom_options, request_timeout
+        )
     else:
         LOGGER.debug("No feature flags with metrics, skipping metrics submission.")

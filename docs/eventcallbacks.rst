@@ -33,3 +33,5 @@ Example code using `blinker <https://github.com/pallets-eco/blinker>`_:
     )
     client.initialize_client()
     client.is_enabled("testFlag")
+
+.. warning:: Using our async APIs, you cannot pass along awaitable callbacks.

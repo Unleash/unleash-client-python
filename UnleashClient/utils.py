@@ -4,7 +4,7 @@ from threading import RLock
 from typing import Any
 
 import mmh3  # pylint: disable=import-error
-from requests import Response
+from niquests import Response
 
 LOGGER = logging.getLogger("UnleashClient")
 

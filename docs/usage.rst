@@ -19,6 +19,21 @@ To clean up gracefully:
 
 If the client is already initialized, calling ``initialize_client()`` again will raise a warning.  This is not recommended client usage as it results in unnecessary calls to the Unleash server.
 
+In order to leverage UnleashClient in an async enclosure:
+
+.. code-block:: python
+
+    from UnleashClient.asynchronous import AsyncUnleashClient
+    import asyncio
+
+    async def main():
+        client = AsyncUnleashClient("https://unleash.herokuapp.com/api", "My Program")
+        await client.initialize_client()
+
+    asyncio.run(main())
+
+.. note:: We strictly mirror the synchronous and asynchronous APIs. Functions or methods that do block I/O either with disk or network are awaitable.
+
 Checking if a feature is enabled
 #######################################
 
