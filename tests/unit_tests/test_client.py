@@ -396,7 +396,7 @@ def test_uc_context_manager(unleash_client_nodestroy):
         assert unleash_client.is_initialized
         assert unleash_client.is_enabled("testFlag")
 
-    # Context use case is usualy short-lived so even with a METRICS_INTERVAL of 2 seconds metrics can get lost.  Verify that metrics are sent on destroy.
+    # Context Manager use case is usualy short-lived so even with a METRICS_INTERVAL of 2 seconds metrics can get lost.  Verify that metrics are sent on destroy.
     metrics_request = [
         call for call in responses.calls if METRICS_URL in call.request.url
     ][0].request
