@@ -34,7 +34,7 @@ install-docs: install
 #-----------------------------------------------------------------------
 fmt:
 	black . && \
-	ruff UnleashClient tests --fix
+	ruff check UnleashClient tests --fix
 
 lint:
 	black . --check && \
