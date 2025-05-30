@@ -41,7 +41,10 @@ def send_metrics(
 
         if resp.status_code != 202:
             log_resp_info(resp)
-            LOGGER.warning("Unleash Client metrics submission failed.")
+            LOGGER.warning(
+                "Unleash Client metrics submission due to unexpected HTTP status code: %s",
+                resp.status_code,
+            )
             return False
 
         LOGGER.info("Unleash Client metrics successfully sent!")

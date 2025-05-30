@@ -146,6 +146,8 @@ class UnleashClient:
         self.cache.mset({METRIC_LAST_SENT_TIME: datetime.now(timezone.utc), ETAG: ""})
         self.unleash_bootstrapped = self.cache.bootstrapped
 
+        self.metrics_headers: dict = {}
+
         # Scheduler bootstrapping
         # - Figure out the Unleash executor name.
         if scheduler and scheduler_executor:
@@ -233,7 +235,7 @@ class UnleashClient:
                     "unleash-sdk": f"{SDK_NAME}:{SDK_VERSION}",
                 }
 
-                metrics_headers = {
+                self.metrics_headers = {
                     **base_headers,
                     "unleash-interval": self.unleash_metrics_interval_str_millis,
                 }
@@ -244,7 +246,7 @@ class UnleashClient:
                     "app_name": self.unleash_app_name,
                     "connection_id": self.connection_id,
                     "instance_id": self.unleash_instance_id,
-                    "headers": metrics_headers,
+                    "headers": self.metrics_headers,
                     "custom_options": self.unleash_custom_options,
                     "request_timeout": self.unleash_request_timeout,
                     "engine": self.engine,
@@ -357,6 +359,19 @@ class UnleashClient:
         self.fl_job.remove()
         if self.metric_job:
             self.metric_job.remove()
+
+            # Flush metrics before shutting down.
+            aggregate_and_send_metrics(
+                url=self.unleash_url,
+                app_name=self.unleash_app_name,
+                connection_id=self.connection_id,
+                instance_id=self.unleash_instance_id,
+                headers=self.metrics_headers,
+                custom_options=self.unleash_custom_options,
+                request_timeout=self.unleash_request_timeout,
+                engine=self.engine,
+            )
+
         self.unleash_scheduler.shutdown()
         self.cache.destroy()
 

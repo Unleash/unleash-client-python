@@ -394,6 +394,14 @@ def test_uc_context_manager(unleash_client_nodestroy):
 
     with unleash_client_nodestroy as unleash_client:
         assert unleash_client.is_initialized
+        assert unleash_client.is_enabled("testFlag")
+
+    # Context Manager use case is usualy short-lived so even with a METRICS_INTERVAL of 2 seconds metrics can get lost.  Verify that metrics are sent on destroy.
+    metrics_request = [
+        call for call in responses.calls if METRICS_URL in call.request.url
+    ][0].request
+    metrics_body = json.loads(metrics_request.body)
+    assert metrics_body["bucket"]["toggles"]["testFlag"]["yes"] == 1
 
 
 @responses.activate
