@@ -1,3 +1,6 @@
+## v6.2.1
+* (Bugfix) Flush metrics if `destroy()`ing client.
+
 ## v6.2.0
 * (Minor) add unleash interval headers and connection id to payloads
 
