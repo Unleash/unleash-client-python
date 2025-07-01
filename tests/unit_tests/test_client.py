@@ -1043,6 +1043,20 @@ def test_is_enabled_works_with_properties_field_in_the_context_root():
     context = {"myContext": "1234"}
     assert unleash_client.is_enabled("customContextToggle", context)
 
+def test_uuids_are_valid_context_properties():
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+    )
+
+    context = {"userId": uuid.uuid4()}
+
+    try:
+        unleash_client.is_enabled("testFlag", context)
+    except Exception as e:
+        assert False, f"An exception was raised when passing a UUID as a context property: {e}"
 
 @responses.activate
 def test_identification_headers_sent_and_consistent(unleash_client):
