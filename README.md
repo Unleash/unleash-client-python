@@ -1,66 +1,99 @@
-# unleash-client-python
+# Unleash Client SDK for Python
 
 ![](https://github.com/unleash/unleash-client-python/workflows/CI/badge.svg?branch=main) [![Coverage Status](https://coveralls.io/repos/github/Unleash/unleash-client-python/badge.svg?branch=main)](https://coveralls.io/github/Unleash/unleash-client-python?branch=main) [![PyPI version](https://badge.fury.io/py/UnleashClient.svg)](https://badge.fury.io/py/UnleashClient) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/UnleashClient.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+Unleash is a private, secure, and scalable [feature management platform](https://www.getunleash.io/) built to reduce the risk of releasing new features and accelerate software development. This server-side Python SDK is designed to help you integrate with Unleash and evaluate feature flags inside your application.
 
-This is the Python client for [Unleash](https://github.com/unleash/unleash).  It implements [Client Specifications 1.0](https://docs.getunleash.io/client-specification) and checks compliance based on spec in [unleash/client-specifications](https://github.com/Unleash/client-specification)
+You can use this client with [Unleash Enterprise](https://www.getunleash.io/pricing?utm_source=readme&utm_medium=python) or [Unleash Open Source](https://github.com/Unleash/unleash).
 
 >  **Migrating to v6**
 >
 > If you use custom strategies or access the `features` property on the Unleash Client, read the complete [migration guide](./v6_MIGRATION_GUIDE.md) before upgrading to v6.
 
 
-What it supports:
-* Default activation strategies using 32-bit [Murmurhash3](https://en.wikipedia.org/wiki/MurmurHash)
-* Custom strategies
-* Full client lifecycle:
-    * Client registers with Unleash server
-    * Client periodically fetches feature toggles and stores to on-disk cache
-    * Client periodically sends metrics to Unleash Server
-* Tested on Linux (Ubuntu), OSX, and Windows
+## Getting Started
 
-Check out the [project documentation](https://unleash.github.io/unleash-client-python/) and the [changelog](https://docs.getunleash.io/unleash-client-python/changelog.html).
-
-## Installation
-
-Check out the package on [Pypi](https://pypi.org/project/UnleashClient/)!
+### Install the Unleash Client in your project
 
 ```bash
 pip install UnleashClient
 ```
 
-## Usage
-
 ### Initialization
+
+You must initialize the SDK before you use it. Note that until the SDK has synchronized with the API, all features will evaluate to `false` unless
+you have a [bootstrapped configuration](#bootstrap) or you use [fallbacks](#fallback-function).
 
 ```python
 from UnleashClient import UnleashClient
 
 client = UnleashClient(
-    url="https://unleash.herokuapp.com",
+    url="https://YOUR-API-URL",
     app_name="my-python-app",
     custom_headers={'Authorization': '<API token>'})
 
 client.initialize_client()
 ```
 
-For more information about configuring `UnleashClient`, check out the [project reference docs](https://docs.getunleash.io/unleash-client-python/unleashclient.html)!
+### Check features
 
-### Checking if a feature is enabled
+Once the SDK is initialized, you can evaluate toggles using the `is_enabled` or `get_variant` methods.
 
-A check of a simple toggle:
 ```python
-client.is_enabled("my_toggle")
+enabled = client.is_enabled("my_toggle")
+print(enabled)
+> True
+
+variant = client.get_variant("variant_toggle")
+print(variant)
+> {
+>    "name": "variant1",
+>    "payload": {
+>        "type": "string",
+>        "value": "val1"
+>        },
+>    "enabled": True
+> }
+
 ```
 
-To supply application context, use the second positional argument:
+### Shutdown
+
+If your program no longer needs the SDK, you can call `destroy()`, which shuts down the SDK and flushes any pending metrics to Unleash.
 
 ```python
-app_context = {"userId": "test@email.com"}
+client.destroy()
+```
+
+## Usage
+
+### Context
+
+Both the `is_enabled` and `get_variant` functions support [Unleash contexts](https://docs.getunleash.io/reference/unleash-context) as the second parameter.
+
+``` python
+app_context = {
+    "userId": "test@email.com",
+    "sessionId": "55845",
+    "properties": {
+        "custom-property": "some-value"
+    }
+}
+
 client.is_enabled("user_id_toggle", app_context)
+client.get_variant("variant_toggle", app_context)
 ```
 
-#### Fallback function and default values
+The context values can be any type that has a `__str__` implementation. Types that are explicitly supported are:
+
+- Numerics
+- Strings
+- Dates
+- UUIDs
+
+**Note**: Gradual rollout strategies require you to pass either a `userId` or a `sessionId` for [stickiness](https://docs.getunleash.io/reference/stickiness) to work correctly.
+
+### Fallback function
 
 You can specify a fallback function for cases where the client doesn't recognize the toggle by using the `fallback_function` keyword argument:
 
@@ -71,103 +104,267 @@ def custom_fallback(feature_name: str, context: dict) -> bool:
 client.is_enabled("my_toggle", fallback_function=custom_fallback)
 ```
 
-You can also use the `fallback_function` argument to replace the obsolete `default_value` keyword argument by using a lambda that ignores its inputs. Whatever the lambda returns will be used as the default value.
-
-```python
-client.is_enabled("my_toggle", fallback_function=lambda feature_name, context: True)
-```
-
 The fallback function **must** accept the feature name and context as positional arguments in that order.
 
-The client will evaluate the fallback function only if an exception occurs when calling the `is_enabled()` method. This happens when the client can't find the feature flag. The client _may_ also throw other, general exceptions.
+The client will evaluate the fallback function if the feature flag is not found or an exception occurs when calling the `is_enabled()` method.
 
-For more information about usage, see the [Usage documentation](https://docs.getunleash.io/unleash-client-python/usage.html).
+### Configuration options
 
-### Getting a variant
+The UnleashClient constructor supports the following configuration options:
 
-Checking for a variant:
+| Parameter 	            | Description	                                                                                                                                    | Default                   |
+| ------------ 	            | ------------                      	                                                                                                            | ------------              |
+| url 	                    | URL of your Unleash server. Required.	                                                                                                            | None                      |
+| app_name 	                | Name of the application using the client. Required.	                                                                                            | None                      |
+| environment               | Logical environment name (deprecated).	                                                                                                        | "default"                 |
+| instance_id               | Unique identifier for this client instance.	                                                                                                    | "unleash-client-python"   |
+| refresh_interval  	    | How often to fetch feature toggles (seconds).	                                                                                                    | 15                        |
+| refresh_jitter            | Jitter to add to refresh interval (seconds).	                                                                                                    | None                      |
+| metrics_interval  	    | How often to send metrics to Unleash (seconds).	                                                                                                | 60                        |
+| metrics_jitter            | Jitter to add to metrics interval (seconds).	                                                                                                    | None                      |
+| disable_metrics           | Disable sending usage metrics.	                                                                                                                | False                     |
+| disable_registration      | Disable client registration.	                                                                                                                    | False                     |
+| custom_headers            | Additional HTTP headers (e.g. Authorization).	                                                                                                    | None                      |
+| custom_options            | Extra options for [HTTP requests](https://requests.readthedocs.io/en/latest/api/#main-interface).                                                 | None                      |
+| request_timeout           | HTTP request timeout (seconds).	                                                                                                                | 30                        |
+| request_retries           | HTTP request retry count.	                                                                                                                        | 3                         |
+| custom_strategies 	    | Dict of {name: strategy} for custom activation strategies. See [custom strategies](#custom-strategies) for more information.                      | None                      |
+| cache_directory 	        | Location for the on-disk cache. Auto-determined.                                                                                                  | None                      |
+| cache 	                | Custom cache implementation (must extend BaseCache).	                                                                                            | BaseCache                 |
+| scheduler 	            | Custom APScheduler instance.	Auto-created.                                                                                                       | BaseScheduler             |
+| verbose_log_level 	    | Python logging level for debugging feature flag failures. See https://docs.python.org/3/library/logging.html#logging-levels for more information.	| 30                        |
+| scheduler_executor 	    | APScheduler executor name to use.	                                                                                                                | None                      |
+| multiple_instance_mode    | How to handle multiple client instances (BLOCK, WARN, SILENTLY_ALLOW).	                                                                        | WARN                      |
+| event_callback 	        | Function to handle impression events. See [impression data](#impression-data) for more information.                                           | None                      |
+
+### Bootstrap
+
+By default, the Python SDK fetches your feature toggles from the Unleash API at startup. If you want to make your SDK more resilient (e.g., during network outages), you can bootstrap the client with a local or remote toggle config.
+
+How it works:
+
+- Use a FileCache (or your own BaseCache implementation).
+
+- Pre-seed it with feature toggles using bootstrap_from_dict, bootstrap_from_file, or bootstrap_from_url.
+
+- Pass your cache to the UnleashClient on startup.
+
+The default FileCache has built-in methods for bootstrapping from a dictionary, file, or URL.
+
+#### Bootstrap from dict
+
 ```python
-context = {'userId': '2'}  # Context must have userId, sessionId, or remoteAddr.  If none are present, distribution will be random.
+from UnleashClient.cache import FileCache
+from UnleashClient import UnleashClient
 
-variant = client.get_variant("variant_toggle", context)
+# Create and seed the cache
+cache = FileCache("MY_CACHE")
+cache.bootstrap_from_dict({
+    "version": 2,
+    "features": [
+        {
+            "name": "my_toggle",
+            "enabled": True,
+            "strategies": [{"name": "default"}],
+        }
+    ]
+})
 
-print(variant)
-> {
->    "name": "variant1",
->    "payload": {
->        "type": "string",
->        "value": "val1"
->        },
->    "enabled": True
-> }
-```
-
-For more information about variants, see the [Variant documentation](https://docs.getunleash.io/advanced/toggle_variants).
-
-## Developing
-
-For development, you'll need to setup the environment to run the tests. This repository is using
-tox to run the test suite to test against multiple versions of Python. Running the tests is as simple as running this command in the makefile:
-
-```
-tox -e py311
-```
-
-This command will take care of downloading the client specifications and putting them in the correct place in the repository, and install all the dependencies you need.
-
-However, there are some caveats to this method. There is no easy way to run a single test, and running the entire test suite can be slow.
-
-### Manual setup
-
-First, make sure you have pip or pip3 installed.
-
-Then setup your viritual environment:
-
-Linux & Mac:
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    cache=cache
+)
 
 ```
-python3 -m venv venv
-source venv/bin/activate
+
+#### Bootstrap from file
+
+```python
+from pathlib import Path
+from UnleashClient.cache import FileCache
+
+cache = FileCache("MY_CACHE")
+cache.bootstrap_from_file(Path("/path/to/your_bootstrap.json"))
+
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    cache=cache
+)
 ```
 
-Windows + cmd:
+#### Bootstrap from URL
+
+```python
+from UnleashClient.cache import FileCache
+
+cache = FileCache("MY_CACHE")
+cache.bootstrap_from_url("https://your-server/bootstrap.json")
+
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    cache=cache
+)
 
 ```
-python -m venv venv
-venv\Scripts\activate.bat
-```
 
-Powershell:
+### Custom strategies
 
-```
-python -m venv venv
-venv\Scripts\activate.bat
-```
+The Python SDK lets you define [custom activation strategies](https://docs.getunleash.io/reference/custom-activation-strategies) if the built-in ones don’t cover your needs. This gives you more fine grained control over how your feature evaluates.
 
-Once you've done your setup, run:
-```
-pip install -r requirements.txt
-```
+A custom strategy is just a class that implements an apply method.
 
-Run the get-spec script to download the client specifications tests:
-```
-./scripts/get-spec.sh
-```
+``` python
 
-Now you can run the tests by running `pytest` in the root directory.
-
-In order to run a single test, run the following command:
+class ActiveForEmailStrategy:
+    def apply(self, parameters: dict, context: dict = None) -> bool:
+        # Decide if the feature is active for this context
+        return context.get("email") in parameters
 
 ```
-pytest testfile.py::function_name
 
-# example: pytest tests/unit_tests/test_client.py::test_consistent_results
+Once you’ve defined your strategy, register it when you initialize the client. The key must match the strategy name in Unleash exactly.
+
+``` python
+## You should have a custom strategy defined in Unleash called 'EmailStrategy'
+my_custom_strategies = {
+    "EmailStrategy": ActiveForEmailStrategy()
+}
+
+client = UnleashClient(
+
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    custom_headers={'Authorization': '<API token>'},
+    custom_strategies = my_custom_strategies
+)
+
 ```
 
-### Linting
+### Impression data
 
-In order to lint all the files you can run the following command:
+The Python SDK supports [impression data](https://docs.getunleash.io/reference/impression-data). This lets you capture an event for every feature toggle evaluation.
+
+**Note**: The SDK does not include a built-in event bus — you’ll need to provide your own. The example below shows how to use [Blinker](https://pypi.org/project/blinker/) to send signals.
+
+To use impression data:
+- Enable Impression Data on your feature flags in the Unleash UI.
+- Provide an event_callback function when you initialize the client.
+
+Your callback must accept a single UnleashEvent. You can log it, store it, or send it to another system.
+
+```python
+from blinker import signal
+from UnleashClient import UnleashClient
+from UnleashClient.events import UnleashEvent
+
+send_data = signal('send-data')
+
+@send_data.connect
+def receive_data(sender, **kw):
+    print("Caught signal from %r, data %r" % (sender, kw))
+
+def example_callback(event: UnleashEvent):
+    send_data.send('anonymous', data=event)
+
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    custom_headers={'Authorization': '<API token>'},
+    event_callback=example_callback
+)
+client.initialize_client()
+client.is_enabled("testFlag")
 
 ```
-make fmt
+
+Impression callbacks run in-process — keep them fast to avoid blocking your app.
+
+### Custom cache
+
+By default, the Python SDK stores feature toggles in an on-disk cache using fcache. If you need a different storage backend, for example, Redis, memory-only, or a custom database, you can provide your own cache implementation.
+
+Below is an example custom CustomCache using fcache under the hood.
+
+```python
+from typing import Optional, Any
+from UnleashClient.cache import BaseCache
+from fcache.cache import FileCache as _Filecache
+
+class CustomCache(BaseCache):
+    # This is specific for FileCache.  Depending on the cache you're using, this may look different!
+    def __init__(self, name: str, directory: Optional[str] = None):
+        self._cache = _FileCache(name, app_cache_dir=directory)
+
+    def set(self, key: str, value: Any):
+        self._cache[key] = value
+        self._cache.sync()
+
+    def mset(self, data: dict):
+        self._cache.update(data)
+        self._cache.sync()
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return self._cache.get(key, default)
+
+    def exists(self, key: str):
+        return key in self._cache
+
+    def destroy(self):
+        return self._cache.delete()
 ```
+Pass your cache instance to the client with the cache argument:
+
+```python
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    cache=CustomCache("my-cache")
+)
+```
+
+## Running in multi-process setups
+
+The Python SDK runs a background thread to keep feature toggles in sync with the Unleash server. Some runtime environments, like WSGI servers and Celery workers, need extra setup to make sure the SDK works correctly.
+
+### WSGI
+
+When using WSGI servers (e.g., for Flask or Django apps), be aware that:
+
+- Many WSGI setups disable threading by default. The SDK needs threads to poll for updates in the background.
+- Make sure to set `enable-threads` in your WSGI config.
+
+If you use multiple processes (processes flag) for scaling, you may need to enable the `lazy-apps` flag. This ensures each process gets a fresh SDK instance.
+
+See [The Art of Graceful Reloading](https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#preforking-vs-lazy-apps-vs-lazy) for more details.
+
+### Celery
+
+When using the SDK in Celery tasks, make sure you initialize it inside the worker_process_init event. Otherwise, the worker may run but won’t poll for feature toggle updates.
+
+```python
+from UnleashClient import UnleashClient
+from celery.signals import worker_process_init
+
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    custom_headers={'Authorization': '<API token>'}
+)
+
+@worker_process_init.connect
+def configure_workers(sender=None, conf=None, **kwargs):
+    client.initialize_client()
+```
+
+## Contributing & Development
+
+We love community input! If you’d like to report a bug, propose a feature, or improve the SDK, please read our [contribution guide](CONTRIBUTING.md) for how to get started.
+
+For instructions on setting up your development environment, running tests, and publishing, see our [development documentation](DEVELOPMENT.md).
+
+## License
+
+This project is [MIT licensed](https://opensource.org/licenses/MIT).
