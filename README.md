@@ -135,7 +135,7 @@ The UnleashClient constructor supports the following configuration options:
 | verbose_log_level 	    | Python logging level for debugging feature flag failures. See https://docs.python.org/3/library/logging.html#logging-levels for more information.	| 30                        |
 | scheduler_executor 	    | APScheduler executor name to use.	                                                                                                                | None                      |
 | multiple_instance_mode    | How to handle multiple client instances (BLOCK, WARN, SILENTLY_ALLOW).	                                                                        | WARN                      |
-| event_callback 	        | Function to handle impression events. See [impression data](#impression-data) for more information.                                           | None                      |
+| event_callback 	        | Function to handle impression events. See [impression data](#impression-data) for more information.                                               | None                      |
 
 ### Bootstrap
 
