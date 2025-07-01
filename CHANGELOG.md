@@ -1,3 +1,6 @@
+## v6.2.2
+* (Bugfix) Arbitrary properties are now allowed in context fields, so long as they have a reasonable string representation.
+
 ## v6.2.1
 * (Bugfix) Flush metrics if `destroy()`ing client.
 
