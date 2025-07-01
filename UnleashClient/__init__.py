@@ -522,7 +522,7 @@ class UnleashClient:
             return value.isoformat()
         if isinstance(value, (int, float)):
             return str(value)
-        return value
+        return str(value)
 
     def _resolve_variant(self, feature_name: str, context: dict) -> dict:
         """
