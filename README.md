@@ -212,7 +212,7 @@ client = UnleashClient(
 
 ### Custom strategies
 
-The Python SDK lets you define [custom activation strategies](https://docs.getunleash.io/reference/custom-activation-strategies) if the built-in ones don’t cover your needs. This gives you more fine grained control over how your feature evaluates.
+The Python SDK lets you define [custom activation strategies](https://docs.getunleash.io/reference/custom-activation-strategies) if the built-in ones don’t cover your needs. This gives you more fine grained control over how your features evaluate.
 
 A custom strategy is just a class that implements an apply method.
 
