@@ -15,7 +15,7 @@ However, there are some caveats to this method. There is no easy way to run a si
 
 First, make sure you have pip or pip3 installed.
 
-Then setup your viritual environment:
+Then set up your virtual environment:
 
 Linux & Mac:
 

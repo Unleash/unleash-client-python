@@ -28,7 +28,7 @@ you have a [bootstrapped configuration](#bootstrap) or you use [fallbacks](#fall
 from UnleashClient import UnleashClient
 
 client = UnleashClient(
-    url="https://YOUR-API-URL",
+    url="https:<YOUR-API-URL>",
     app_name="my-python-app",
     custom_headers={'Authorization': '<API token>'})
 
@@ -250,7 +250,7 @@ The Python SDK supports [impression data](https://docs.getunleash.io/reference/i
 **Note**: The SDK does not include a built-in event bus — you’ll need to provide your own. The example below shows how to use [Blinker](https://pypi.org/project/blinker/) to send signals.
 
 To use impression data:
-- Enable Impression Data on your feature flags in the Unleash UI.
+- Enable impression data on your feature flags in the Unleash UI.
 - Provide an event_callback function when you initialize the client.
 
 Your callback must accept a single UnleashEvent. You can log it, store it, or send it to another system.
@@ -291,7 +291,7 @@ Below is an example custom CustomCache using fcache under the hood.
 ```python
 from typing import Optional, Any
 from UnleashClient.cache import BaseCache
-from fcache.cache import FileCache as _Filecache
+from fcache.cache import FileCache as _FileCache
 
 class CustomCache(BaseCache):
     # This is specific for FileCache.  Depending on the cache you're using, this may look different!
@@ -336,7 +336,7 @@ When using WSGI servers (e.g., for Flask or Django apps), be aware that:
 - Many WSGI setups disable threading by default. The SDK needs threads to poll for updates in the background.
 - Make sure to set `enable-threads` in your WSGI config.
 
-If you use multiple processes (processes flag) for scaling, you may need to enable the `lazy-apps` flag. This ensures each process gets a fresh SDK instance.
+When running under uWSGI with multiple processes (using the `--processes` option), you may need to enable the `lazy-apps` option. This ensures each process gets a fresh SDK instance.
 
 See [The Art of Graceful Reloading](https://uwsgi-docs.readthedocs.io/en/latest/articles/TheArtOfGracefulReloading.html#preforking-vs-lazy-apps-vs-lazy) for more details.
 
@@ -359,7 +359,7 @@ def configure_workers(sender=None, conf=None, **kwargs):
     client.initialize_client()
 ```
 
-## Contributing & Development
+## Contributing and development
 
 We love community input! If you’d like to report a bug, propose a feature, or improve the SDK, please read our [contribution guide](CONTRIBUTING.md) for how to get started.
 
