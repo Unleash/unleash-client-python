@@ -114,7 +114,7 @@ The UnleashClient constructor supports the following configuration options:
 
 | Parameter 	            | Description	                                                                                                                                    | Default                   |
 | ------------ 	            | ------------                      	                                                                                                            | ------------              |
-| url 	                    | URL of your Unleash server. Required.	                                                                                                            | None                      |
+| url 	                    | URL of your Unleash server. E.g. `https://app.unleash-hosted.com/demo/api/` Required.                                                             | None                      |
 | app_name 	                | Name of the application using the client. Required.	                                                                                            | None                      |
 | environment               | Logical environment name (deprecated).	                                                                                                        | "default"                 |
 | instance_id               | Unique identifier for this client instance.	                                                                                                    | "unleash-client-python"   |
