@@ -975,6 +975,72 @@ def test_fetch_signal(cache):
 
     assert trapped_event.features[0]['name'] == "testFlag"
 
+@responses.activate
+def test_ready_signal(cache):
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    trapped_events = 0
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            nonlocal trapped_events
+            trapped_events += 1
+
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=1, # minimum interval is 1 second
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        event_callback=example_callback,
+    )
+
+    unleash_client.initialize_client()
+    time.sleep(2)
+
+    assert trapped_events == 1
+
+def test_ready_signal_works_with_bootstrapping():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
+
+    trapped_events = 0
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            nonlocal trapped_events
+            trapped_events += 1
+
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        cache=cache,
+        disable_metrics=True,
+        disable_registration=True,
+        event_callback=example_callback,
+    )
+
+    unleash_client.initialize_client(fetch_toggles=False)
+    time.sleep(1)
+
+    assert trapped_events == 1
+
 
 def test_context_handles_numerics():
     cache = FileCache("MOCK_CACHE")
