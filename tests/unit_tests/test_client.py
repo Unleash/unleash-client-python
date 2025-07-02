@@ -936,6 +936,46 @@ def test_signals_feature_flag(cache):
     assert variant["name"] == "VarA"
 
 
+@responses.activate
+def test_fetch_signal(cache):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    trapped_event = None
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            nonlocal trapped_event
+            trapped_event = kw["data"]
+
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    # Set up Unleash
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        metrics_interval=METRICS_INTERVAL,
+        cache=cache,
+        event_callback=example_callback,
+    )
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    assert trapped_event.features[0]['name'] == "testFlag"
+
+
 def test_context_handles_numerics():
     cache = FileCache("MOCK_CACHE")
     cache.bootstrap_from_dict(MOCK_FEATURE_WITH_NUMERIC_CONSTRAINT)
