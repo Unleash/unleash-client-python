@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
+from json import loads
 from typing import Optional
 from uuid import UUID
-from json import loads
 
 
 class UnleashEventType(Enum):
