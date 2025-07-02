@@ -61,7 +61,7 @@ def build_ready_callback(
     def ready_callback() -> None:
         """
         Callback function to notify that the Unleash client is ready.
-        This will only call the event_callback only once.
+        This will only call the event_callback once.
         """
         nonlocal already_fired
         if already_fired:
