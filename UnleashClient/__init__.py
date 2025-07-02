@@ -283,6 +283,7 @@ class UnleashClient:
                         "request_timeout": self.unleash_request_timeout,
                         "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
+                        "event_callback": self.unleash_event_callback,
                     }
                     job_func: Callable = fetch_and_load_features
                 else:
