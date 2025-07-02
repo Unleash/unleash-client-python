@@ -973,7 +973,8 @@ def test_fetch_signal(cache):
     unleash_client.initialize_client()
     time.sleep(1)
 
-    assert trapped_event.features[0]['name'] == "testFlag"
+    assert trapped_event.features[0]["name"] == "testFlag"
+
 
 @responses.activate
 def test_ready_signal(cache):
@@ -997,7 +998,7 @@ def test_ready_signal(cache):
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
-        refresh_interval=1, # minimum interval is 1 second
+        refresh_interval=1,  # minimum interval is 1 second
         disable_metrics=True,
         disable_registration=True,
         cache=cache,
@@ -1008,6 +1009,7 @@ def test_ready_signal(cache):
     time.sleep(2)
 
     assert trapped_events == 1
+
 
 def test_ready_signal_works_with_bootstrapping():
     cache = FileCache("MOCK_CACHE")

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
+from json import loads
 from typing import Optional
 from uuid import UUID
-from json import loads
 
 
 class UnleashEventType(Enum):
@@ -58,5 +58,5 @@ class UnleashFetchedEvent(BaseEvent):
     @property
     def features(self) -> dict:
         if not hasattr(self, "_parsed_payload"):
-            self._parsed_payload = loads(self.raw_features)['features']
+            self._parsed_payload = loads(self.raw_features)["features"]
         return self._parsed_payload
