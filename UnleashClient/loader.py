@@ -1,3 +1,4 @@
+from typing import Optional
 from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.cache import BaseCache
@@ -8,6 +9,7 @@ from UnleashClient.utils import LOGGER
 def load_features(
     cache: BaseCache,
     engine: UnleashEngine,
+    ready_callback: Optional[callable] = None,
 ) -> None:
     """
     Caching
@@ -27,6 +29,8 @@ def load_features(
 
     try:
         warnings = engine.take_state(feature_provisioning)
+        if ready_callback:
+            ready_callback()
         if warnings:
             LOGGER.warning(
                 "Some features were not able to be parsed correctly, they may not evaluate as expected"

@@ -24,7 +24,7 @@ from UnleashClient.constants import (
     SDK_NAME,
     SDK_VERSION,
 )
-from UnleashClient.events import UnleashEvent, UnleashEventType
+from UnleashClient.events import UnleashEvent, UnleashEventType, UnleashReadyEvent
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
@@ -44,6 +44,37 @@ _BASE_CONTEXT_FIELDS = [
     "remoteAddress",
     "properties",
 ]
+
+
+def build_ready_callback(
+    event_callback: Optional[Callable[[UnleashEvent], None]] = None,
+) -> Optional[Callable]:
+    """
+    Builds a callback function that can be used to notify when the Unleash client is ready.
+    """
+
+    if not event_callback:
+        return None
+
+    already_fired = False
+
+    def ready_callback() -> None:
+        """
+        Callback function to notify that the Unleash client is ready.
+        This will only call the event_callback only once.
+        """
+        nonlocal already_fired
+        if already_fired:
+            return
+        if event_callback:
+            event = UnleashReadyEvent(
+                event_type=UnleashEventType.READY,
+                event_id=uuid.uuid4(),
+            )
+            already_fired = True
+            event_callback(event)
+
+    return ready_callback
 
 
 # pylint: disable=dangerous-default-value
@@ -132,6 +163,7 @@ class UnleashClient:
         self.unleash_project_name = project_name
         self.unleash_verbose_log_level = verbose_log_level
         self.unleash_event_callback = event_callback
+        self._ready_callback = build_ready_callback(event_callback)
 
         self._do_instance_check(multiple_instance_mode)
 
@@ -284,12 +316,14 @@ class UnleashClient:
                         "request_retries": self.unleash_request_retries,
                         "project": self.unleash_project_name,
                         "event_callback": self.unleash_event_callback,
+                        "ready_callback": self._ready_callback,
                     }
                     job_func: Callable = fetch_and_load_features
                 else:
                     job_args = {
                         "cache": self.cache,
                         "engine": self.engine,
+                        "ready_callback": self._ready_callback,
                     }
                     job_func = load_features
 

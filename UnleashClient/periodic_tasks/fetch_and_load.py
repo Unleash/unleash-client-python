@@ -23,6 +23,7 @@ def fetch_and_load_features(
     engine: UnleashEngine,
     project: Optional[str] = None,
     event_callback: Optional[callable] = None,
+    ready_callback: Optional[callable] = None,
 ) -> None:
     (state, etag) = get_feature_toggles(
         url,
@@ -45,6 +46,8 @@ def fetch_and_load_features(
                 raw_features=state,
             )
             event_callback(event)
+        if ready_callback:
+            ready_callback()
     else:
         LOGGER.debug(
             "No feature provisioning returned from server, using cached provisioning."
