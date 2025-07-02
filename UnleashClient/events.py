@@ -58,5 +58,5 @@ class UnleashFetchedEvent(BaseEvent):
     @property
     def features(self) -> dict:
         if not hasattr(self, "_parsed_payload"):
-            self._parsed_payload = loads(self.raw_features)['features']
+            self._parsed_payload = loads(self.raw_features)["features"]
         return self._parsed_payload
