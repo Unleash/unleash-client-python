@@ -24,7 +24,12 @@ from UnleashClient.constants import (
     SDK_NAME,
     SDK_VERSION,
 )
-from UnleashClient.events import BaseEvent, UnleashEvent, UnleashEventType, UnleashReadyEvent
+from UnleashClient.events import (
+    BaseEvent,
+    UnleashEvent,
+    UnleashEventType,
+    UnleashReadyEvent,
+)
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
