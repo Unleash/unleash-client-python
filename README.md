@@ -130,7 +130,7 @@ The UnleashClient constructor supports the following configuration options:
 | request_retries           | HTTP request retry count.	                                                                                                                        | 3                         |
 | custom_strategies 	    | Dict of {name: strategy} for custom activation strategies. See [custom strategies](#custom-strategies) for more information.                      | None                      |
 | cache_directory 	        | Location for the on-disk cache. Auto-determined.                                                                                                  | None                      |
-| cache 	                | Custom cache implementation (must extend BaseCache).	                                                                                            | BaseCache                 |
+| cache 	                | Custom cache implementation (must extend BaseCache). See [custom cache](#custom-cache) for more information                                       | BaseCache                 |
 | scheduler 	            | Custom APScheduler instance.	Auto-created.                                                                                                       | BaseScheduler             |
 | verbose_log_level 	    | Python logging level for debugging feature flag failures. See https://docs.python.org/3/library/logging.html#logging-levels for more information.	| 30                        |
 | scheduler_executor 	    | APScheduler executor name to use.	                                                                                                                | None                      |
