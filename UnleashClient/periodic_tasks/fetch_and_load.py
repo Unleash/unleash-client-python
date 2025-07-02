@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Callable, Optional
 import uuid
 
 from yggdrasil_engine.engine import UnleashEngine
@@ -22,8 +22,8 @@ def fetch_and_load_features(
     request_retries: int,
     engine: UnleashEngine,
     project: Optional[str] = None,
-    event_callback: Optional[callable] = None,
-    ready_callback: Optional[callable] = None,
+    event_callback: Optional[Callable] = None,
+    ready_callback: Optional[Callable] = None,
 ) -> None:
     (state, etag) = get_feature_toggles(
         url,

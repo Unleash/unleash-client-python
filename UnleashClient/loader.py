@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Callable, Optional
 from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.cache import BaseCache
@@ -9,7 +9,7 @@ from UnleashClient.utils import LOGGER
 def load_features(
     cache: BaseCache,
     engine: UnleashEngine,
-    ready_callback: Optional[callable] = None,
+    ready_callback: Optional[Callable] = None,
 ) -> None:
     """
     Caching

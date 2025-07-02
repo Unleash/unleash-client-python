@@ -24,7 +24,7 @@ from UnleashClient.constants import (
     SDK_NAME,
     SDK_VERSION,
 )
-from UnleashClient.events import UnleashEvent, UnleashEventType, UnleashReadyEvent
+from UnleashClient.events import BaseEvent, UnleashEvent, UnleashEventType, UnleashReadyEvent
 from UnleashClient.loader import load_features
 from UnleashClient.periodic_tasks import (
     aggregate_and_send_metrics,
@@ -47,7 +47,7 @@ _BASE_CONTEXT_FIELDS = [
 
 
 def build_ready_callback(
-    event_callback: Optional[Callable[[UnleashEvent], None]] = None,
+    event_callback: Optional[Callable[[BaseEvent], None]] = None,
 ) -> Optional[Callable]:
     """
     Builds a callback function that can be used to notify when the Unleash client is ready.
@@ -130,7 +130,7 @@ class UnleashClient:
         scheduler: Optional[BaseScheduler] = None,
         scheduler_executor: Optional[str] = None,
         multiple_instance_mode: InstanceAllowType = InstanceAllowType.WARN,
-        event_callback: Optional[Callable[[UnleashEvent], None]] = None,
+        event_callback: Optional[Callable[[BaseEvent], None]] = None,
     ) -> None:
         custom_headers = custom_headers or {}
         custom_options = custom_options or {}
