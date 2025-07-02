@@ -891,28 +891,24 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
 @responses.activate
 def test_signals_feature_flag(cache):
     # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    flag_event = None
+    variant_event = None
 
     # Set up signals
     send_data = signal("send-data")
 
     @send_data.connect
     def receive_data(sender, **kw):
-        print("Caught signal from %r, data %r" % (sender, kw))
-
+        #  variant_event
         if kw["data"].event_type == UnleashEventType.FEATURE_FLAG:
-            assert kw["data"].feature_name == "testFlag"
-            assert kw["data"].enabled
+            nonlocal flag_event
+            flag_event = kw["data"]
         elif kw["data"].event_type == UnleashEventType.VARIANT:
-            assert kw["data"].feature_name == "testVariations"
-            assert kw["data"].enabled
-            assert kw["data"].variant == "VarA"
-
-        raise Exception("Random!")
+            nonlocal variant_event
+            variant_event = kw["data"]
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -922,7 +918,8 @@ def test_signals_feature_flag(cache):
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
-        metrics_interval=METRICS_INTERVAL,
+        disable_registration=True,
+        disable_metrics=True,
         cache=cache,
         event_callback=example_callback,
     )
@@ -934,6 +931,13 @@ def test_signals_feature_flag(cache):
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
+
+    assert flag_event.feature_name == "testFlag"
+    assert flag_event.enabled
+
+    assert variant_event.feature_name == "testVariations"
+    assert variant_event.enabled
+    assert variant_event.variant == "VarA"
 
 
 @responses.activate
