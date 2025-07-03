@@ -39,15 +39,6 @@ def fetch_and_load_features(
 
     if state:
         cache.set(FEATURES_URL, state)
-        if event_callback:
-            event = UnleashFetchedEvent(
-                event_type=UnleashEventType.FETCHED,
-                event_id=uuid.uuid4(),
-                raw_features=state,
-            )
-            event_callback(event)
-        if ready_callback:
-            ready_callback()
     else:
         LOGGER.debug(
             "No feature provisioning returned from server, using cached provisioning."
@@ -57,3 +48,14 @@ def fetch_and_load_features(
         cache.set(ETAG, etag)
 
     load_features(cache, engine)
+
+    if state:
+        if event_callback:
+            event = UnleashFetchedEvent(
+                event_type=UnleashEventType.FETCHED,
+                event_id=uuid.uuid4(),
+                raw_features=state,
+            )
+            event_callback(event)
+        if ready_callback:
+            ready_callback()
