@@ -306,7 +306,6 @@ def test_uc_lifecycle(readyable_unleash_client):
     )
     fetch_signal.clear()
     fetch_signal.wait(timeout=REFRESH_INTERVAL * 3)
-    print("Fetch signal")
     assert len(unleash_client.feature_definitions()) >= 9
 
 
