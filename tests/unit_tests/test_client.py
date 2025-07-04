@@ -1152,7 +1152,6 @@ def test_ready_signal_works_with_bootstrapping():
         if kw["data"].event_type == UnleashEventType.READY:
             nonlocal trapped_events
             trapped_events += 1
-            ready_signal = threading.Event()
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
