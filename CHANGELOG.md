@@ -1,3 +1,6 @@
+## v6.3.0
+* (Minor) Added 'fetch' and 'ready' lifecycle events.
+
 ## v6.2.2
 * (Bugfix) Arbitrary properties are now allowed in context fields, so long as they have a reasonable string representation.
 
