@@ -9,7 +9,8 @@ import pytest
 import responses
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
-from blinker import signal
+from blinker import signal, Signal
+import threading
 
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from tests.utilities.mocks.mock_features import (
@@ -43,7 +44,7 @@ from tests.utilities.testing_constants import (
 from UnleashClient import INSTANCES, UnleashClient
 from UnleashClient.cache import FileCache
 from UnleashClient.constants import FEATURES_URL, METRICS_URL, REGISTER_URL
-from UnleashClient.events import UnleashEvent, UnleashEventType
+from UnleashClient.events import BaseEvent, UnleashEvent, UnleashEventType
 from UnleashClient.utils import InstanceAllowType
 
 
@@ -66,6 +67,24 @@ class EnvironmentStrategy:
         return default_value
 
 
+def build_event_handlers():
+    send_data = Signal()
+    ready_signal = threading.Event()
+    fetch_signal = threading.Event()
+
+    @send_data.connect
+    def handle_event(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            fetch_signal.set()
+
+    def event_handler(event: BaseEvent):
+        send_data.send("anonymous", data=event)
+
+    return event_handler, ready_signal, fetch_signal
+
+
 @pytest.fixture(autouse=True)
 def before_each():
     INSTANCES._reset()
@@ -77,20 +96,49 @@ def cache(tmpdir):
 
 
 @pytest.fixture()
-def unleash_client(cache):
+def readyable_unleash_client(cache):
+    send_data = Signal()
+    ready_signal = threading.Event()
+    fetch_signal = threading.Event()
+
+    @send_data.connect
+    def handle_event(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            fetch_signal.set()
+
+    def event_handler(event: BaseEvent):
+        send_data.send("anonymous", data=event)
+
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
+        event_callback=event_handler,
     )
-    yield unleash_client
+    yield unleash_client, ready_signal, fetch_signal
     unleash_client.destroy()
 
 
 @pytest.fixture()
-def unleash_client_project(cache):
+def readyable_unleash_client_project(cache):
+    send_data = Signal()
+    ready_signal = threading.Event()
+    fetch_signal = threading.Event()
+
+    @send_data.connect
+    def handle_event(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            fetch_signal.set()
+
+    def event_handler(event: BaseEvent):
+        send_data.send("anonymous", data=event)
+
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
@@ -98,25 +146,55 @@ def unleash_client_project(cache):
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
         project_name=PROJECT_NAME,
+        event_callback=event_handler,
     )
-    yield unleash_client
+    yield unleash_client, ready_signal, fetch_signal
     unleash_client.destroy()
 
 
 @pytest.fixture()
-def unleash_client_nodestroy(cache):
+def readyable_unleash_client_nodestroy(cache):
+    send_data = Signal()
+    ready_signal = threading.Event()
+    fetch_signal = threading.Event()
+
+    @send_data.connect
+    def handle_event(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            fetch_signal.set()
+
+    def event_handler(event: BaseEvent):
+        send_data.send("anonymous", data=event)
+
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
+        event_callback=event_handler,
     )
-    yield unleash_client
+    yield unleash_client, ready_signal, fetch_signal
 
 
 @pytest.fixture()
-def unleash_client_toggle_only(cache):
+def readyable_unleash_client_toggle_only(cache):
+    send_data = Signal()
+    ready_signal = threading.Event()
+    fetch_signal = threading.Event()
+
+    @send_data.connect
+    def handle_event(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            fetch_signal.set()
+
+    def event_handler(event: BaseEvent):
+        send_data.send("anonymous", data=event)
+
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
@@ -125,8 +203,9 @@ def unleash_client_toggle_only(cache):
         disable_registration=True,
         disable_metrics=True,
         cache=cache,
+        event_callback=event_handler,
     )
-    yield unleash_client
+    yield unleash_client, ready_signal, fetch_signal
     unleash_client.destroy()
 
 
@@ -189,7 +268,8 @@ def test_UC_type_violation():
 
 
 @responses.activate
-def test_uc_lifecycle(unleash_client):
+def test_uc_lifecycle(readyable_unleash_client):
+    unleash_client, ready_signal, fetch_signal = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -203,7 +283,7 @@ def test_uc_lifecycle(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait()
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
@@ -215,7 +295,6 @@ def test_uc_lifecycle(unleash_client):
         status=304,
         headers={"etag": ETAG_VALUE},
     )
-    time.sleep(REFRESH_INTERVAL + 1)
 
     # Simulate server provisioning change
     responses.add(
@@ -225,12 +304,15 @@ def test_uc_lifecycle(unleash_client):
         status=200,
         headers={"etag": "W/somethingelse"},
     )
-    time.sleep(REFRESH_INTERVAL * 2)
+    fetch_signal.clear()
+    fetch_signal.wait(timeout=REFRESH_INTERVAL * 3)
+    print("Fetch signal")
     assert len(unleash_client.feature_definitions()) >= 9
 
 
 @responses.activate
-def test_uc_is_enabled(unleash_client):
+def test_uc_is_enabled_basic(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -240,12 +322,14 @@ def test_uc_is_enabled(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
+
     assert unleash_client.is_enabled("testFlag")
 
 
 @responses.activate
-def test_consistent_results(unleash_client):
+def test_consistent_results(readyable_unleash_client):
+    unleash_client, _, _ = readyable_unleash_client
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
@@ -268,8 +352,8 @@ def test_consistent_results(unleash_client):
 
 
 @responses.activate
-def test_uc_project(unleash_client_project):
-    unleash_client = unleash_client_project
+def test_uc_project(readyable_unleash_client_project):
+    unleash_client, ready_signal, _ = readyable_unleash_client_project
 
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
@@ -280,12 +364,14 @@ def test_uc_project(unleash_client_project):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("ivan-project")
 
 
 @responses.activate
-def test_uc_fallbackfunction(unleash_client, mocker):
+def test_uc_fallbackfunction(readyable_unleash_client, mocker):
+    unleash_client, ready_signal, _ = readyable_unleash_client
+
     def good_fallback(feature_name: str, context: dict) -> bool:
         return True
 
@@ -305,7 +391,7 @@ def test_uc_fallbackfunction(unleash_client, mocker):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     # Non-existent feature flag, fallback_function
     assert unleash_client.is_enabled("notFoundTestFlag", fallback_function=fallback_spy)
     assert fallback_spy.call_count == 1
@@ -323,8 +409,8 @@ def test_uc_fallbackfunction(unleash_client, mocker):
 
 
 @responses.activate
-def test_uc_dirty_cache(unleash_client_nodestroy):
-    unleash_client = unleash_client_nodestroy
+def test_uc_dirty_cache(readyable_unleash_client_nodestroy):
+    unleash_client, ready_signal, _ = readyable_unleash_client_nodestroy
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -334,18 +420,20 @@ def test_uc_dirty_cache(unleash_client_nodestroy):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("testFlag")
     unleash_client.unleash_scheduler.shutdown()
 
     # Check that everything works if previous cache exists.
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("testFlag")
 
 
 @responses.activate
 def test_uc_is_enabled_with_context():
+    event_handler, ready_signal, _ = build_event_handlers()
+
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -356,18 +444,23 @@ def test_uc_is_enabled_with_context():
     custom_strategies_dict = {"custom-context": EnvironmentStrategy()}
 
     unleash_client = UnleashClient(
-        URL, APP_NAME, environment="prod", custom_strategies=custom_strategies_dict
+        URL,
+        APP_NAME,
+        environment="prod",
+        custom_strategies=custom_strategies_dict,
+        event_callback=event_handler,
     )
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
 
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("testContextFlag")
     unleash_client.destroy()
 
 
 @responses.activate
-def test_uc_is_enabled_error_states(unleash_client):
+def test_uc_is_enabled_error_states(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -377,7 +470,7 @@ def test_uc_is_enabled_error_states(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert not unleash_client.is_enabled("ThisFlagDoesn'tExist")
     assert unleash_client.is_enabled(
         "ThisFlagDoesn'tExist", fallback_function=lambda x, y: True
@@ -385,14 +478,15 @@ def test_uc_is_enabled_error_states(unleash_client):
 
 
 @responses.activate
-def test_uc_context_manager(unleash_client_nodestroy):
+def test_uc_context_manager(readyable_unleash_client_nodestroy):
+    unleash_client, _, _ = readyable_unleash_client_nodestroy
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    with unleash_client_nodestroy as unleash_client:
+    with unleash_client as unleash_client:
         assert unleash_client.is_initialized
         assert unleash_client.is_enabled("testFlag")
 
@@ -431,11 +525,13 @@ def test_uc_get_variant():
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
-    unleash_client = UnleashClient(URL, APP_NAME)
+    event_handler, ready_signal, _ = build_event_handlers()
+
+    unleash_client = UnleashClient(URL, APP_NAME, event_callback=event_handler)
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
 
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     # If feature flag is on.
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
     assert variant["name"] == "VarA"
@@ -484,7 +580,8 @@ def test_uc_not_initialized_getvariant():
 
 
 @responses.activate
-def test_uc_metrics(unleash_client):
+def test_uc_metrics(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -494,7 +591,7 @@ def test_uc_metrics(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("testFlag")
 
     metrics = unleash_client.engine.get_metrics()["toggles"]
@@ -502,7 +599,8 @@ def test_uc_metrics(unleash_client):
 
 
 @responses.activate
-def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
+def test_uc_registers_metrics_for_nonexistent_features(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -511,7 +609,7 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     # Check a flag that doesn't exist
     unleash_client.is_enabled("nonexistent-flag")
@@ -522,7 +620,8 @@ def test_uc_registers_metrics_for_nonexistent_features(unleash_client):
 
 
 @responses.activate
-def test_uc_metrics_dependencies(unleash_client):
+def test_uc_metrics_dependencies(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET,
@@ -532,7 +631,7 @@ def test_uc_metrics_dependencies(unleash_client):
     )
 
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("Child")
 
     metrics = unleash_client.engine.get_metrics()["toggles"]
@@ -541,7 +640,10 @@ def test_uc_metrics_dependencies(unleash_client):
 
 
 @responses.activate
-def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
+def test_uc_registers_variant_metrics_for_nonexistent_features(
+    readyable_unleash_client,
+):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -550,7 +652,7 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     # Check a flag that doesn't exist
     unleash_client.get_variant("nonexistent-flag")
@@ -561,7 +663,8 @@ def test_uc_registers_variant_metrics_for_nonexistent_features(unleash_client):
 
 
 @responses.activate
-def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
+def test_uc_doesnt_count_metrics_for_dependency_parents(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -573,7 +676,7 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     child = "ChildWithVariant"
     parent = "Parent"
@@ -589,7 +692,10 @@ def test_uc_doesnt_count_metrics_for_dependency_parents(unleash_client):
 
 
 @responses.activate
-def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
+def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(
+    readyable_unleash_client,
+):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -601,7 +707,7 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     child = "WithDisabledDependency"
     parent = "Disabled"
@@ -617,8 +723,8 @@ def test_uc_counts_metrics_for_child_even_if_parent_is_disabled(unleash_client):
 
 
 @responses.activate
-def test_uc_disabled_registration(unleash_client_toggle_only):
-    unleash_client = unleash_client_toggle_only
+def test_uc_disabled_registration(readyable_unleash_client_toggle_only):
+    unleash_client, ready_signal, _ = readyable_unleash_client_toggle_only
     # Set up APIs
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
     responses.add(
@@ -628,7 +734,7 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 
     unleash_client.initialize_client()
     unleash_client.is_enabled("testFlag")
-    time.sleep(REFRESH_INTERVAL * 2)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_enabled("testFlag")
 
     for api_call in responses.calls:
@@ -636,9 +742,9 @@ def test_uc_disabled_registration(unleash_client_toggle_only):
 
 
 @responses.activate
-def test_uc_server_error(unleash_client):
+def test_uc_server_error(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Verify that Unleash Client will still fall back gracefully if SERVER ANGRY RAWR, and then recover gracefully.
-    unleash_client = unleash_client  # noqa
     # Set up APIs
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=401)
     responses.add(responses.GET, URL + FEATURES_URL, status=500)
@@ -651,7 +757,7 @@ def test_uc_server_error(unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    time.sleep(REFRESH_INTERVAL * 2)
+    ready_signal.wait(REFRESH_INTERVAL * 2)
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -663,14 +769,21 @@ def test_uc_with_invalid_url():
 
 
 def test_uc_with_network_error():
-    unleash_client = UnleashClient("https://thisisavalidurl.com", APP_NAME)
+    unleash_client = UnleashClient(
+        "https://this-will-never-try-to-dns-resolve.invalid/",
+        APP_NAME,
+        disable_metrics=True,
+        disable_registration=True,
+        request_timeout=1,
+    )
     unleash_client.initialize_client()
 
     assert unleash_client.is_enabled
 
 
 @responses.activate
-def test_uc_multiple_initializations(unleash_client):
+def test_uc_multiple_initializations(readyable_unleash_client):
+    unleash_client, ready_signal, _ = readyable_unleash_client
     # Set up API
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
@@ -684,7 +797,7 @@ def test_uc_multiple_initializations(unleash_client):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
@@ -711,6 +824,7 @@ def test_uc_cache_bootstrap_dict(cache):
 
     # Set up cache
     cache.bootstrap_from_dict(initial_config=MOCK_FEATURE_RESPONSE_PROJECT)
+    event_handler, ready_signal, _ = build_event_handlers()
 
     # Check bootstrapping
     unleash_client = UnleashClient(
@@ -719,13 +833,14 @@ def test_uc_cache_bootstrap_dict(cache):
         refresh_interval=REFRESH_INTERVAL,
         metrics_interval=METRICS_INTERVAL,
         cache=cache,
+        event_callback=event_handler,
     )
     assert len(unleash_client.feature_definitions()) == 1
     assert unleash_client.is_enabled("ivan-project")
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
     assert unleash_client.is_enabled("testFlag")
@@ -784,7 +899,6 @@ def test_uc_cache_bootstrap_url(cache):
 @responses.activate
 def test_uc_custom_scheduler():
     # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET,
         URL + FEATURES_URL,
@@ -792,25 +906,28 @@ def test_uc_custom_scheduler():
         status=200,
         headers={"etag": ETAG_VALUE},
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
 
     # Set up UnleashClient
     custom_executors = {"hamster_executor": ThreadPoolExecutor()}
 
     custom_scheduler = BackgroundScheduler(executors=custom_executors)
 
+    event_handler, ready_signal, fetch_signal = build_event_handlers()
+
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
-        refresh_interval=5,
-        metrics_interval=10,
+        refresh_interval=REFRESH_INTERVAL,
+        disable_metrics=True,
+        disable_registration=True,
         scheduler=custom_scheduler,
         scheduler_executor="hamster_executor",
+        event_callback=event_handler,
     )
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
     assert unleash_client.is_initialized
     assert len(unleash_client.feature_definitions()) >= 4
 
@@ -822,7 +939,6 @@ def test_uc_custom_scheduler():
         status=304,
         headers={"etag": ETAG_VALUE},
     )
-    time.sleep(6)
 
     # Simulate server provisioning change
     responses.add(
@@ -832,7 +948,7 @@ def test_uc_custom_scheduler():
         status=200,
         headers={"etag": "W/somethingelse"},
     )
-    time.sleep(6)
+    fetch_signal.wait(timeout=REFRESH_INTERVAL * 3)
     assert len(unleash_client.feature_definitions()) >= 9
 
 
@@ -899,6 +1015,7 @@ def test_signals_feature_flag(cache):
 
     # Set up signals
     send_data = signal("send-data")
+    ready_signal = threading.Event()
 
     @send_data.connect
     def receive_data(sender, **kw):
@@ -909,6 +1026,8 @@ def test_signals_feature_flag(cache):
         elif kw["data"].event_type == UnleashEventType.VARIANT:
             nonlocal variant_event
             variant_event = kw["data"]
+        elif kw["data"].event_type == UnleashEventType.READY:
+            ready_signal.set()
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -926,7 +1045,7 @@ def test_signals_feature_flag(cache):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     assert unleash_client.is_enabled("testFlag")
     variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
@@ -952,6 +1071,7 @@ def test_fetch_signal(cache):
 
     # Set up signals
     send_data = signal("send-data")
+    fetch_signal = threading.Event()
 
     @send_data.connect
     def receive_data(sender, **kw):
@@ -959,6 +1079,7 @@ def test_fetch_signal(cache):
         if kw["data"].event_type == UnleashEventType.FETCHED:
             nonlocal trapped_event
             trapped_event = kw["data"]
+            fetch_signal.set()
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -975,7 +1096,7 @@ def test_fetch_signal(cache):
 
     # Create Unleash client and check initial load
     unleash_client.initialize_client()
-    time.sleep(1)
+    fetch_signal.wait(timeout=1)
 
     assert trapped_event.features[0]["name"] == "testFlag"
 
@@ -989,12 +1110,14 @@ def test_ready_signal(cache):
 
     # Set up signals
     send_data = signal("send-data")
+    ready_signal = threading.Event()
 
     @send_data.connect
     def receive_data(sender, **kw):
         if kw["data"].event_type == UnleashEventType.READY:
             nonlocal trapped_events
             trapped_events += 1
+            ready_signal.set()
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -1010,7 +1133,7 @@ def test_ready_signal(cache):
     )
 
     unleash_client.initialize_client()
-    time.sleep(2)
+    ready_signal.wait(timeout=1)
 
     assert trapped_events == 1
 
@@ -1023,12 +1146,14 @@ def test_ready_signal_works_with_bootstrapping():
 
     # Set up signals
     send_data = signal("send-data")
+    ready_signal = threading.Event()
 
     @send_data.connect
     def receive_data(sender, **kw):
         if kw["data"].event_type == UnleashEventType.READY:
             nonlocal trapped_events
             trapped_events += 1
+            ready_signal = threading.Event()
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -1043,7 +1168,7 @@ def test_ready_signal_works_with_bootstrapping():
     )
 
     unleash_client.initialize_client(fetch_toggles=False)
-    time.sleep(1)
+    ready_signal.wait(timeout=1)
 
     assert trapped_events == 1
 
@@ -1175,7 +1300,8 @@ def test_uuids_are_valid_context_properties():
 
 
 @responses.activate
-def test_identification_headers_sent_and_consistent(unleash_client):
+def test_identification_headers_sent_and_consistent(readyable_unleash_client):
+    unleash_client, _, _ = readyable_unleash_client
     responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
@@ -1227,14 +1353,16 @@ def test_identification_values_are_passed_in():
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
     responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    event_handler, ready_signal, _ = build_event_handlers()
 
     refresh_interval = 1
-    metrics_interval = 2
+    metrics_interval = 1
     unleash_client = UnleashClient(
         URL,
         APP_NAME,
         refresh_interval=refresh_interval,
         metrics_interval=metrics_interval,
+        event_callback=event_handler,
     )
 
     expected_refresh_interval = str(refresh_interval * 1000)
@@ -1273,7 +1401,7 @@ def test_identification_values_are_passed_in():
     except ValueError:
         assert False, "Invalid UUID format in UNLEASH-CONNECTION-ID"
 
-    time.sleep(3)
+    time.sleep(1.5)
     metrics_request = [
         call for call in responses.calls if METRICS_URL in call.request.url
     ][0].request
