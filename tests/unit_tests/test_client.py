@@ -1,4 +1,5 @@
 import json
+import threading
 import time
 import uuid
 import warnings
@@ -9,8 +10,7 @@ import pytest
 import responses
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
-from blinker import signal, Signal
-import threading
+from blinker import Signal, signal
 
 from tests.utilities.mocks.mock_all_features import MOCK_ALL_FEATURES
 from tests.utilities.mocks.mock_features import (
