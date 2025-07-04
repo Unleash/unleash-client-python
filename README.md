@@ -243,11 +243,13 @@ client = UnleashClient(
 
 ```
 
-### Impression data
+### Events and impression data
 
-The Python SDK supports [impression data](https://docs.getunleash.io/reference/impression-data). This lets you capture an event for every feature toggle evaluation.
+The Python SDK lets you tap into its behavior through [impression data](https://docs.getunleash.io/reference/impression-data) and lifecycle events.
 
 **Note**: The SDK does not include a built-in event bus — you’ll need to provide your own. The example below shows how to use [Blinker](https://pypi.org/project/blinker/) to send signals.
+
+#### Impression events
 
 To use impression data:
 - Enable impression data on your feature flags in the Unleash UI.
@@ -281,6 +283,41 @@ client.is_enabled("testFlag")
 ```
 
 Impression callbacks run in-process — keep them fast to avoid blocking your app.
+
+#### Lifecycle events
+
+The same event_callback also delivers lifecycle events:
+- FETCHED: triggered when a new version of feature flags is pulled from the Unleash server. (Does not trigger on 304 Not Modified). The FETCHED event includes a features property containing all the feature flags returned by that fetch.
+- READY: triggered once when the SDK first loads feature flags from the Unleash server or a local backup.
+
+```python
+from blinker import signal
+from UnleashClient import UnleashClient
+from UnleashClient.events import UnleashEvent, UnleashEventType
+
+send_data = signal('send-data')
+
+@send_data.connect
+def receive_data(sender, **kw):
+    if kw["data"].event_type == UnleashEventType.READY:
+        print("SDK is ready: toggles loaded from Unleash or backup")
+    elif kw["data"].event_type == UnleashEventType.FETCHED:
+        # Only FETCHED events have a 'features' property
+        print("Fetched new feature flags:", kw["data"].features)
+
+def example_callback(event: UnleashEvent):
+    send_data.send('anonymous', data=event)
+
+client = UnleashClient(
+    url="https://YOUR-API-URL",
+    app_name="my-python-app",
+    custom_headers={'Authorization': '<API token>'},
+    event_callback=example_callback
+)
+client.initialize_client()
+client.is_enabled("testFlag")
+
+```
 
 ### Custom cache
 
