@@ -128,7 +128,7 @@ The UnleashClient constructor supports the following configuration options:
 | custom_options            | Extra options for [HTTP requests](https://requests.readthedocs.io/en/latest/api/#main-interface).                                                 | None                      |
 | request_timeout           | HTTP request timeout (seconds).	                                                                                                                | 30                        |
 | request_retries           | HTTP request retry count.	                                                                                                                        | 3                         |
-| custom_strategies 	    | Dict of {name: strategy} for custom activation strategies. See [custom strategies](#custom-strategies) for more information.                      | None                      |
+| custom_strategies 	    | Dict of `{name: strategy}` for custom activation strategies. See [custom strategies](#custom-strategies) for more information.                      | None                      |
 | cache_directory 	        | Location for the on-disk cache. Auto-determined.                                                                                                  | None                      |
 | cache 	                | Custom cache implementation (must extend BaseCache). See [custom cache](#custom-cache) for more information                                       | BaseCache                 |
 | scheduler 	            | Custom APScheduler instance.	Auto-created.                                                                                                       | BaseScheduler             |
