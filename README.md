@@ -287,7 +287,7 @@ Impression callbacks run in-process — keep them fast to avoid blocking your ap
 #### Lifecycle events
 
 The same event_callback also delivers lifecycle events:
-- FETCHED: triggered when a new version of toggles is pulled from the Unleash server. (Does not trigger on 304 Not Modified.). The FETCHED event includes a features property containing all the feature flags returned by that fetch.
+- FETCHED: triggered when a new version of feature flags is pulled from the Unleash server. (Does not trigger on 304 Not Modified). The FETCHED event includes a features property containing all the feature flags returned by that fetch.
 - READY: triggered once when the SDK first loads toggles from the Unleash server or a local backup.
 
 ```python
