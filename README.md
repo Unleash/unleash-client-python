@@ -118,7 +118,7 @@ The UnleashClient constructor supports the following configuration options:
 | app_name 	                | Name of the application using the client. Required.	                                                                                            | None                      |
 | environment               | Logical environment name (deprecated).	                                                                                                        | "default"                 |
 | instance_id               | Unique identifier for this client instance.	                                                                                                    | "unleash-client-python"   |
-| refresh_interval  	    | How often to fetch feature toggles (seconds).	                                                                                                    | 15                        |
+| refresh_interval  	    | How often to fetch feature flags (seconds).	                                                                                                    | 15                        |
 | refresh_jitter            | Jitter to add to refresh interval (seconds).	                                                                                                    | None                      |
 | metrics_interval  	    | How often to send metrics to Unleash (seconds).	                                                                                                | 60                        |
 | metrics_jitter            | Jitter to add to metrics interval (seconds).	                                                                                                    | None                      |
@@ -139,13 +139,13 @@ The UnleashClient constructor supports the following configuration options:
 
 ### Bootstrap
 
-By default, the Python SDK fetches your feature toggles from the Unleash API at startup. If you want to make your SDK more resilient (e.g., during network outages), you can bootstrap the client with a local or remote toggle config.
+By default, the Python SDK fetches your feature flags from the Unleash API at startup. If you want to make your SDK more resilient (e.g., during network outages), you can bootstrap the client with a local or remote toggle config.
 
 How it works:
 
 - Use a FileCache (or your own BaseCache implementation).
 
-- Pre-seed it with feature toggles using bootstrap_from_dict, bootstrap_from_file, or bootstrap_from_url.
+- Pre-seed it with feature flags using bootstrap_from_dict, bootstrap_from_file, or bootstrap_from_url.
 
 - Pass your cache to the UnleashClient on startup.
 
@@ -321,7 +321,7 @@ client.is_enabled("testFlag")
 
 ### Custom cache
 
-By default, the Python SDK stores feature toggles in an on-disk cache using fcache. If you need a different storage backend, for example, Redis, memory-only, or a custom database, you can provide your own cache implementation.
+By default, the Python SDK stores feature flags in an on-disk cache using fcache. If you need a different storage backend, for example, Redis, memory-only, or a custom database, you can provide your own cache implementation.
 
 Below is an example custom CustomCache using fcache under the hood.
 
@@ -364,7 +364,7 @@ client = UnleashClient(
 
 ## Running in multi-process setups
 
-The Python SDK runs a background thread to keep feature toggles in sync with the Unleash server. Some runtime environments, like WSGI servers and Celery workers, need extra setup to make sure the SDK works correctly.
+The Python SDK runs a background thread to keep feature flags in sync with the Unleash server. Some runtime environments, like WSGI servers and Celery workers, need extra setup to make sure the SDK works correctly.
 
 ### WSGI
 
@@ -379,7 +379,7 @@ See [The Art of Graceful Reloading](https://uwsgi-docs.readthedocs.io/en/latest/
 
 ### Celery
 
-When using the SDK in Celery tasks, make sure you initialize it inside the worker_process_init event. Otherwise, the worker may run but won’t poll for feature toggle updates.
+When using the SDK in Celery tasks, make sure you initialize it inside the worker_process_init event. Otherwise, the worker may run but won’t poll for feature flag updates.
 
 ```python
 from UnleashClient import UnleashClient
