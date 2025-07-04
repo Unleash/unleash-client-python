@@ -1,10 +1,12 @@
-from typing import Optional
+import uuid
+from typing import Callable, Optional
 
 from yggdrasil_engine.engine import UnleashEngine
 
 from UnleashClient.api import get_feature_toggles
 from UnleashClient.cache import BaseCache
 from UnleashClient.constants import ETAG, FEATURES_URL
+from UnleashClient.events import UnleashEventType, UnleashFetchedEvent
 from UnleashClient.loader import load_features
 from UnleashClient.utils import LOGGER
 
@@ -20,6 +22,8 @@ def fetch_and_load_features(
     request_retries: int,
     engine: UnleashEngine,
     project: Optional[str] = None,
+    event_callback: Optional[Callable] = None,
+    ready_callback: Optional[Callable] = None,
 ) -> None:
     (state, etag) = get_feature_toggles(
         url,
@@ -44,3 +48,14 @@ def fetch_and_load_features(
         cache.set(ETAG, etag)
 
     load_features(cache, engine)
+
+    if state:
+        if event_callback:
+            event = UnleashFetchedEvent(
+                event_type=UnleashEventType.FETCHED,
+                event_id=uuid.uuid4(),
+                raw_features=state,
+            )
+            event_callback(event)
+        if ready_callback:
+            ready_callback()

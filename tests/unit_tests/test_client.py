@@ -891,28 +891,74 @@ def test_multiple_instances_are_unique_on_api_key(caplog):
 @responses.activate
 def test_signals_feature_flag(cache):
     # Set up API
-    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    flag_event = None
+    variant_event = None
 
     # Set up signals
     send_data = signal("send-data")
 
     @send_data.connect
     def receive_data(sender, **kw):
-        print("Caught signal from %r, data %r" % (sender, kw))
-
+        #  variant_event
         if kw["data"].event_type == UnleashEventType.FEATURE_FLAG:
-            assert kw["data"].feature_name == "testFlag"
-            assert kw["data"].enabled
+            nonlocal flag_event
+            flag_event = kw["data"]
         elif kw["data"].event_type == UnleashEventType.VARIANT:
-            assert kw["data"].feature_name == "testVariations"
-            assert kw["data"].enabled
-            assert kw["data"].variant == "VarA"
+            nonlocal variant_event
+            variant_event = kw["data"]
 
-        raise Exception("Random!")
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    # Set up Unleash
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=REFRESH_INTERVAL,
+        disable_registration=True,
+        disable_metrics=True,
+        cache=cache,
+        event_callback=example_callback,
+    )
+
+    # Create Unleash client and check initial load
+    unleash_client.initialize_client()
+    time.sleep(1)
+
+    assert unleash_client.is_enabled("testFlag")
+    variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
+    assert variant["name"] == "VarA"
+
+    assert flag_event.feature_name == "testFlag"
+    assert flag_event.enabled
+
+    assert variant_event.feature_name == "testVariations"
+    assert variant_event.enabled
+    assert variant_event.variant == "VarA"
+
+
+@responses.activate
+def test_fetch_signal(cache):
+    # Set up API
+    responses.add(responses.POST, URL + REGISTER_URL, json={}, status=202)
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    responses.add(responses.POST, URL + METRICS_URL, json={}, status=202)
+    trapped_event = None
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+
+        if kw["data"].event_type == UnleashEventType.FETCHED:
+            nonlocal trapped_event
+            trapped_event = kw["data"]
 
     def example_callback(event: UnleashEvent):
         send_data.send("anonymous", data=event)
@@ -931,9 +977,75 @@ def test_signals_feature_flag(cache):
     unleash_client.initialize_client()
     time.sleep(1)
 
-    assert unleash_client.is_enabled("testFlag")
-    variant = unleash_client.get_variant("testVariations", context={"userId": "2"})
-    assert variant["name"] == "VarA"
+    assert trapped_event.features[0]["name"] == "testFlag"
+
+
+@responses.activate
+def test_ready_signal(cache):
+    responses.add(
+        responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
+    )
+    trapped_events = 0
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            nonlocal trapped_events
+            trapped_events += 1
+
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    unleash_client = UnleashClient(
+        URL,
+        APP_NAME,
+        refresh_interval=1,  # minimum interval is 1 second
+        disable_metrics=True,
+        disable_registration=True,
+        cache=cache,
+        event_callback=example_callback,
+    )
+
+    unleash_client.initialize_client()
+    time.sleep(2)
+
+    assert trapped_events == 1
+
+
+def test_ready_signal_works_with_bootstrapping():
+    cache = FileCache("MOCK_CACHE")
+    cache.bootstrap_from_dict(MOCK_FEATURE_WITH_DEPENDENCIES_RESPONSE)
+
+    trapped_events = 0
+
+    # Set up signals
+    send_data = signal("send-data")
+
+    @send_data.connect
+    def receive_data(sender, **kw):
+        if kw["data"].event_type == UnleashEventType.READY:
+            nonlocal trapped_events
+            trapped_events += 1
+
+    def example_callback(event: UnleashEvent):
+        send_data.send("anonymous", data=event)
+
+    unleash_client = UnleashClient(
+        url=URL,
+        app_name=APP_NAME,
+        cache=cache,
+        disable_metrics=True,
+        disable_registration=True,
+        event_callback=example_callback,
+    )
+
+    unleash_client.initialize_client(fetch_toggles=False)
+    time.sleep(1)
+
+    assert trapped_events == 1
 
 
 def test_context_handles_numerics():
