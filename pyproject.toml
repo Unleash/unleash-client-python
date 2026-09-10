@@ -37,7 +37,7 @@ dependencies=[
 
 [project.urls]
 Homepage = "https://github.com/Unleash/unleash-python-sdk"
-Documentation = "https://docs.getunleash.io/unleash-python-sdk"
+Documentation = "https://docs.getunleash.io/reference/sdks/python"
 Changelog = "https://github.com/unleash/unleash-python-sdk/blob/main/CHANGELOG.md"
 Repository = "https://github.com/Unleash/unleash-python-sdk"
 Issues = "https://github.com/Unleash/unleash-python-sdk/issues"

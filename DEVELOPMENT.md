@@ -11,6 +11,11 @@ This command will take care of downloading the client specifications and putting
 
 However, there are some caveats to this method. There is no easy way to run a single test, and running the entire test suite can be slow.
 
+### Devcontainer
+
+This SDK ships with a devcontainer, so you can get a working environment without
+doing the manual setup below.
+
 ### Manual setup
 
 First, make sure you have pip or pip3 installed.
@@ -65,3 +70,20 @@ In order to lint all the files you can run the following command:
 ```
 make fmt
 ```
+
+### Upgrading the client specification tests
+
+This SDK implements the [Unleash client specifications](https://github.com/Unleash/client-specification).
+When you add a feature the specs cover, upgrade the specifications too by
+setting `CLIENT_SPEC_VERSION` in `UnleashClient/constants.py` to the latest tag
+the SDK now supports from that repository.
+
+## Releasing
+
+1. Merge all your PRs into `main`.
+2. If new configuration is added, update the [Flask-Unleash](https://github.com/Unleash/Flask-Unleash) config.
+3. Update `CHANGELOG.md` and any other affected documentation.
+4. Create a tag on the `main` branch.
+5. Create a new Release in GitHub and paste in the changelog.
+6. The `Release package` GitHub Actions workflow publishes to PyPI.
+7. Publish a new Flask-Unleash package, if necessary.
