@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: write
+      contents: read
     environment: pypi
     steps:
       - uses: actions/checkout@v4
@@ -27,13 +27,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         env:
           repository-url: https://pypi.org/project/UnleashClient/
-      - name: Build docs
-        run: |
-          make install-docs
-          cd docs
-          make html
-      - name: Deploy docs
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html

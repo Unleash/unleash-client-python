@@ -2,8 +2,6 @@ SHELL := /bin/bash
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = UnleashClient
 
-.PHONY: sphinx
-
 #-----------------------------------------------------------------------
 # Rules of Rules : Grouped rules that _doathing_
 #-----------------------------------------------------------------------
@@ -15,8 +13,6 @@ build: clean build-package
 
 build-local: clean build-package
 
-docs: docker-docs-stop sphinx docker-docs
-
 #-----------------------------------------------------------------------
 # Install
 #-----------------------------------------------------------------------
@@ -25,9 +21,6 @@ install:
 	pip install -U -r requirements.txt && \
 	pip install . && \
 	./scripts/get-spec.sh
-
-install-docs: install
-	pip install -U -r requirements-docs.txt
 
 #-----------------------------------------------------------------------
 # Testing & Linting
@@ -38,7 +31,7 @@ fmt:
 
 lint:
 	black . --check && \
-	ruff check UnleashClient tests docs && \
+	ruff check UnleashClient tests && \
 	mypy ${PROJECT_NAME} --install-types --non-interactive;
 
 pytest:
@@ -62,17 +55,3 @@ clean:
 
 build-package:
 	python -m build
-
-#-----------------------------------------------------------------------
-# Docs
-#-----------------------------------------------------------------------
-docker-docs-stop:
-	docker stop unleash-docs | true
-
-sphinx:
-	cd docs; \
-	rm -rf _build; \
-	make html;
-
-docker-docs:
-	docker run -d --name unleash-docs --rm -v `pwd`/docs/_build/html:/web -p 8080:8080 halverneus/static-file-server:latest
