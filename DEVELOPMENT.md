@@ -76,7 +76,7 @@ make fmt
 This SDK implements the [Unleash client specifications](https://github.com/Unleash/client-specification).
 When you add a feature the specs cover, upgrade the specifications too by
 setting `CLIENT_SPEC_VERSION` in `UnleashClient/constants.py` to the latest tag
-in that repository.
+the SDK now supports from that repository.
 
 ## Releasing
 
