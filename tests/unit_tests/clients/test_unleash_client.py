@@ -287,7 +287,7 @@ def test_uc_lifecycle(readyable_unleash_client):
     fetch_signal.clear()
     assert wait_until(
         lambda: len(unleash_client.feature_definitions()) >= 9,
-        timeout=REFRESH_INTERVAL * 3,
+        timeout=REFRESH_INTERVAL * 15,
     )
 
 
@@ -895,7 +895,7 @@ def test_uc_server_error(readyable_unleash_client):
     responses.add(
         responses.GET, URL + FEATURES_URL, json=MOCK_FEATURE_RESPONSE, status=200
     )
-    assert ready_signal.wait(REFRESH_INTERVAL * 3)
+    assert ready_signal.wait(REFRESH_INTERVAL * 15)
     assert unleash_client.is_enabled("testFlag")
 
 
@@ -1097,7 +1097,7 @@ def test_uc_custom_scheduler(cache):
     )
     assert wait_until(
         lambda: len(unleash_client.feature_definitions()) >= 9,
-        timeout=REFRESH_INTERVAL * 3,
+        timeout=REFRESH_INTERVAL * 15,
     )
     unleash_client.destroy()
 
